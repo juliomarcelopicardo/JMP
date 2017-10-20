@@ -13,6 +13,13 @@
 JMP::int32 main() {
   OutputDebugString("\n Starting application... \n\n\n\n\n");
 
+  JMP::TokenManager token_manager;
+  JMP::TextParser text_parser;
+
+  token_manager.addToken("token", JMP::TokenType_Keyword);
+  token_manager.addToken("token1");
+
+  token_manager.printTokenList();
 
   OutputDebugString("\n Ending application... \n\n");
   return 0;

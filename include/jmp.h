@@ -10,6 +10,8 @@
 #ifndef __JMP_H__
 #define __JMP_H__ 1
 
-#include <types.h>
+#include "types.h"
+#include "token_manager.h"
+#include "text_parser.h"
 
 #endif /* __JMP_H__ */
