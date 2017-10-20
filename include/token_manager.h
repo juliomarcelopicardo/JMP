@@ -46,6 +46,8 @@ class TokenManager {
   /// Default class destructor.
   ~TokenManager();
 
+/*****************************  LIST METHODS  *********************************/
+
   /**
   * @brief Adds a new token to the list.
   *
@@ -54,14 +56,19 @@ class TokenManager {
   */
   void addToken(const char* text, const TokenType type = TokenType_None);
 
-  /**
+  /// Clears the token list.
+  void clear();
+
+/*******************************  DEBUGGING  **********************************/
+  
+/**
   * @brief Print the info of a token.
   *
   * Format: [TYPE] - "[TokenText]"
   * @param id Index of the element in the token list.
   */
   void printToken(int32 id);
-  /// @brief Print all the tokens from the list.
+  /// Print all the tokens from the list.
   void printTokenList();
 
 
