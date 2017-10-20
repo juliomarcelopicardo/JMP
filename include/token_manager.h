@@ -59,9 +59,16 @@ class TokenManager {
   /// Clears the token list.
   void clear();
 
+  /**
+  * @brief Removes a token from the list.
+  *
+  * @param id Index of the element in the token list.
+  */
+  void removeToken(int32 id);
+
 /*******************************  DEBUGGING  **********************************/
   
-/**
+  /**
   * @brief Print the info of a token.
   *
   * Format: [TYPE] - "[TokenText]"
@@ -97,8 +104,8 @@ class TokenManager {
 
   /// List of all the tokens.
   std::vector<Token> token_list_;
-  /// List size.
-  int32 token_list_size_;
+  /// Number of elements of the list.
+  int32 token_list_length_;
 
 }; /* TokenManager */
 }; /* JMP */

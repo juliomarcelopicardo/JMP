@@ -21,6 +21,9 @@ JMP::int32 main() {
 
   token_manager.printTokenList();
 
+  token_manager.removeToken(0);
+  token_manager.printTokenList();
+
   OutputDebugString("\n Ending application... \n\n");
   return 0;
 }

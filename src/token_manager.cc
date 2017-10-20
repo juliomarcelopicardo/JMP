@@ -18,11 +18,13 @@ namespace JMP {
 *******************************************************************************/
 
 TokenManager::TokenManager() {
-  token_list_size_ = 0;
+  token_list_length_ = 0;
   token_list_.reserve(10);
 }
 
-TokenManager::~TokenManager() {}
+TokenManager::~TokenManager() {
+  token_list_.clear();
+}
 
 /*******************************************************************************
 ***                              LIST METHODS                                ***
@@ -30,12 +32,17 @@ TokenManager::~TokenManager() {}
 
 void TokenManager::addToken(const char * text, const TokenType type) {
   token_list_.push_back({ text, type });
-  token_list_size_++;
+  token_list_length_++;
 }
 
 void TokenManager::clear() {
   token_list_.clear();
-  token_list_size_ = 0;
+  token_list_length_ = 0;
+}
+
+void TokenManager::removeToken(int32 id) {
+  token_list_.erase(token_list_.begin() + id);
+  token_list_length_--;
 }
 
 /*******************************************************************************
@@ -65,7 +72,7 @@ void TokenManager::printToken(int32 id) {
 }
 
 void TokenManager::printTokenList() {
-  for (int32 i = 0; i < token_list_size_; i++) {
+  for (int32 i = 0; i < token_list_length_; i++) {
     printToken(i);
   }
 }
