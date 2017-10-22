@@ -17,11 +17,11 @@ namespace JMP {
 
 /// Token type.
 enum TokenType {
-  TokenType_None = 0,
-  TokenType_Keyword,
-  TokenType_Separator,
-  TokenType_Number,
-  TokenType_Text,
+  kTokenType_None = 0,
+  kTokenType_Keyword,
+  kTokenType_Separator,
+  kTokenType_Number,
+  kTokenType_Variable,
 };
 
 
@@ -55,7 +55,14 @@ class TokenManager {
   * @param text Text of the token.
   * @param type Type of the token.
   */
-  void addToken(const char* text, const TokenType type = TokenType_None);
+  void addToken(const char* text, const TokenType type = kTokenType_None);
+
+  /**
+  * @brief Adds a new token to the list.
+  *
+  * @param token Token to add.
+  */
+  void addToken(const Token& token);
 
   /// Clears the token list.
   void clear();

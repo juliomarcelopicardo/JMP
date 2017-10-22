@@ -35,6 +35,11 @@ void TokenManager::addToken(const char * text, const TokenType type) {
   token_list_length_++;
 }
 
+void TokenManager::addToken(const Token& token) {
+  token_list_.push_back(token);
+  token_list_length_++;
+}
+
 void TokenManager::clear() {
   token_list_.clear();
   token_list_length_ = 0;
@@ -60,11 +65,11 @@ void TokenManager::printToken(int32 id) {
 
   OutputDebugString(" Type: ");
   switch (token_list_[id].type) {
-    case JMP::TokenType_None: { OutputDebugString("None \t\t"); }break;
-    case JMP::TokenType_Keyword: { OutputDebugString("Keyword \t\t"); }break;
-    case JMP::TokenType_Number: { OutputDebugString("Number \t\t"); }break;
-    case JMP::TokenType_Separator: { OutputDebugString("Separator \t"); }break;
-    case JMP::TokenType_Text: { OutputDebugString("Text \t\t"); }break;
+    case JMP::kTokenType_None: { OutputDebugString("None \t\t"); }break;
+    case JMP::kTokenType_Keyword: { OutputDebugString("Keyword \t\t"); }break;
+    case JMP::kTokenType_Number: { OutputDebugString("Number \t\t"); }break;
+    case JMP::kTokenType_Separator: { OutputDebugString("Separator \t"); }break;
+    case JMP::kTokenType_Variable: { OutputDebugString("Variable \t"); }break;
     default: { OutputDebugString("None \t\t"); }break;
   }
   OutputDebugString("Token: \"");
