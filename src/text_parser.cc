@@ -15,9 +15,17 @@ namespace JMP {
 ***                       CONSTRUCTOR & DESTRUCTOR                           ***
 *******************************************************************************/
 
-TextParser::TextParser() {}
+TextParser::TextParser() {
+  current_token_.text.clear();
+  current_token_.type = kTokenType_None;
+  sentence_.clear();
+  sentence_index_ = 0;
+}
 
-TextParser::~TextParser() {}
+TextParser::~TextParser() {
+  current_token_.text.clear();
+  sentence_.clear();
+}
 
 /*******************************************************************************
 ***                           TOKEN GENERATION                               ***
@@ -30,7 +38,14 @@ void TextParser::generateTokens(std::string& sentence, TokenManager& token_manag
   sentence_index_ = 0;
   sentence_ = sentence;
 
+  // TESTING
   generateNextToken();
+
+  while(current_token_.text != "") {
+    token_manager.addToken(current_token_);
+    generateNextToken();
+  }
+  
 }
 
 Token TextParser::generateNextToken() {
@@ -38,24 +53,54 @@ Token TextParser::generateNextToken() {
   uint32 sentence_length = sentence_.length();
 
   // Restarts the current token.
-  current_token.text.clear();
-  current_token.type = TokenType_None;
+  current_token_.text = "";
+  current_token_.type = kTokenType_None;
 
   // To analyze sentences, spaces will be ignored.
-  while (sentence_index_ < sentence_length && sentence_[sentence_index_] == ' ') {
+  while (sentence_index_ < sentence_length && 
+         isBlankSpace(sentence_[sentence_index_])) {
     sentence_index_++;
   }
 
   // Checking end of line.
   if (sentence_index_ >= sentence_length) {
-    current_token.text = "\0";
-    return current_token;
+    current_token_.text = "\0";
+    return current_token_;
   }
 
+  // TOKEN ANALYZE: We will get the token type and the token text.
+  
+  // Separators
+  if (isSeparator(sentence_[sentence_index_])) {
+    current_token_.text.push_back(sentence_[sentence_index_]);
+    current_token_.type = kTokenType_Separator;
+    sentence_index_++;
+    return current_token_;
+  }
 
-  // TOKEN ANALYZE: We will
+  // Numbers
+  if (isDigit(sentence_[sentence_index_])) {
+    while (!isSeparator(sentence_[sentence_index_]) && sentence_index_ < sentence_length) {
+      current_token_.text.push_back(sentence_[sentence_index_]);
+      sentence_index_++;
+    }
+    current_token_.type = kTokenType_Number;
+    return current_token_;
+  }
 
-  return current_token;
+  // Vars and Keywords
+  if (isLetter(sentence_[sentence_index_])) {
+    while (!isSeparator(sentence_[sentence_index_]) && sentence_index_ < sentence_length) {
+      current_token_.text.push_back(sentence_[sentence_index_]);
+      sentence_index_++;
+    }
+
+    current_token_.type = kTokenType_Variable;
+    if (isKeyword(current_token_.text)) { current_token_.type = kTokenType_Keyword; }
+    return current_token_;
+  }
+
+  return current_token_;
 }
 
 
@@ -115,6 +160,17 @@ const bool TextParser::isDigit(const char8& character) {
   switch (character) {
     case '0': case '1': case '2': case '3': case '4':  
     case '5': case '6': case '7': case '8': case '9':
+    return true;
+  }
+  return false;
+}
+
+const bool TextParser::isKeyword(const std::string& word) {
+
+  if (word == "if" || word == "else" ||                   // Conditionals
+      word == "func" || word == "return" ||               // Functions
+      word == "do" || word == "while" || word == "for" || // Loops
+      word == "var") {                                    // Variable
     return true;
   }
   return false;

@@ -91,7 +91,13 @@ class TextParser {
   * @return true if it is a digit.
   */
   const bool isDigit(const char8& character);
-
+  /**
+  * @brief String analyzer getter, tells you if the string is a keyword.
+  *
+  * @param word String to analyze.
+  * @return true if it is a keyword.
+  */
+  const bool isKeyword(const std::string& word);
 
 
 /*******************************************************************************
@@ -103,7 +109,7 @@ class TextParser {
   /// Current sentence index, to know which character are we compiling.
   uint32 sentence_index_;
   /// Current token that we are analyzing.
-  Token current_token;
+  Token current_token_;
 
 
  private:
