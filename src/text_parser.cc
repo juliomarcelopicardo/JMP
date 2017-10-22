@@ -11,9 +11,17 @@
 
 namespace JMP {
 
+/*******************************************************************************
+***                       CONSTRUCTOR & DESTRUCTOR                           ***
+*******************************************************************************/
+
 TextParser::TextParser() {}
 
 TextParser::~TextParser() {}
+
+/*******************************************************************************
+***                           TOKEN GENERATION                               ***
+*******************************************************************************/
 
 void TextParser::generateTokens(std::string& sentence, TokenManager& token_manager) {
   
@@ -50,6 +58,11 @@ Token TextParser::generateNextToken() {
   return current_token;
 }
 
+
+/*******************************************************************************
+***                            TEXT MODIFIERS                                ***
+*******************************************************************************/
+
 void TextParser::replaceSpacesFromQuotes(std::string& sentence, char8 replacement) {
 
   uint32 length = sentence.length();
@@ -68,6 +81,43 @@ void TextParser::replaceSpacesFromQuotes(std::string& sentence, char8 replacemen
 }
 
 
+/*******************************************************************************
+***                        TEXT ANALYZING GETTERS                            ***
+*******************************************************************************/
 
+const bool TextParser::isSeparator(const char8& character) {
+  switch (character) {
+    case ' ': case ',': case ';': case '?': case '!': case '^':
+    case '+': case '-': case '*': case '/': case '=': case '%':
+    case '(': case ')': case '{': case '}': case '<': case '>':
+    return true;
+  }
+  return false;
+}
+
+const bool TextParser::isBlankSpace(const char8& character) {
+  if (character == ' ') { 
+    return true; 
+  }
+  return false;
+}
+
+const bool TextParser::isLetter(const char8& character) { 
+  if ((character >= 'a' && character <= 'z') || 
+      (character >= 'A' && character <= 'Z') || 
+      (character == '"') || (character == '_')) { // needed for quotes.
+    return true;
+  }
+  return false;
+}
+
+const bool TextParser::isDigit(const char8& character) {
+  switch (character) {
+    case '0': case '1': case '2': case '3': case '4':  
+    case '5': case '6': case '7': case '8': case '9':
+    return true;
+  }
+  return false;
+}
 
 }; /* JMP */

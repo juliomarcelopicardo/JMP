@@ -60,7 +60,37 @@ class TextParser {
   void replaceSpacesFromQuotes(std::string& sentence, char8 replacement = '_');
 
 
-/*******************************  ANALYZING  **********************************/
+/************************  TEXT ANALYZING GETTERS *****************************/
+
+  /**
+  * @brief Character analyzer getter, tells you if the character is a separator.
+  *
+  * @param character Character to analyze.
+  * @return true if it is a separator.
+  */
+  const bool isSeparator(const char8& character);
+  /**
+  * @brief Character analyzer getter, tells you if the character is a blank space.
+  *
+  * @param character Character to analyze.
+  * @return true if it is a blank space.
+  */
+  const bool isBlankSpace(const char8& character);
+  /**
+  * @brief Character analyzer getter, tells you if the character is a letter.
+  *
+  * '"' and '_' will be considered as letters because we need them for quotes.
+  * @param character Character to analyze.
+  * @return true if it is a letter.
+  */
+  const bool isLetter(const char8& character);
+  /**
+  * @brief Character analyzer getter, tells you if the character is a digit.
+  *
+  * @param character Character to analyze.
+  * @return true if it is a digit.
+  */
+  const bool isDigit(const char8& character);
 
 
 
@@ -74,7 +104,6 @@ class TextParser {
   uint32 sentence_index_;
   /// Current token that we are analyzing.
   Token current_token;
-
 
 
  private:
