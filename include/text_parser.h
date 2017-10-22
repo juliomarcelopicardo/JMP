@@ -29,6 +29,8 @@ class TextParser {
   /// Default class destructor.
   ~TextParser();
 
+/****************************  TOKEN GENERATION  ******************************/
+
   /**
   * @brief Adds a new token to the list.
   *
@@ -36,6 +38,17 @@ class TextParser {
   * @param token_manager Type of the token.
   */
   void generateTokens(std::string& sentence, TokenManager& token_manager);
+
+  /**
+  * @brief Analyzes the current sentence to get the next token available.
+  *
+  * Function will allocate also the token into the current token variable.
+  * @return Next token.
+  */
+  Token generateNextToken();
+
+
+/****************************  TEXT MODIFIERS  ********************************/
 
   /**
   * @brief Removes all the ' ' in quotes, to avoid separate quotes in many tokens.
@@ -46,16 +59,21 @@ class TextParser {
   */
   void replaceSpacesFromQuotes(std::string& sentence, char8 replacement = '_');
 
+
+/*******************************  ANALYZING  **********************************/
+
+
+
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***
 *******************************************************************************/
 
-  /// Sentence that we will try to compile.
+  /// Current sentence that we will try to compile.
   std::string sentence_;
-  /// Sentence index, to know which character are we compiling.
+  /// Current sentence index, to know which character are we compiling.
   uint32 sentence_index_;
   /// Current token that we are analyzing.
-  Token token;
+  Token current_token;
 
 
 
