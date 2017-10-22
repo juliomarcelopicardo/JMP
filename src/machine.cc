@@ -44,7 +44,7 @@ Report Machine::process(std::string script_filename) {
 
     // To prevent errors I will remove all the tabs. Changing them to blank spaces
     uint32 string_length = code_line.length();
-    for (int32 i = 0; i < string_length; i++) {
+    for (uint32 i = 0; i < string_length; i++) {
       if (code_line[i] == '\t') { code_line[i] = ' '; }
     }
 
