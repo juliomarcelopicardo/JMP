@@ -33,6 +33,7 @@ solution "JMP_Solution"
   files {
     path.join(PROJ_DIR, "src/**.*"),
     path.join(PROJ_DIR, "include/**.*"),
+    path.join(PROJ_DIR, "scripts/**.*"),
   }
 
   configuration "Debug"
