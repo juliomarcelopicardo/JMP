@@ -8,6 +8,7 @@
 */
 
 #include "machine.h"
+#include "text_parser.h"
 #include <Windows.h>
 #include <string>
 #include <fstream>
@@ -37,6 +38,8 @@ Report Machine::process(std::string script_filename) {
     return kReport_InvalidFilename;
   }
 
+  TextParser parser;
+
   // Reading the whole file, allocating it using lines of code.
   while (!script.eof()) {
     std::string code_line;
@@ -51,7 +54,9 @@ Report Machine::process(std::string script_filename) {
     /*
       PROCESS THE LINES - COMPILING THEM.
     */
-
+    TokenManager tokens;
+      parser.generateTokens(code_line, tokens);
+      tokens.printTokenList();
   }
 
   return kReport_NoErrors;
