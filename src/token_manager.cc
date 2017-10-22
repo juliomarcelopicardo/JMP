@@ -58,12 +58,12 @@ void TokenManager::removeToken(int32 id) {
 
 void TokenManager::printToken(int32 id) {
 
-  OutputDebugString("Type: ");
+  OutputDebugString(" Type: ");
   switch (token_list_[id].type) {
-    case JMP::TokenType_None: { OutputDebugString("None \t\t"); }break;
+    case JMP::TokenType_None: { OutputDebugString("None \t"); }break;
     case JMP::TokenType_Keyword: { OutputDebugString("Keyword \t"); }break;
     case JMP::TokenType_Number: { OutputDebugString("Number \t"); }break;
-    case JMP::TokenType_text: { OutputDebugString("Text \t\t"); }break;
+    case JMP::TokenType_text: { OutputDebugString("Text \t"); }break;
     default: { OutputDebugString("None \t\t"); }break;
   }
   OutputDebugString("Token: \"");

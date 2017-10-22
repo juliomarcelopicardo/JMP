@@ -25,7 +25,7 @@ Machine::~Machine() {}
 Report Machine::process(std::string script_filename) {
 
   // To force .jmp extensions.
-  if (checkExtension(script_filename) == kReport_InvalidFileExtension) {
+  if (checkExtension(script_filename) != kReport_NoErrors) {
     return kReport_InvalidFileExtension;
   }
 
@@ -48,7 +48,7 @@ Report Machine::process(std::string script_filename) {
       if (code_line[i] == '\t') { code_line[i] = ' '; }
     }
 
-
+    OutputDebugString(code_line.c_str());
 
   }
 
