@@ -19,8 +19,9 @@ namespace JMP {
 enum TokenType {
   TokenType_None = 0,
   TokenType_Keyword,
+  TokenType_Separator,
   TokenType_Number,
-  TokenType_text
+  TokenType_Text,
 };
 
 

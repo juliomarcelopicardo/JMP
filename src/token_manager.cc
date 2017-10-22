@@ -60,10 +60,11 @@ void TokenManager::printToken(int32 id) {
 
   OutputDebugString(" Type: ");
   switch (token_list_[id].type) {
-    case JMP::TokenType_None: { OutputDebugString("None \t"); }break;
-    case JMP::TokenType_Keyword: { OutputDebugString("Keyword \t"); }break;
-    case JMP::TokenType_Number: { OutputDebugString("Number \t"); }break;
-    case JMP::TokenType_text: { OutputDebugString("Text \t"); }break;
+    case JMP::TokenType_None: { OutputDebugString("None \t\t"); }break;
+    case JMP::TokenType_Keyword: { OutputDebugString("Keyword \t\t"); }break;
+    case JMP::TokenType_Number: { OutputDebugString("Number \t\t"); }break;
+    case JMP::TokenType_Separator: { OutputDebugString("Separator \t"); }break;
+    case JMP::TokenType_Text: { OutputDebugString("Text \t\t"); }break;
     default: { OutputDebugString("None \t\t"); }break;
   }
   OutputDebugString("Token: \"");
