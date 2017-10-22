@@ -15,6 +15,23 @@ TextParser::TextParser() {}
 
 TextParser::~TextParser() {}
 
+void TextParser::replaceSpacesFromQuotes(std::string & sentence, char8 replacement) {
+
+  uint32 length = sentence.length();
+  
+  for (uint32 i = 0; i < length; ++i) {
+    if (sentence[i] == '"') { // Begin of the quote.
+      ++i;
+      for (uint32 j = i; j < length; ++j) {
+        ++i;
+        if (sentence[j] == '"') { break; } // End of the quote.
+        if (sentence[j] == ' ') { sentence[j] = replacement; }
+      }
+    }
+  }
+  
+}
+
 
 
 

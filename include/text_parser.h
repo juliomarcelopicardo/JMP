@@ -29,13 +29,33 @@ class TextParser {
   /// Default class destructor.
   ~TextParser();
 
+  /**
+  * @brief Adds a new token to the list.
+  *
+  * @param sentence Text of the token.
+  * @param token_manager Type of the token.
+  */
+  void generateTokens(std::string& sentence, TokenManager& token_manager);
 
+  /**
+  * @brief Removes all the ' ' in quotes, to avoid separate quotes in many tokens.
+  *
+  * Example: var x = "a b c d"  ->  result: var x = "a_b_c_d"
+  * @param sentence Text to analyze.
+  * @param replacement Char used to replace blank spaces.
+  */
+  void replaceSpacesFromQuotes(std::string& sentence, char8 replacement = '_');
 
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***
 *******************************************************************************/
 
-
+  /// Sentence that we will try to compile.
+  std::string sentence_;
+  /// Sentence index, to know which character are we compiling.
+  uint32 sentence_index_;
+  /// Current token that we are analyzing.
+  Token token;
 
 
 
