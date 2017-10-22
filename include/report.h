@@ -24,6 +24,9 @@ namespace JMP {
     kReport_InvalidFileExtension,
     kReport_InvalidFilename,
     kReport_FilenameTooShort,
+    kReport_NullPointer,
+    kReport_EmptyContainer,
+    kReport_ListIndexOutOfRange,
   };
 
   void ReportMsg(std::string msg);
