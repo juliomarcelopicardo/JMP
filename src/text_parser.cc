@@ -28,8 +28,51 @@ TextParser::~TextParser() {
 }
 
 /*******************************************************************************
+***                            COMPILE METHODS                               ***
+*******************************************************************************/
+
+Report TextParser::compile(Machine* machine, 
+                           std::string sentence, 
+                           uint32 line_number) {
+
+  // Error checkings.
+  if (!machine) {
+    ReportError("Machine Null Pointer, can't compile.");
+    return kReport_NullPointer;
+  }
+
+  // Allocates all the tokens in the manager.
+  TokenManager token_manager;
+  generateTokens(sentence, token_manager); 
+
+  // Compile all these tokens.
+  return compileTokens(machine, token_manager);
+}
+
+
+
+Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) {
+  
+  // Error checkings.
+  if (!machine) {
+    ReportError("Machine Null Pointer, can't compile.");
+    return kReport_NullPointer;
+  }
+
+  if (token_manager.numTokens() == 0) {
+    ReportError("Token manager list is empty, nothing to compile.");
+    return kReport_EmptyContainer;
+  }
+
+
+  return kReport_NoErrors;
+}
+
+
+/*******************************************************************************
 ***                           TOKEN GENERATION                               ***
 *******************************************************************************/
+
 
 void TextParser::generateTokens(std::string& sentence, TokenManager& token_manager) {
   
@@ -42,6 +85,10 @@ void TextParser::generateTokens(std::string& sentence, TokenManager& token_manag
   generateNextToken();
 
   while(current_token_.text != "") {
+
+    // TODO: Creating a priority system, to manage token compiling priorities.
+
+    recoverSpacesFromQuotes(current_token_.text); // Replace '_' ==> ' ' in quotes
     token_manager.addToken(current_token_);
     generateNextToken();
   }
@@ -123,6 +170,17 @@ void TextParser::replaceSpacesFromQuotes(std::string& sentence, char8 replacemen
     }
   }
   
+}
+
+void TextParser::recoverSpacesFromQuotes(std::string & sentence, char8 replacement) {
+  uint32 length = sentence.length();
+
+  if (sentence[0] == '"') {	
+    for (uint32 i = 0; i < length; ++i) {
+      if (sentence[i] == replacement) { sentence[i] = ' '; }
+    }
+  }
+
 }
 
 

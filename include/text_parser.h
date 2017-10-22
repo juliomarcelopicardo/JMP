@@ -12,6 +12,7 @@
 
 #include "types.h"
 #include "token_manager.h"
+#include "machine.h"
 
 namespace JMP {
 
@@ -28,6 +29,28 @@ class TextParser {
   TextParser();
   /// Default class destructor.
   ~TextParser();
+
+/***************************  PARSER CORE METHODS  ****************************/
+
+  /**
+  * @brief Main function of the text parser, will compile a sentence or expression.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param sentence Text, sentence or expression to compile.
+  * @param line_number Line number of the sentence in the full script (for errors).
+  * @return Report with the compiling results.
+  */
+  Report compile(Machine* machine, std::string sentence, uint32 line_number);
+
+  /**
+  * @brief Compile all the tokens of this manager, using the machine.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @return Report with the compiling results.
+  */
+  Report compileTokens(Machine* machine, TokenManager& token_manager);
+
 
 /****************************  TOKEN GENERATION  ******************************/
 
@@ -58,6 +81,15 @@ class TextParser {
   * @param replacement Char used to replace blank spaces.
   */
   void replaceSpacesFromQuotes(std::string& sentence, char8 replacement = '_');
+
+  /**
+  * @brief Inverse of replaceSpacesFromQuotes function. 
+  *
+  * Example: var x = "a_b_c_d"  ->  result: var x = "a b c d"
+  * @param sentence Text to analyze.
+  * @param replacement Char that will be replaced for blank spaces.
+  */
+  void recoverSpacesFromQuotes(std::string& sentence, char8 replacement = '_');
 
 
 /************************  TEXT ANALYZING GETTERS *****************************/
