@@ -11,6 +11,7 @@
 #define __JMP_TEXTPARSER_H__ 1
 
 #include "types.h"
+#include "token_manager.h"
 
 namespace JMP {
 
