@@ -11,10 +11,13 @@
 #include <Windows.h>
 
 JMP::int32 main() {
-  OutputDebugString("\n Starting application... \n\n\n\n\n");
+  OutputDebugString("\n Starting application... \n\n");
 
   JMP::TokenManager token_manager;
   JMP::TextParser text_parser;
+  JMP::Machine machine;
+
+  machine.process("../scripts/script.jmp");
 
   token_manager.addToken("token", JMP::TokenType_Keyword);
   token_manager.addToken("token1");

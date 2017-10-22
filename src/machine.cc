@@ -48,12 +48,16 @@ Report Machine::process(std::string script_filename) {
       if (code_line[i] == '\t') { code_line[i] = ' '; }
     }
 
-    OutputDebugString(code_line.c_str());
+    /*
+      PROCESS THE LINES - COMPILING THEM.
+    */
 
   }
 
   return kReport_NoErrors;
 }
+
+
 
 Report Machine::checkExtension(std::string filename) {
   
