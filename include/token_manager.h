@@ -74,6 +74,29 @@ class TokenManager {
   */
   void removeToken(int32 id);
 
+
+/*******************************  OPERATORS  **********************************/
+
+
+
+/********************************  GETTERS  ***********************************/
+
+  /**
+  * @brief Gets a token from the token manager list.
+  *
+  * @param list_index Index of the token in the list.
+  * @return Token from the list.
+  */
+  Token getToken(const uint32 list_index);
+
+  /**
+  * @brief Getter of the number of tokens allocated in the token manager list.
+  *
+  * @return Token list length.
+  */
+  const uint32 numTokens();
+
+
 /*******************************  DEBUGGING  **********************************/
   
   /**

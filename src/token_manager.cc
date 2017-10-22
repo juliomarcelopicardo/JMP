@@ -8,6 +8,7 @@
 */
 
 #include "token_manager.h"
+#include "report.h"
 #include <Windows.h>
 #include <string>
 
@@ -50,10 +51,22 @@ void TokenManager::removeToken(int32 id) {
   token_list_length_--;
 }
 
+
 /*******************************************************************************
 ***                                GETTERS                                   ***
 *******************************************************************************/
 
+Token TokenManager::getToken(const uint32 list_index) {
+  if (list_index >= token_list_length_) {
+    ReportError("Token list index out of range.");
+    return{ "", kTokenType_None };
+  }
+  return token_list_[list_index];
+}
+
+const uint32 TokenManager::numTokens() {
+  return token_list_length_;
+}
 
 
 
