@@ -19,13 +19,7 @@ JMP::int32 main() {
 
   machine.process("../scripts/script.jmp");
 
-  token_manager.addToken("token", JMP::TokenType_Keyword);
-  token_manager.addToken("token1");
 
-  token_manager.printTokenList();
-
-  token_manager.removeToken(0);
-  token_manager.printTokenList();
 
   OutputDebugString("\n Ending application... \n\n");
   return 0;
