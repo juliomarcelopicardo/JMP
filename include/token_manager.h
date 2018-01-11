@@ -24,13 +24,14 @@ enum TokenType {
   kTokenType_Variable,
 };
 
-
 /// Allocates the basic info of each token.
 struct Token {
   /// Token characters.
   std::string text;
   /// Token type.
   TokenType type;
+  /// Token priority
+  int32 priority;
 };
 
 /// Class used to save and manage the tokens.
@@ -54,8 +55,9 @@ class TokenManager {
   *
   * @param text Text of the token.
   * @param type Type of the token.
+  * @param priority Priority of the token, necessary for compiling in order.
   */
-  void addToken(const char* text, const TokenType type = kTokenType_None);
+  void addToken(const char* text, const TokenType type = kTokenType_None, int32 priority = 0);
 
   /**
   * @brief Adds a new token to the list.

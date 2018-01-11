@@ -31,8 +31,8 @@ TokenManager::~TokenManager() {
 ***                              LIST METHODS                                ***
 *******************************************************************************/
 
-void TokenManager::addToken(const char * text, const TokenType type) {
-  token_list_.push_back({ text, type });
+void TokenManager::addToken(const char * text, const TokenType type, int32 priority) {
+  token_list_.push_back({ text, type, priority });
   token_list_length_++;
 }
 
@@ -58,8 +58,8 @@ void TokenManager::removeToken(int32 id) {
 
 Token TokenManager::getToken(const uint32 list_index) {
   if (list_index >= token_list_length_) {
-    ReportError("Token list index out of range.");
-    return{ "", kTokenType_None };
+    ReportError("Token list index \"" + std::to_string(list_index) + "\" is out of range.");
+    return{ "", kTokenType_None, 0 };
   }
   return token_list_[list_index];
 }
