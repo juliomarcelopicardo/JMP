@@ -65,6 +65,7 @@ Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) 
   }
 
 
+
   return kReport_NoErrors;
 }
 
@@ -95,7 +96,7 @@ void TextParser::generateTokens(std::string& sentence, TokenManager& token_manag
   
 }
 
-Token TextParser::generateNextToken() {
+void TextParser::generateNextToken() {
 
   uint32 sentence_length = sentence_.length();
 
@@ -104,25 +105,23 @@ Token TextParser::generateNextToken() {
   current_token_.type = kTokenType_None;
 
   // To analyze sentences, spaces will be ignored.
-  while (sentence_index_ < sentence_length && 
-         isBlankSpace(sentence_[sentence_index_])) {
+  while (sentence_index_ < sentence_length &&
+    isBlankSpace(sentence_[sentence_index_])) {
     sentence_index_++;
   }
 
   // Checking end of line.
   if (sentence_index_ >= sentence_length) {
     current_token_.text = "\0";
-    return current_token_;
   }
 
   // TOKEN ANALYZE: We will get the token type and the token text.
-  
+
   // Separators
   if (isSeparator(sentence_[sentence_index_])) {
     current_token_.text.push_back(sentence_[sentence_index_]);
     current_token_.type = kTokenType_Separator;
     sentence_index_++;
-    return current_token_;
   }
 
   // Numbers
@@ -132,7 +131,6 @@ Token TextParser::generateNextToken() {
       sentence_index_++;
     }
     current_token_.type = kTokenType_Number;
-    return current_token_;
   }
 
   // Vars and Keywords
@@ -144,10 +142,27 @@ Token TextParser::generateNextToken() {
 
     current_token_.type = kTokenType_Variable;
     if (isKeyword(current_token_.text)) { current_token_.type = kTokenType_Keyword; }
-    return current_token_;
   }
 
-  return current_token_;
+  generateCurrentTokenInitialPriority();
+}
+
+void TextParser::generateCurrentTokenInitialPriority() {
+  switch (current_token_.type) {
+    case JMP::kTokenType_Keyword: { current_token_.priority = 1000; } break;
+    case JMP::kTokenType_Separator: {
+      std::string separator = current_token_.text;
+      if (separator == "}") { current_token_.priority = 200; }
+      if (separator == "(") { current_token_.priority = 100; }
+      if (separator == "^") { current_token_.priority = 99; }
+      if (separator == "*" || separator == "/") { current_token_.priority = 98; }
+      if (separator == "+" || separator == "-") { current_token_.priority = 97; }
+      if (separator == ">" || separator == "<") { current_token_.priority = 96; }
+      if (separator == "=") { current_token_.priority = 95; }
+      if (separator == ",") { current_token_.priority = -1; }
+    }break;
+    default: { current_token_.priority = 0; } break;
+  }
 }
 
 

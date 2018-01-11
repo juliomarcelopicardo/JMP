@@ -68,7 +68,7 @@ class TextParser {
   * Function will allocate also the token into the current token variable.
   * @return Next token.
   */
-  Token generateNextToken();
+  void generateNextToken();
 
 
 /****************************  TEXT MODIFIERS  ********************************/

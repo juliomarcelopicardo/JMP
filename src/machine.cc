@@ -55,8 +55,8 @@ Report Machine::process(std::string script_filename) {
       PROCESS THE LINES - COMPILING THEM.
     */
     TokenManager tokens;
-      parser.generateTokens(code_line, tokens);
-      tokens.printTokenList();
+    parser.generateTokens(code_line, tokens);
+    tokens.printTokenList();
   }
 
   return kReport_NoErrors;
