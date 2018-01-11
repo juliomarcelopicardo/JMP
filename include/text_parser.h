@@ -66,9 +66,13 @@ class TextParser {
   * @brief Analyzes the current sentence to get the next token available.
   *
   * Function will allocate also the token into the current token variable.
-  * @return Next token.
   */
   void generateNextToken();
+
+  /**
+  * @brief Generates the initial priority of the token depending on its type.
+  */
+  void generateCurrentTokenInitialPriority();
 
 
 /****************************  TEXT MODIFIERS  ********************************/

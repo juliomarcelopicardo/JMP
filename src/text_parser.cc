@@ -77,17 +77,23 @@ Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) 
 
 void TextParser::generateTokens(std::string& sentence, TokenManager& token_manager) {
   
+  int32 num_parenthesis_opened = 0;
+
   replaceSpacesFromQuotes(sentence, '_'); // Replace ' ' ==> '_'
 
   sentence_index_ = 0;
   sentence_ = sentence;
 
-  // TESTING
-  generateNextToken();
+  generateNextToken(); // Setting the first token as current.
 
   while(current_token_.text != "") {
 
-    // TODO: Creating a priority system, to manage token compiling priorities.
+    // Everytime a parenthesis is opened, we increase the priority.
+    // This way we will avoid the problem with multiple parenthetical groups.
+    if (current_token_.text == "(") {
+      current_token_.priority += num_parenthesis_opened;
+      num_parenthesis_opened++;
+    }
 
     recoverSpacesFromQuotes(current_token_.text); // Replace '_' ==> ' ' in quotes
     token_manager.addToken(current_token_);
@@ -144,12 +150,13 @@ void TextParser::generateNextToken() {
     if (isKeyword(current_token_.text)) { current_token_.type = kTokenType_Keyword; }
   }
 
+  // Once the type is set, we will assign an initial priority depending on the type.
   generateCurrentTokenInitialPriority();
 }
 
 void TextParser::generateCurrentTokenInitialPriority() {
   switch (current_token_.type) {
-    case JMP::kTokenType_Keyword: { current_token_.priority = 1000; } break;
+    case JMP::kTokenType_Keyword: { current_token_.priority = 500; } break;
     case JMP::kTokenType_Separator: {
       std::string separator = current_token_.text;
       if (separator == "}") { current_token_.priority = 200; }
