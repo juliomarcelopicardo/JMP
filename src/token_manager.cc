@@ -85,9 +85,20 @@ void TokenManager::printToken(int32 id) {
     case JMP::kTokenType_Variable: { OutputDebugString("Variable \t"); }break;
     default: { OutputDebugString("None \t\t"); }break;
   }
+
+  char priority[32] = "";
+  if (token_list_[id].priority == 0) {
+    sprintf(priority, "Priority: %d\t\t", token_list_[id].priority);
+  }
+  else {
+    sprintf(priority, "Priority: %d\t", token_list_[id].priority);
+  }
+  OutputDebugString(priority);
+  
   OutputDebugString("Token: \"");
   OutputDebugString(token_list_[id].text.c_str());
   OutputDebugString("\"\n");
+
 }
 
 void TokenManager::printTokenList() {
