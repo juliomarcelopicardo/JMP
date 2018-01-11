@@ -39,6 +39,7 @@ Report Machine::process(std::string script_filename) {
   }
 
   TextParser parser;
+  TokenManager tokens;
 
   // Reading the whole file, allocating it using lines of code.
   while (!script.eof()) {
@@ -54,10 +55,9 @@ Report Machine::process(std::string script_filename) {
     /*
       PROCESS THE LINES - COMPILING THEM.
     */
-    TokenManager tokens;
     parser.generateTokens(code_line, tokens);
-    tokens.printTokenList();
   }
+  tokens.printTokenList();
 
   return kReport_NoErrors;
 }
