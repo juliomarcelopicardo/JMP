@@ -89,7 +89,7 @@ class TokenManager {
   * @param list_index Index of the token in the list.
   * @return Token from the list.
   */
-  Token getToken(const uint32 list_index);
+  Token getToken(const int32 list_index);
 
   /**
   * @brief Getter of the number of tokens allocated in the token manager list.
