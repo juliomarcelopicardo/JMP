@@ -13,12 +13,25 @@
 
 namespace JMP {
 
-  void ReportError(std::string error) {
-    ReportMsg(" ERROR: " + error + ".\n");
-  }
+void ReportError(std::string error) {
+  ReportMsg(" ERROR: " + error + ".\n");
+}
 
-  void ReportMsg(std::string msg) {
-    OutputDebugString(msg.c_str());
+void ReportWarning(std::string warning) {
+  ReportMsg(" WARNING: " + warning + ".\n");
+}
+
+void PrintReport(Report& report, uint32 line_number) {
+  switch (report) {
+    case JMP::kReport_EmptyLine: {
+      ReportWarning("Line " + std::to_string(line_number) + ": Nothing to compile..");
+      report = kReport_NoErrors;
+    } break;
   }
+}
+
+void ReportMsg(std::string msg) {
+  OutputDebugString(msg.c_str());
+}
 
 }; /* JMP */

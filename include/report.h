@@ -12,6 +12,7 @@
 
 #include <stdint.h>
 #include <string>
+#include "types.h"
 
 namespace JMP {
 
@@ -27,10 +28,13 @@ namespace JMP {
     kReport_NullPointer,
     kReport_EmptyContainer,
     kReport_ListIndexOutOfRange,
+    kReport_EmptyLine,
   };
 
   void ReportMsg(std::string msg);
   void ReportError(std::string error);
+  void ReportWarning(std::string warning);
+  void PrintReport(Report& report, uint32 line_number = 0);
 
 }; /* JMP */
 
