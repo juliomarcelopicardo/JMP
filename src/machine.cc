@@ -39,10 +39,11 @@ Report Machine::process(std::string script_filename) {
   }
 
   TextParser parser;
-  TokenManager tokens;
+  uint32 line_num = 1;
+  Report report = kReport_NoErrors;
 
   // Reading the whole file, allocating it using lines of code.
-  while (!script.eof()) {
+  while (!script.eof() && report == kReport_NoErrors) {
     std::string code_line;
     std::getline(script, code_line);
 
@@ -55,11 +56,12 @@ Report Machine::process(std::string script_filename) {
     /*
       PROCESS THE LINES - COMPILING THEM.
     */
-    parser.generateTokens(code_line, tokens);
+    report = parser.compile(this, code_line, line_num);
+    line_num++;
   }
-  tokens.printTokenList();
+  
 
-  return kReport_NoErrors;
+  return report;
 }
 
 

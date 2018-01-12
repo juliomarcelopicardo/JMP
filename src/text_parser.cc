@@ -44,9 +44,13 @@ Report TextParser::compile(Machine* machine,
   // Allocates all the tokens in the manager.
   TokenManager token_manager;
   generateTokens(sentence, token_manager); 
+  token_manager.printTokenList();
 
   // Compile all these tokens.
-  return compileTokens(machine, token_manager);
+  Report report = compileTokens(machine, token_manager);
+
+  PrintReport(report, line_number);
+  return report;
 }
 
 
@@ -59,10 +63,7 @@ Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) 
     return kReport_NullPointer;
   }
 
-  if (token_manager.numTokens() == 0) {
-    ReportError("Token manager list is empty, nothing to compile.");
-    return kReport_EmptyContainer;
-  }
+  if (token_manager.numTokens() == 0) { return kReport_EmptyLine; }
 
 
 
