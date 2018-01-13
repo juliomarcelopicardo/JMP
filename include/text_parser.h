@@ -71,7 +71,7 @@ class TextParser {
   * @param token_index index of the token manager list.
   * @return Report with the compiling results.
   */
-  Report compileKeywordToken(Machine* machine, TokenManager& token_manager, int32 token_index);
+  Report compileKeywordToken(Machine* machine, TokenManager& token_manager, int32& token_index);
 
   /**
   * @brief Compile the separator type token.
@@ -81,7 +81,7 @@ class TextParser {
   * @param token_index index of the token manager list.
   * @return Report with the compiling results.
   */
-  Report compileSeparatorToken(Machine* machine, TokenManager& token_manager, int32 token_index);
+  Report compileSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
 
   /**
   * @brief Compile the number type token.
@@ -91,7 +91,7 @@ class TextParser {
   * @param token_index index of the token manager list.
   * @return Report with the compiling results.
   */
-  Report compileNumberToken(Machine* machine, TokenManager& token_manager, int32 token_index);
+  Report compileNumberToken(Machine* machine, TokenManager& token_manager, int32& token_index);
 
   /**
   * @brief Compile the Variable type token.
@@ -101,7 +101,7 @@ class TextParser {
   * @param token_index index of the token manager list.
   * @return Report with the compiling results.
   */
-  Report compileVariableToken(Machine* machine, TokenManager& token_manager, int32 token_index);
+  Report compileVariableToken(Machine* machine, TokenManager& token_manager, int32& token_index);
 
 /*******************  SEPARATORS TOKEN COMPILER METHODS  **********************/
 
@@ -113,7 +113,7 @@ class TextParser {
   * @param token_index index of the token manager list.
   * @return Report with the compiling results.
   */
-  Report compileOpenParenthesisSeparatorToken(Machine* machine, TokenManager& token_manager, int32 token_index);
+  Report compileOpenParenthesisSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
 
 /****************************  TOKEN GENERATION  ******************************/
 

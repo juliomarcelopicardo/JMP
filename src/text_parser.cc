@@ -85,7 +85,7 @@ Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) 
 
 Report TextParser::compileKeywordToken(Machine* machine, 
                                        TokenManager& token_manager, 
-                                       int32 token_index) {
+                                       int32& token_index) {
   // TODO:
 
   return kReport_NoErrors;
@@ -93,7 +93,7 @@ Report TextParser::compileKeywordToken(Machine* machine,
 
 Report TextParser::compileSeparatorToken(Machine* machine,
                                          TokenManager& token_manager,
-                                         int32 token_index) {
+                                         int32& token_index) {
 
   Token token = token_manager.getToken(token_index);
   if (token.text == "(") {
@@ -105,7 +105,7 @@ Report TextParser::compileSeparatorToken(Machine* machine,
 
 Report TextParser::compileNumberToken(Machine* machine,
                                       TokenManager& token_manager,
-                                      int32 token_index) {
+                                      int32& token_index) {
 
   // TODO:
   return kReport_NoErrors;
@@ -113,7 +113,7 @@ Report TextParser::compileNumberToken(Machine* machine,
 
 Report TextParser::compileVariableToken(Machine* machine,
                                         TokenManager& token_manager,
-                                        int32 token_index) {
+                                        int32& token_index) {
 
   // TODO:
   return kReport_NoErrors;
@@ -125,7 +125,9 @@ Report TextParser::compileVariableToken(Machine* machine,
 
 Report TextParser::compileOpenParenthesisSeparatorToken(Machine* machine,
                                                         TokenManager& token_manager,
-                                                        int32 token_index) {
+                                                        int32& token_index) {
+
+  Report report = kReport_NoErrors;
 
   // First step will be to find its correspondant closing parenthesis.
   int32 close_parenthesis_id = token_manager.getNextCloseParenthesisIndex(token_index);
@@ -133,7 +135,27 @@ Report TextParser::compileOpenParenthesisSeparatorToken(Machine* machine,
     return kReport_NoMatchingCloseParenthesis; 
   }
 
-  return kReport_NoErrors;
+  // We will extract the content inside the parenthesis in a new token manager, 
+  // And paste it in a new token manager.
+  TokenManager parenthesis_content;
+  token_manager.transferParenthesisContent(token_index, close_parenthesis_id, &parenthesis_content);
+
+  // Compile the content of the parenthesis.
+  report = compileTokens(machine, parenthesis_content);
+
+  // In case that its a function, then call it.
+  token_index--;
+  if (token_index >= 0) { // means that theres something behind the parenthesis.
+    Token token = token_manager.getToken(token_index);
+    if (token.type == kTokenType_Variable) {
+
+      // TODO:: Add a instruction (to call a function which name = token.text) to the machine.
+      token_manager.removeToken(token_index);
+    }
+  }
+
+
+  return report;
 }
 
 /*******************************************************************************
