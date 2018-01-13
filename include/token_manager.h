@@ -76,9 +76,27 @@ class TokenManager {
   */
   void removeToken(int32 id);
 
+  /**
+  * @brief Tranfers the content of a parenthesis to a new token manager.
+  *
+  * Transfer means that content will be cut & pasted to the new one and the 
+  * parenthesis tokens from the original will be deleted.
+  * In the original, everything once deleted is replaced by a unique token "RESULT"
+  *
+  * EXAMPLE: Original content ->        ( a / b )
+  * RESULT:  Output content->             a / b
+  *          Original content ->       1token: "RESULT" type "None" Priority "0"
+  *
+  * @param text Text of the token.
+  * @param type Type of the token.
+  * @param priority Priority of the token, necessary for compiling in order.
+  */
+  void transferParenthesisContent(int32 open_parenthesis_id,
+                                  int32 close_parenthesis_id,
+                                  TokenManager* transfer_output);
+
 
 /*******************************  OPERATORS  **********************************/
-
 
 
 /********************************  GETTERS  ***********************************/

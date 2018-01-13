@@ -51,10 +51,30 @@ void TokenManager::removeToken(int32 id) {
   token_list_length_--;
 }
 
+void TokenManager::transferParenthesisContent(int32 open_parenthesis_id, 
+                                              int32 close_parenthesis_id, 
+                                              TokenManager* transfer_output) {
+  // Copying the content into the output.
+  int32 num_tokens_transfered = 0;
+  for (int32 i = open_parenthesis_id + 1; i < close_parenthesis_id; i++) {
+    transfer_output->addToken(token_list_[i]);
+    num_tokens_transfered++;
+  }
+
+  // Changing the open parenthesis token to text "RESULT", None type, priority 0.
+  token_list_[open_parenthesis_id] = { "RESULT", kTokenType_None, 0 };
+  
+  // Deleting the rest of the tokens. including the ")" one.
+  for (int32 i = 0; i < num_tokens_transfered + 1; i++) {
+    removeToken(open_parenthesis_id + 1);
+  }
+}
 
 /*******************************************************************************
 ***                                GETTERS                                   ***
 *******************************************************************************/
+
+
 
 Token TokenManager::getToken(const int32 list_index) {
   if (list_index >= token_list_length_ || list_index < 0) {
