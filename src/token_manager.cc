@@ -64,7 +64,7 @@ Token TokenManager::getToken(const int32 list_index) {
   return token_list_[list_index];
 }
 
-int32 TokenManager::getHighestPriorityToken() {
+int32 TokenManager::getHighestPriorityTokenIndex() {
 
   int32 maximum_priority = -1;
   int32 index = -1;
@@ -80,6 +80,17 @@ int32 TokenManager::getHighestPriorityToken() {
 }
 
 
+
+int32 TokenManager::getNextCloseParenthesisIndex(int32 open_parenthesis_index) {
+  
+  for (int32 i = open_parenthesis_index; i < token_list_length_; ++i) {
+    if (token_list_[i].text == ")") {
+      return i;
+    }
+  }
+
+  return -1; // No maatching close parenthesis found.
+}
 
 const uint32 TokenManager::numTokens() {
   return token_list_length_;

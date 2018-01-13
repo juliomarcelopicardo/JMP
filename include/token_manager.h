@@ -96,7 +96,15 @@ class TokenManager {
   *
   * @return highest priority token index. -1 if theres no tokens.
   */
-  int32 getHighestPriorityToken();
+  int32 getHighestPriorityTokenIndex();
+
+  /**
+  * @brief Gets the index with the matching close parenthesis.
+  *
+  * @param open_parenthesis_index Open parenthesis index to find its mathcing close one.
+  * @return Next matching close parenthesis index. -1 if theres no tokens.
+  */
+  int32 getNextCloseParenthesisIndex(int32 open_parenthesis_index);
 
   /**
   * @brief Getter of the number of tokens allocated in the token manager list.
