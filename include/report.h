@@ -30,6 +30,7 @@ namespace JMP {
     kReport_ListIndexOutOfRange,
     kReport_EmptyLine,
     kReport_NoTokensToCompile,
+    kReport_NoMatchingCloseParenthesis,
   };
 
   void ReportMsg(std::string msg);

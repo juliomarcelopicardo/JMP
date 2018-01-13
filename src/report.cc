@@ -30,6 +30,9 @@ void PrintReport(Report& report, uint32 line_number) {
     case JMP::kReport_NoTokensToCompile: {
       ReportError("Line " + std::to_string(line_number) + ": Can't compile, no compilable tokens available..");
     } break;
+    case JMP::kReport_NoMatchingCloseParenthesis: {
+      ReportError("Line " + std::to_string(line_number) + ": No matching close parenthesis found..");
+    } break;
   }
 }
 
