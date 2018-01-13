@@ -28,7 +28,7 @@ TextParser::~TextParser() {
 }
 
 /*******************************************************************************
-***                            COMPILE METHODS                               ***
+***                          PARSER CORE METHODS                             ***
 *******************************************************************************/
 
 Report TextParser::compile(Machine* machine, 
@@ -54,6 +54,9 @@ Report TextParser::compile(Machine* machine,
 }
 
 
+/*******************************************************************************
+***                        TOKEN COMPILER METHODS                            ***
+*******************************************************************************/
 
 Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) {
   
@@ -65,8 +68,51 @@ Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) 
 
   if (token_manager.numTokens() == 0) { return kReport_EmptyLine; }
 
+  // Once we checked the basic errors, lets start with the highest priority token.
+  int32 highest_priority_id = token_manager.getHighestPriorityToken();
 
+  Token token = token_manager.getToken(highest_priority_id);
 
+  switch (token.type) {
+    case JMP::kTokenType_None: { return kReport_NoTokensToCompile; } break;
+    case JMP::kTokenType_Keyword: { } break;
+    case JMP::kTokenType_Separator: { } break;
+    case JMP::kTokenType_Number: { } break;
+    case JMP::kTokenType_Variable: { } break;
+    default: { } break;
+  }
+  return kReport_NoErrors;
+}
+
+Report TextParser::compileKeywordToken(Machine * machine, 
+                                       TokenManager & token_manager, 
+                                       int32 token_index) {
+  // TODO:
+
+  return kReport_NoErrors;
+}
+
+Report TextParser::compileSeparatorToken(Machine * machine,
+                                         TokenManager & token_manager,
+                                         int32 token_index) {
+
+  // TODO:
+  return kReport_NoErrors;
+}
+
+Report TextParser::compileNumberToken(Machine * machine,
+                                      TokenManager & token_manager,
+                                      int32 token_index) {
+
+  // TODO:
+  return kReport_NoErrors;
+}
+
+Report TextParser::compileVariableToken(Machine * machine,
+                                        TokenManager & token_manager,
+                                        int32 token_index) {
+
+  // TODO:
   return kReport_NoErrors;
 }
 
@@ -167,7 +213,7 @@ void TextParser::generateCurrentTokenInitialPriority() {
       if (separator == "+" || separator == "-") { current_token_.priority = 97; }
       if (separator == ">" || separator == "<") { current_token_.priority = 96; }
       if (separator == "=") { current_token_.priority = 95; }
-      if (separator == ",") { current_token_.priority = -1; }
+      if (separator == ",") { current_token_.priority = -10; }
     }break;
     default: { current_token_.priority = 0; } break;
   }

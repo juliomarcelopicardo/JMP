@@ -42,6 +42,8 @@ class TextParser {
   */
   Report compile(Machine* machine, std::string sentence, uint32 line_number);
 
+/******************* ******  TOKEN COMPILER METHODS  ***************************/
+
   /**
   * @brief Compile all the tokens of this manager, using the machine.
   *
@@ -51,6 +53,45 @@ class TextParser {
   */
   Report compileTokens(Machine* machine, TokenManager& token_manager);
 
+  /**
+  * @brief Compile the keyword type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compileKeywordToken(Machine* machine, TokenManager& token_manager, int32 token_index);
+
+  /**
+  * @brief Compile the separator type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compileSeparatorToken(Machine* machine, TokenManager& token_manager, int32 token_index);
+
+  /**
+  * @brief Compile the number type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compileNumberToken(Machine* machine, TokenManager& token_manager, int32 token_index);
+
+  /**
+  * @brief Compile the Variable type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compileVariableToken(Machine* machine, TokenManager& token_manager, int32 token_index);
 
 /****************************  TOKEN GENERATION  ******************************/
 
