@@ -92,6 +92,13 @@ class TokenManager {
   Token getToken(const int32 list_index);
 
   /**
+  * @brief Gets the index with the highest priority token.
+  *
+  * @return highest priority token index. -1 if theres no tokens.
+  */
+  int32 getHighestPriorityToken();
+
+  /**
   * @brief Getter of the number of tokens allocated in the token manager list.
   *
   * @return Token list length.

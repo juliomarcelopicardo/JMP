@@ -57,12 +57,29 @@ void TokenManager::removeToken(int32 id) {
 *******************************************************************************/
 
 Token TokenManager::getToken(const int32 list_index) {
-  if (list_index >= token_list_length_) {
+  if (list_index >= token_list_length_ || list_index < 0) {
     ReportError("Token list index \"" + std::to_string(list_index) + "\" is out of range.");
     return{ "", kTokenType_None, 0 };
   }
   return token_list_[list_index];
 }
+
+int32 TokenManager::getHighestPriorityToken() {
+
+  int32 maximum_priority = -1;
+  int32 index = -1;
+
+  for (int32 i = 0; i < token_list_length_; i++) {
+    if (token_list_[i].priority > maximum_priority) {
+      maximum_priority = token_list_[i].priority;
+      index = i;
+    }
+  }
+
+  return index;
+}
+
+
 
 const uint32 TokenManager::numTokens() {
   return token_list_length_;
