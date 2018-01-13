@@ -69,53 +69,72 @@ Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) 
   if (token_manager.numTokens() == 0) { return kReport_EmptyLine; }
 
   // Once we checked the basic errors, lets start with the highest priority token.
-  int32 highest_priority_id = token_manager.getHighestPriorityToken();
+  int32 id = token_manager.getHighestPriorityTokenIndex();
 
-  Token token = token_manager.getToken(highest_priority_id);
-
-  switch (token.type) {
+  switch (token_manager.getToken(id).type) {
     case JMP::kTokenType_None: { return kReport_NoTokensToCompile; } break;
     case JMP::kTokenType_Keyword: { } break;
-    case JMP::kTokenType_Separator: { } break;
+    case JMP::kTokenType_Separator: { return compileSeparatorToken(machine, token_manager, id); } break;
     case JMP::kTokenType_Number: { } break;
     case JMP::kTokenType_Variable: { } break;
     default: { } break;
   }
+
   return kReport_NoErrors;
 }
 
-Report TextParser::compileKeywordToken(Machine * machine, 
-                                       TokenManager & token_manager, 
+Report TextParser::compileKeywordToken(Machine* machine, 
+                                       TokenManager& token_manager, 
                                        int32 token_index) {
   // TODO:
 
   return kReport_NoErrors;
 }
 
-Report TextParser::compileSeparatorToken(Machine * machine,
-                                         TokenManager & token_manager,
+Report TextParser::compileSeparatorToken(Machine* machine,
+                                         TokenManager& token_manager,
                                          int32 token_index) {
 
-  // TODO:
+  Token token = token_manager.getToken(token_index);
+  if (token.text == "(") {
+    return compileOpenParenthesisSeparatorToken(machine, token_manager, token_index);
+  }
+
   return kReport_NoErrors;
 }
 
-Report TextParser::compileNumberToken(Machine * machine,
-                                      TokenManager & token_manager,
+Report TextParser::compileNumberToken(Machine* machine,
+                                      TokenManager& token_manager,
                                       int32 token_index) {
 
   // TODO:
   return kReport_NoErrors;
 }
 
-Report TextParser::compileVariableToken(Machine * machine,
-                                        TokenManager & token_manager,
+Report TextParser::compileVariableToken(Machine* machine,
+                                        TokenManager& token_manager,
                                         int32 token_index) {
 
   // TODO:
   return kReport_NoErrors;
 }
 
+/*******************************************************************************
+***                   SEPARATORS TOKEN COMPILER METHODS                      ***
+*******************************************************************************/
+
+Report TextParser::compileOpenParenthesisSeparatorToken(Machine* machine,
+                                                        TokenManager& token_manager,
+                                                        int32 token_index) {
+
+  // First step will be to find its correspondant closing parenthesis.
+  int32 close_parenthesis_id = token_manager.getNextCloseParenthesisIndex(token_index);
+  if (close_parenthesis_id == -1) { 
+    return kReport_NoMatchingCloseParenthesis; 
+  }
+
+  return kReport_NoErrors;
+}
 
 /*******************************************************************************
 ***                           TOKEN GENERATION                               ***
@@ -206,16 +225,16 @@ void TextParser::generateCurrentTokenInitialPriority() {
     case JMP::kTokenType_Keyword: { current_token_.priority = 500; } break;
     case JMP::kTokenType_Separator: {
       std::string separator = current_token_.text;
-      if (separator == "}") { current_token_.priority = 200; }
-      if (separator == "(") { current_token_.priority = 100; }
-      if (separator == "^") { current_token_.priority = 99; }
-      if (separator == "*" || separator == "/") { current_token_.priority = 98; }
-      if (separator == "+" || separator == "-") { current_token_.priority = 97; }
-      if (separator == ">" || separator == "<") { current_token_.priority = 96; }
-      if (separator == "=") { current_token_.priority = 95; }
-      if (separator == ",") { current_token_.priority = -10; }
+      if (separator == "}") { current_token_.priority = CLOSE_BRACKETS_PRIORITY; }
+      if (separator == "(") { current_token_.priority = OPEN_PARENTHESIS_PRIORITY; }
+      if (separator == "^") { current_token_.priority = POWER_OPERATION_PRIORITY; }
+      if (separator == "*" || separator == "/") { current_token_.priority = MULTIPLY_OPERATION_PRIORITY; }
+      if (separator == "+" || separator == "-") { current_token_.priority = ADDITION_OPERATION_PRIORITY; }
+      if (separator == ">" || separator == "<") { current_token_.priority = COMPARISON_PRIORITY; }
+      if (separator == "=") { current_token_.priority = EQUAL_PRIORITY; }
+      if (separator == ",") { current_token_.priority = COMMA_PRIORITY; }
     }break;
-    default: { current_token_.priority = 0; } break;
+    default: { current_token_.priority = DEFAULT_PRIORITY; } break;
   }
 }
 

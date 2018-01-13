@@ -10,6 +10,16 @@
 #ifndef __JMP_TEXTPARSER_H__
 #define __JMP_TEXTPARSER_H__ 1
 
+#define CLOSE_BRACKETS_PRIORITY 200
+#define OPEN_PARENTHESIS_PRIORITY 100
+#define POWER_OPERATION_PRIORITY 99
+#define MULTIPLY_OPERATION_PRIORITY 98
+#define ADDITION_OPERATION_PRIORITY 97
+#define COMPARISON_PRIORITY 96
+#define EQUAL_PRIORITY 95
+#define COMMA_PRIORITY -10
+#define DEFAULT_PRIORITY 0
+
 #include "types.h"
 #include "token_manager.h"
 #include "machine.h"
@@ -92,6 +102,18 @@ class TextParser {
   * @return Report with the compiling results.
   */
   Report compileVariableToken(Machine* machine, TokenManager& token_manager, int32 token_index);
+
+/*******************  SEPARATORS TOKEN COMPILER METHODS  **********************/
+
+  /**
+  * @brief Compile the open parenthesis separator type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compileOpenParenthesisSeparatorToken(Machine* machine, TokenManager& token_manager, int32 token_index);
 
 /****************************  TOKEN GENERATION  ******************************/
 
