@@ -27,6 +27,9 @@ void PrintReport(Report& report, uint32 line_number) {
       ReportWarning("Line " + std::to_string(line_number) + ": Nothing to compile..");
       report = kReport_NoErrors;
     } break;
+    case JMP::kReport_NoTokensToCompile: {
+      ReportError("Line " + std::to_string(line_number) + ": Can't compile, no compilable tokens available..");
+    } break;
   }
 }
 

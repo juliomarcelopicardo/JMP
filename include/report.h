@@ -29,6 +29,7 @@ namespace JMP {
     kReport_EmptyContainer,
     kReport_ListIndexOutOfRange,
     kReport_EmptyLine,
+    kReport_NoTokensToCompile,
   };
 
   void ReportMsg(std::string msg);
