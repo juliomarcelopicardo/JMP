@@ -249,9 +249,22 @@ Report TextParser::compilePowerOperationSeparatorToken(Machine* machine,
                                                        TokenManager& token_manager,
                                                        int32& token_index) {
 
+  Token operator_token = token_manager.getToken(token_index);
+  Token right_operand = token_manager.getToken(token_index + 1);
+  Token left_operand = token_manager.getToken(token_index - 1);
 
+  // Push the operands to the stack
+  machine->addCommand(kCommandType_PushToTheStack, left_operand.text);
+  machine->addCommand(kCommandType_PushToTheStack, right_operand.text);
 
-  // TODO:
+  // Then the next command will set the action to be applied to the previous operands
+  machine->addCommand(kCommandType_Power);
+
+  // Deleting the tokens from the list and adding a "RESULT" Temporary one.
+  token_manager.transferContentBetweenIDsInclusive(token_index - 1, token_index + 1);
+  // After deleting from the list the three elements, we step back two positions.
+  token_index -= 2;
+
   return kReport_NoErrors;
 }
 
