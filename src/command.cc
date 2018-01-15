@@ -23,7 +23,7 @@ Command::Command() {
   name_ = "";
 }
 
-Command::Command(const char* name, const CommandType type) {
+Command::Command(const CommandType type, const char* name) {
   type_ = type;
   name_ = name;
 }

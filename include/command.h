@@ -44,7 +44,7 @@ class Command {
   /// Default class constructor.
   Command();
   /// Default class constructor.
-  Command(const char* name, const CommandType type);
+  Command(const CommandType type, const char* name);
   /// Default class destructor.
   ~Command();
   /// Default copy constructor.
