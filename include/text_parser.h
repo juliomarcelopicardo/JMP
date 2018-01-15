@@ -113,7 +113,81 @@ class TextParser {
   * @param token_index index of the token manager list.
   * @return Report with the compiling results.
   */
-  Report compileOpenParenthesisSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+  Report compileOpenParenthesisSeparatorToken(Machine* machine, 
+                                              TokenManager& token_manager, 
+                                              int32& token_index);
+
+  /**
+  * @brief Compile the close brackets separator type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compileCloseBracketsSeparatorToken(Machine* machine, 
+                                            TokenManager& token_manager, 
+                                            int32& token_index);
+
+  /**
+  * @brief Compile the mathematical addition operation separator type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compileAdditionOperationSeparatorToken(Machine* machine,
+                                                TokenManager& token_manager,
+                                                int32& token_index);
+
+  /**
+  * @brief Compile the mathematical multiply operation separator type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compileMultiplyOperationSeparatorToken(Machine* machine,
+                                                TokenManager& token_manager,
+                                                int32& token_index);
+
+  /**
+  * @brief Compile the mathematical power operation separator type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compilePowerOperationSeparatorToken(Machine* machine,
+                                             TokenManager& token_manager,
+                                             int32& token_index);
+
+  /**
+  * @brief Compile the mathematical comparison operation separator type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compileComparisonOperationSeparatorToken(Machine* machine,
+                                                  TokenManager& token_manager,
+                                                  int32& token_index);
+
+  /**
+  * @brief Compile the equal separator type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compileEqualSeparatorToken(Machine* machine,
+                                    TokenManager& token_manager,
+                                    int32& token_index);
 
 /****************************  TOKEN GENERATION  ******************************/
 

@@ -96,8 +96,32 @@ Report TextParser::compileSeparatorToken(Machine* machine,
                                          int32& token_index) {
 
   Token token = token_manager.getToken(token_index);
-  if (token.text == "(") {
+  if (token.priority == CLOSE_BRACKETS_PRIORITY) { // "}"
+    return compileCloseBracketsSeparatorToken(machine, token_manager, token_index);
+  }
+  if (token.text == "(") { // We dont use priority becasue it changes to solve parenthethical grouping problems. 
     return compileOpenParenthesisSeparatorToken(machine, token_manager, token_index);
+  }
+
+  switch (token.priority) {
+    case ADDITION_OPERATION_PRIORITY: {
+      return compileAdditionOperationSeparatorToken(machine, token_manager, token_index);
+    } break;
+    case MULTIPLY_OPERATION_PRIORITY: {
+      return compileMultiplyOperationSeparatorToken(machine, token_manager, token_index);
+    } break;
+    case POWER_OPERATION_PRIORITY: {
+      return compilePowerOperationSeparatorToken(machine, token_manager, token_index);
+    } break;
+    case COMPARISON_PRIORITY: {
+      return compileComparisonOperationSeparatorToken(machine, token_manager, token_index);
+    } break;
+    case EQUAL_PRIORITY: {
+      return compileEqualSeparatorToken(machine, token_manager, token_index);
+    } break;
+    case DEFAULT_PRIORITY: {
+      // TODO:
+    } break;
   }
 
   return kReport_NoErrors;
@@ -157,6 +181,63 @@ Report TextParser::compileOpenParenthesisSeparatorToken(Machine* machine,
 
 
   return report;
+}
+
+Report TextParser::compileCloseBracketsSeparatorToken(Machine* machine, 
+                                                      TokenManager& token_manager, 
+                                                      int32& token_index) {
+  // TODO:
+  return kReport_NoErrors;
+}
+
+Report TextParser::compileAdditionOperationSeparatorToken(Machine* machine,
+                                                          TokenManager& token_manager, 
+                                                          int32& token_index) {
+
+
+
+  // TODO:
+  return kReport_NoErrors;
+}
+
+Report TextParser::compileMultiplyOperationSeparatorToken(Machine* machine,
+                                                          TokenManager& token_manager,
+                                                          int32& token_index) {
+
+
+
+  // TODO:
+  return kReport_NoErrors;
+}
+
+Report TextParser::compilePowerOperationSeparatorToken(Machine* machine,
+                                                       TokenManager& token_manager,
+                                                       int32& token_index) {
+
+
+
+  // TODO:
+  return kReport_NoErrors;
+}
+
+Report TextParser::compileComparisonOperationSeparatorToken(Machine* machine,
+                                                            TokenManager& token_manager,
+                                                            int32& token_index) {
+
+
+
+  // TODO:
+  return kReport_NoErrors;
+}
+
+Report TextParser::compileEqualSeparatorToken(Machine* machine,
+                                              TokenManager& token_manager,
+                                              int32& token_index) {
+
+
+
+  // TODO:
+  return kReport_NoErrors;
 }
 
 /*******************************************************************************
