@@ -70,9 +70,29 @@ void TokenManager::transferParenthesisContent(int32 open_parenthesis_id,
   }
 }
 
+void TokenManager::transferContentBetweenIDsInclusive(int32 initial_id, 
+                                                      int32 final_id, 
+                                                      TokenManager* transfer_output) {
+  // Copying the content into the output.
+  int32 num_tokens_transfered = 0;
+  for (int32 i = initial_id; i <= final_id; i++) {
+    if (transfer_output) { transfer_output->addToken(token_list_[i]); }
+    num_tokens_transfered++;
+  }
+
+  // Changing the open parenthesis token to text "RESULT", None type, priority 0.
+  token_list_[initial_id] = { "RESULT", kTokenType_None, 0 };
+
+  // Deleting the rest of the tokens. including the ")" one.
+  for (int32 i = 0; i < num_tokens_transfered - 1; i++) {
+    removeToken(initial_id + 1);
+  }
+}
+
 /*******************************************************************************
 ***                                GETTERS                                   ***
 *******************************************************************************/
+
 
 
 

@@ -87,13 +87,32 @@ class TokenManager {
   * RESULT:  Output content->             a / b
   *          Original content ->       1token: "RESULT" type "None" Priority "0"
   *
-  * @param text Text of the token.
-  * @param type Type of the token.
-  * @param priority Priority of the token, necessary for compiling in order.
+  * @param open_parenthesis_id Initial id.
+  * @param close_parenthesis_id Final id.
+  * @param transfer_output where to transfer the content.
   */
   void transferParenthesisContent(int32 open_parenthesis_id,
                                   int32 close_parenthesis_id,
                                   TokenManager* transfer_output);
+
+  /**
+  * @brief Tranfers the content between two IDs, inclusive these ids.
+  *
+  * Transfer means that content will be cut & pasted to the new one and the
+  * tokens from the original will be deleted.
+  * In the original, everything once deleted is replaced by a unique token "RESULT"
+  *
+  * EXAMPLE: Original content ->        ( a / b )
+  * RESULT:  Output content->           ( a / b )
+  *          Original content ->       1token: "RESULT" type "None" Priority "0"
+  *
+  * @param initial_id Initial id.
+  * @param final_id Final id.
+  * @param transfer_output where to transfer the content. if Null wont transfer.
+  */
+  void transferContentBetweenIDsInclusive(int32 initial_id,
+                                          int32 final_id,
+                                          TokenManager* transfer_output = nullptr);
 
 
 /*******************************  OPERATORS  **********************************/
