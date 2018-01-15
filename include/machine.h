@@ -55,18 +55,25 @@ class Machine {
   /**
   * @brief Adds a new command to the list.
   *
-  * @param name Name of the command.
   * @param type Type of the command.
   */
-  void addCommand(const char* name, const CommandType type = kCommandType_None);
+  void addCommand(const CommandType type);
 
   /**
   * @brief Adds a new command to the list.
   *
-  * @param name Name of the command.
   * @param type Type of the command.
+  * @param name Name of the command.
   */
-  void addCommand(const std::string name, const CommandType type = kCommandType_None);
+  void addCommand(const CommandType type, const char* name);
+
+  /**
+  * @brief Adds a new command to the list.
+  *
+  * @param type Type of the command.
+  * @param name Name of the command.
+  */
+  void addCommand(const CommandType type, const std::string name);
 
   /**
   * @brief Adds a new command to the list.

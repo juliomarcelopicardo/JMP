@@ -104,8 +104,17 @@ Report Machine::checkExtension(std::string filename) {
 ***                           COMMAND LIST METHODS                           ***
 *******************************************************************************/
 
-void Machine::addCommand(const char* name, const CommandType type) {
-  Command cmd = { name, type };
+void Machine::addCommand(const CommandType type) {
+  Command cmd = { type, "" };
+  cmd_list_.push_back(cmd);
+  cmd_list_length_++;
+  if (cmd.type_ == kCommandType_Function) {
+    // TODO:: FUNCTION TABLES TO ALLOCATE THE DIFFERENT FUNCTIONS OF THE SCRIPT.
+  }
+}
+
+void Machine::addCommand(const CommandType type, const char* name) {
+  Command cmd = { type, name };
   if (cmd.name_ != "RESULT") { // Temporal tokens waiting for result no added.
     cmd_list_.push_back(cmd);
     cmd_list_length_++;
@@ -115,8 +124,8 @@ void Machine::addCommand(const char* name, const CommandType type) {
   }
 }
 
-void Machine::addCommand(const std::string name, const CommandType type) {
-  Command cmd = { name.c_str(), type };
+void Machine::addCommand(const CommandType type, const std::string name) {
+  Command cmd = { type, name.c_str() };
   if (cmd.name_ != "RESULT") {
     cmd_list_.push_back(cmd);
     cmd_list_length_++;
