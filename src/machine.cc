@@ -23,7 +23,7 @@ namespace JMP {
 
 Machine::Machine() {
   cmd_list_length_ = 0;
-  cmd_list_.reserve(10);
+  cmd_list_.reserve(50);
 }
 
 Machine::~Machine() {
@@ -103,6 +103,16 @@ Report Machine::checkExtension(std::string filename) {
 /*******************************************************************************
 ***                           COMMAND LIST METHODS                           ***
 *******************************************************************************/
+
+void Machine::addCommand(const char* name, const CommandType type) {
+  cmd_list_.push_back({ name, type });
+  cmd_list_length_++;
+}
+
+void Machine::addCommand(const std::string name, const CommandType type) {
+  cmd_list_.push_back({ name.c_str(), type });
+  cmd_list_length_++;
+}
 
 void Machine::addCommand(const Command& token) {
   cmd_list_.push_back(token);
