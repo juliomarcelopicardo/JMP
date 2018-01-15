@@ -174,7 +174,7 @@ Report TextParser::compileOpenParenthesisSeparatorToken(Machine* machine,
     if (token.type != kTokenType_Keyword &&
         token.type != kTokenType_Separator &&
         token.priority != 0) {      
-      machine->addCommand(token.text, kCommandType_FunctionCall);
+      machine->addCommand(kCommandType_FunctionCall, token.text);
       token_manager.removeToken(token_index);
     }
   }
@@ -193,10 +193,27 @@ Report TextParser::compileCloseBracketsSeparatorToken(Machine* machine,
 Report TextParser::compileAdditionOperationSeparatorToken(Machine* machine,
                                                           TokenManager& token_manager, 
                                                           int32& token_index) {
+  Token operator_token = token_manager.getToken(token_index);
+  Token right_operand = token_manager.getToken(token_index + 1);
+  Token left_operand = token_manager.getToken(token_index - 1);
 
+  // Push the operands to the stack
+  machine->addCommand(kCommandType_PushToTheStack, left_operand.text);
+  machine->addCommand(kCommandType_PushToTheStack, right_operand.text);
 
+  // Then the next command will set the action to be applied to the previous operands.
+  if (operator_token.text == "-") {
+    machine->addCommand(kCommandType_Substraction);
+  }
+  else {
+    machine->addCommand(kCommandType_Addition);
+  }
 
-  // TODO:
+  // Deleting the tokens from the list and adding a "RESULT" Temporary one.
+  token_manager.transferContentBetweenIDsInclusive(token_index - 1, token_index + 1);
+  // After deleting from the list the three elements, we step back two positions.
+  token_index -= 2; 
+
   return kReport_NoErrors;
 }
 
@@ -204,9 +221,27 @@ Report TextParser::compileMultiplyOperationSeparatorToken(Machine* machine,
                                                           TokenManager& token_manager,
                                                           int32& token_index) {
 
+  Token operator_token = token_manager.getToken(token_index);
+  Token right_operand = token_manager.getToken(token_index + 1);
+  Token left_operand = token_manager.getToken(token_index - 1);
 
+  // Push the operands to the stack
+  machine->addCommand(kCommandType_PushToTheStack, left_operand.text);
+  machine->addCommand(kCommandType_PushToTheStack, right_operand.text);
 
-  // TODO:
+  // Then the next command will set the action to be applied to the previous operands.
+  if (operator_token.text == "/") {
+    machine->addCommand(kCommandType_Division);
+  }
+  else {
+    machine->addCommand(kCommandType_Multiply);
+  }
+
+  // Deleting the tokens from the list and adding a "RESULT" Temporary one.
+  token_manager.transferContentBetweenIDsInclusive(token_index - 1, token_index + 1);
+  // After deleting from the list the three elements, we step back two positions.
+  token_index -= 2;
+
   return kReport_NoErrors;
 }
 
