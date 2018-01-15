@@ -147,9 +147,10 @@ Report TextParser::compileOpenParenthesisSeparatorToken(Machine* machine,
   token_index--;
   if (token_index >= 0) { // means that theres something behind the parenthesis.
     Token token = token_manager.getToken(token_index);
-    if (token.type == kTokenType_Variable) {
-
-      // TODO:: Add a instruction (to call a function which name = token.text) to the machine.
+    if (token.type != kTokenType_Keyword &&
+        token.type != kTokenType_Separator &&
+        token.priority != 0) {      
+      machine->addCommand(token.text, kCommandType_FunctionCall);
       token_manager.removeToken(token_index);
     }
   }
