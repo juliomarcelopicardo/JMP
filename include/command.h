@@ -11,12 +11,19 @@
 #define __JMP_COMMAND_H__ 1
 
 #include "types.h"
+#include <string>
 
 namespace JMP {
 
 /// Token type.
 enum CommandType {
   kCommandType_None = 0,
+  kCommandType_Addition,
+  kCommandType_Substraction,
+  kCommandType_Multiply,
+  kCommandType_Division,
+  kCommandType_Power,
+  kCommandType_FunctionCall,
 };
 
 
@@ -31,6 +38,8 @@ class Command {
 
   /// Default class constructor.
   Command();
+  /// Default class constructor.
+  Command(const char* name, const CommandType type);
   /// Default class destructor.
   ~Command();
   /// Default copy constructor.
@@ -48,8 +57,10 @@ class Command {
 ***                           PUBLIC ATTRIBUTES                              ***
 *******************************************************************************/
 
-
-
+  /// Command type.
+  CommandType type_;
+  /// Name of the command.
+  std::string name_;
 
  private:
 

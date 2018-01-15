@@ -19,16 +19,25 @@ namespace JMP {
 *******************************************************************************/
 
 Command::Command() {
+  type_ = kCommandType_None;
+  name_ = "";
 }
 
-Command::~Command() {
+Command::Command(const char* name, const CommandType type) {
+  type_ = type;
+  name_ = name;
 }
+
+Command::~Command() {}
 
 Command::Command(const Command& copy) {
-  
+  type_ = copy.type_;
+  name_ = copy.name_;
 }
 
 Command & Command::operator=(const Command& copy) {
+  type_ = copy.type_;
+  name_ = copy.name_;
   return *this;
 }
 
