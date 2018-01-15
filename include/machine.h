@@ -12,6 +12,7 @@
 
 #include "types.h"
 #include "report.h"
+#include "command.h"
 #include "token_manager.h"
 
 namespace JMP {
@@ -30,6 +31,7 @@ class Machine {
   /// Default class destructor.
   ~Machine();
 
+/***************************  MAIN MACHINE METHODS  ***************************/
 
   /**
   * @brief Loads a script file so the machine can process it. Extension must be .jmp
@@ -47,6 +49,40 @@ class Machine {
   */
   Report checkExtension(std::string filename);
 
+
+/***************************  COMMAND LIST METHODS  ***************************/
+
+  /**
+  * @brief Adds a new command to the list.
+  *
+  * @param command Command to add.
+  */
+  void addCommand(const Command& command);
+
+  /// Clears the command list.
+  void clearCommandList();
+
+  /**
+  * @brief Removes a command from the list.
+  *
+  * @param id Index of the element in the command list.
+  */
+  void removeCommand(int32 id);
+
+  /**
+  * @brief Gets a command from the command manager list.
+  *
+  * @param list_index Index of the command in the list.
+  * @return Command from the list.
+  */
+  Command getCommand(const int32 list_index);
+
+  /**
+  * @brief Getter of the number of commands allocated in the command manager list.
+  *
+  * @return Command list length.
+  */
+  const uint32 numCommands();
 
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***
@@ -72,7 +108,10 @@ class Machine {
 ***                          PRIVATE ATTRIBUTES                              ***
 *******************************************************************************/
 
-
+/// List of all the compiling commands.
+  std::vector<Command> cmd_list_;
+  /// Number of elements of the list.
+  int32 cmd_list_length_;
 
 }; /* Machine */
 }; /* JMP */

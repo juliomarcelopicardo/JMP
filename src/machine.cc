@@ -16,11 +16,24 @@
 
 namespace JMP {
 
-Machine::Machine() {}
 
-Machine::~Machine() {}
+/*******************************************************************************
+***                         CONSTRUCTOR & DESTRUCTOR                         ***
+*******************************************************************************/
+
+Machine::Machine() {
+  cmd_list_length_ = 0;
+  cmd_list_.reserve(10);
+}
+
+Machine::~Machine() {
+  cmd_list_.clear();
+}
 
 
+/*******************************************************************************
+***                           MAIN MACHINE METHODS                           ***
+*******************************************************************************/
 
 
 Report Machine::process(std::string script_filename) {
@@ -84,6 +97,38 @@ Report Machine::checkExtension(std::string filename) {
   // Invalid extension.
   ReportError("\"" + filename + "\" - Extension must be .jmp");
   return kReport_InvalidFileExtension;
+}
+
+
+/*******************************************************************************
+***                           COMMAND LIST METHODS                           ***
+*******************************************************************************/
+
+void Machine::addCommand(const Command& token) {
+  cmd_list_.push_back(token);
+  cmd_list_length_++;
+}
+
+void Machine::clearCommandList() {
+  cmd_list_.clear();
+  cmd_list_length_ = 0;
+}
+
+void Machine::removeCommand(int32 id) {
+  cmd_list_.erase(cmd_list_.begin() + id);
+  cmd_list_length_--;
+}
+
+Command Machine::getCommand(const int32 list_index) {
+  if (list_index >= cmd_list_length_ || list_index < 0) {
+    ReportError("Command list index \"" + std::to_string(list_index) + "\" is out of range.");
+    return Command();
+  }
+  return cmd_list_[list_index];
+}
+
+const uint32 Machine::numCommands() {
+  return cmd_list_length_;
 }
 
 }; /* JMP */

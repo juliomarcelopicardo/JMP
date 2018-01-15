@@ -16,11 +16,7 @@ namespace JMP {
 
 /// Token type.
 enum CommandType {
-  kTokenType_None = 0,
-  kTokenType_Keyword,
-  kTokenType_Separator,
-  kTokenType_Number,
-  kTokenType_Variable,
+  kCommandType_None = 0,
 };
 
 
