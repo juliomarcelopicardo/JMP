@@ -23,6 +23,11 @@ enum CommandType {
   kCommandType_Multiply,
   kCommandType_Division,
   kCommandType_Power,
+  kCommandType_EqualAssigment,
+  kCommandType_GreaterThanComparison,
+  kCommandType_LowerThanComparison,
+  kCommandType_PushToTheStack,
+  kCommandType_Function,
   kCommandType_FunctionCall,
 };
 

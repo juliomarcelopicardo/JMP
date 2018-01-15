@@ -105,18 +105,35 @@ Report Machine::checkExtension(std::string filename) {
 *******************************************************************************/
 
 void Machine::addCommand(const char* name, const CommandType type) {
-  cmd_list_.push_back({ name, type });
-  cmd_list_length_++;
+  Command cmd = { name, type };
+  if (cmd.name_ != "RESULT") { // Temporal tokens waiting for result no added.
+    cmd_list_.push_back(cmd);
+    cmd_list_length_++;
+    if (cmd.type_ == kCommandType_Function) {
+      // TODO:: FUNCTION TABLES TO ALLOCATE THE DIFFERENT FUNCTIONS OF THE SCRIPT.
+    }
+  }
 }
 
 void Machine::addCommand(const std::string name, const CommandType type) {
-  cmd_list_.push_back({ name.c_str(), type });
-  cmd_list_length_++;
+  Command cmd = { name.c_str(), type };
+  if (cmd.name_ != "RESULT") {
+    cmd_list_.push_back(cmd);
+    cmd_list_length_++;
+    if (cmd.type_ == kCommandType_Function) {
+      // TODO:: FUNCTION TABLES TO ALLOCATE THE DIFFERENT FUNCTIONS OF THE SCRIPT.
+    }
+  }
 }
 
-void Machine::addCommand(const Command& token) {
-  cmd_list_.push_back(token);
-  cmd_list_length_++;
+void Machine::addCommand(const Command& command) {
+  if (command.name_ != "RESULT") {
+    cmd_list_.push_back(command);
+    cmd_list_length_++;
+    if (command.type_ == kCommandType_Function) {
+      // TODO:: FUNCTION TABLES TO ALLOCATE THE DIFFERENT FUNCTIONS OF THE SCRIPT.
+    }
+  }
 }
 
 void Machine::clearCommandList() {
