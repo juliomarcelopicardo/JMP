@@ -236,7 +236,15 @@ Report TextParser::compileOpenParenthesisSeparatorToken(Machine* machine,
 Report TextParser::compileCloseBracketsSeparatorToken(Machine* machine, 
                                                       TokenManager& token_manager, 
                                                       int32& token_index) {
-  // TODO:
+  
+  // Will untag the end of a loop, conditional or function.
+  Tag tag = getAndRemoveLastTag();
+  switch (tag) {
+    case JMP::kTag_None:{ } break;
+    case JMP::kTag_Loop: { machine->addCommand(kCommandType_Finished, "while"); } break;
+    case JMP::kTag_Conditional: { machine->addCommand(kCommandType_Finished, "if"); } break;
+    case JMP::kTag_Function:{ } break;
+  } 
   return kReport_NoErrors;
 }
 
