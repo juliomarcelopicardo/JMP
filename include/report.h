@@ -31,6 +31,7 @@ namespace JMP {
     kReport_EmptyLine,
     kReport_NoTokensToCompile,
     kReport_NoMatchingCloseParenthesis,
+    kReport_NoTagsToDelete,
   };
 
   void ReportMsg(std::string msg);

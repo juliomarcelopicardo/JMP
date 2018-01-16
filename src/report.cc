@@ -33,6 +33,9 @@ void PrintReport(Report& report, uint32 line_number) {
     case JMP::kReport_NoMatchingCloseParenthesis: {
       ReportError("Line " + std::to_string(line_number) + ": No matching close parenthesis found..");
     } break;
+    case JMP::kReport_NoTagsToDelete: {
+      ReportError(": No matching tag to remove was found, more conditional, functions or loops closed than created..");
+    } break;
   }
 }
 
