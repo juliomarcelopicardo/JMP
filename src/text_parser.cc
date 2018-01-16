@@ -20,11 +20,13 @@ TextParser::TextParser() {
   current_token_.type = kTokenType_None;
   sentence_.clear();
   sentence_index_ = 0;
+  tag_list_.reserve(10);
 }
 
 TextParser::~TextParser() {
   current_token_.text.clear();
   sentence_.clear();
+  tag_list_.clear();
 }
 
 /*******************************************************************************
@@ -539,5 +541,32 @@ const bool TextParser::isKeyword(const std::string& word) {
   }
   return false;
 }
+
+
+
+/*******************************************************************************
+***                        TAG SYSTEM LIST METHODS                           ***
+*******************************************************************************/
+
+void TextParser::addTag(const Tag tag) {
+  tag_list_.push_back(tag);
+}
+
+const Tag TextParser::getAndRemoveLastTag() {
+  int32 num_tags = tag_list_.size();
+  if (num_tags <= 0) {
+    Report report = kReport_NoTagsToDelete;
+    PrintReport(report);
+    return kTag_None;
+  }
+  Tag tag = tag_list_[num_tags - 1];
+  tag_list_.pop_back();
+  return tag;
+}
+
+
+
+
+
 
 }; /* JMP */

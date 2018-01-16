@@ -10,6 +10,7 @@
 #ifndef __JMP_TEXTPARSER_H__
 #define __JMP_TEXTPARSER_H__ 1
 
+// Priorities
 #define CLOSE_BRACKETS_PRIORITY 200
 #define OPEN_PARENTHESIS_PRIORITY 100
 #define POWER_OPERATION_PRIORITY 99
@@ -27,7 +28,14 @@
 
 namespace JMP {
 
-/// Text parser used to save all the tokens from .jmp files.
+enum Tag {
+  kTag_None = 0,
+  kTag_Loop,
+  kTag_Conditional,
+  kTag_Function,
+};
+
+/// Text parser used to save and manage all the tokens from .jmp files.
 class TextParser {
 
  public: 
@@ -283,6 +291,24 @@ class TextParser {
   const bool isKeyword(const std::string& word);
 
 
+
+/****************************  TAG SYSTEM LIST ********************************/
+
+  /**
+  * @brief Create a new tag as marking a new function, conditional or loop beginning.
+  *
+  * @param Tag Sets if the new tag will be a conditional, loop or function.
+  */
+  void addTag(const Tag tag);
+
+  /**
+  * @brief Will return the last tag added, and will delete it from the tag list.
+  *
+  * @return Last tag added to the list.
+  */
+  const Tag getAndRemoveLastTag();
+
+
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***
 *******************************************************************************/
@@ -311,7 +337,8 @@ class TextParser {
 ***                          PRIVATE ATTRIBUTES                              ***
 *******************************************************************************/
 
-
+  /// List of tags used to group different bodys of conditionals, loops or functions.
+  std::vector<Tag> tag_list_;
 
 }; /* TextParser */
 }; /* JMP */
