@@ -136,6 +136,15 @@ const uint32 TokenManager::numTokens() {
   return token_list_length_;
 }
 
+const bool TokenManager::areAnyCommaTokenInList() {
+  for (int32 i = 0; i < token_list_length_; i++) {
+    if (token_list_[i].text == ",") {
+      return true;
+    }
+  }
+  return false;
+}
+
 
 
 /*******************************************************************************

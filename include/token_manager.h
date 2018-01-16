@@ -150,6 +150,13 @@ class TokenManager {
   */
   const uint32 numTokens();
 
+  /**
+  * @brief Gets if theres any comma as token in the list.
+  *
+  * @return True if any comma exists.
+  */
+  const bool areAnyCommaTokenInList();
+
 
 /*******************************  DEBUGGING  **********************************/
   
