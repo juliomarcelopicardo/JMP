@@ -104,6 +104,15 @@ class TextParser {
   */
   Report compileVariableToken(Machine* machine, TokenManager& token_manager, int32& token_index);
 
+  /**
+  * @brief Checks if there are "," tokens in the list and compiles the content in both sides of the comma.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @return True if any comma is found, false otherwise.
+  */
+  const bool checkIfAndCompileCommasContent(Machine* machine, TokenManager& token_manager);
+
 /*******************  SEPARATORS TOKEN COMPILER METHODS  **********************/
 
   /**

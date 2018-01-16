@@ -70,22 +70,36 @@ Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) 
 
   // Once we checked the basic errors, lets start with the highest priority token.
   int32 id = token_manager.getHighestPriorityTokenIndex();
+  Token token = token_manager.getToken(id);
+  
+  if (token.type == kTokenType_Keyword) {
+    // TODO: Keywords compiling, and marking list.
+    return kReport_NoErrors;
+  }
 
-  switch (token_manager.getToken(id).type) {
-    case JMP::kTokenType_None: { return kReport_NoTokensToCompile; } break;
-    case JMP::kTokenType_Keyword: { } break;
-    case JMP::kTokenType_Separator: { return compileSeparatorToken(machine, token_manager, id); } break;
-    case JMP::kTokenType_Number: { } break;
-    case JMP::kTokenType_Variable: { } break;
-    default: { } break;
+  // If theres any } or ( we will compile this separator first.
+  if (token.priority == CLOSE_BRACKETS_PRIORITY) { // "}"
+    return compileCloseBracketsSeparatorToken(machine, token_manager, id);
+  }
+  if (token.text == "(") { // We dont use priority becasue it changes to solve parenthethical grouping problems. 
+    compileOpenParenthesisSeparatorToken(machine, token_manager, id);
+  }
+
+  // If theres any comma we will compile the content at both sides of it and will
+  // step to the next line of code.
+  if (checkIfAndCompileCommasContent(machine, token_manager)) {
+    return kReport_NoErrors;
+  }
+
+  // Once checked that there arent commas, then we will compile the other separators.
+  if (token.type == kTokenType_Separator) {
+    compileSeparatorToken(machine, token_manager, id);
   }
 
   // Compiling recursively what is not compiled yet.
-  /*
   if (token_manager.numTokens() > 1) {
     return compileTokens(machine, token_manager);
   }
-  */
 
   return kReport_NoErrors;
 }
@@ -103,31 +117,31 @@ Report TextParser::compileSeparatorToken(Machine* machine,
                                          int32& token_index) {
 
   Token token = token_manager.getToken(token_index);
-  if (token.priority == CLOSE_BRACKETS_PRIORITY) { // "}"
-    return compileCloseBracketsSeparatorToken(machine, token_manager, token_index);
-  }
-  if (token.text == "(") { // We dont use priority becasue it changes to solve parenthethical grouping problems. 
-    return compileOpenParenthesisSeparatorToken(machine, token_manager, token_index);
-  }
+
+
+
 
   switch (token.priority) {
     case ADDITION_OPERATION_PRIORITY: {
-      return compileAdditionOperationSeparatorToken(machine, token_manager, token_index);
+      compileAdditionOperationSeparatorToken(machine, token_manager, token_index);
     } break;
     case MULTIPLY_OPERATION_PRIORITY: {
-      return compileMultiplyOperationSeparatorToken(machine, token_manager, token_index);
+      compileMultiplyOperationSeparatorToken(machine, token_manager, token_index);
     } break;
     case POWER_OPERATION_PRIORITY: {
-      return compilePowerOperationSeparatorToken(machine, token_manager, token_index);
+      compilePowerOperationSeparatorToken(machine, token_manager, token_index);
     } break;
     case COMPARISON_PRIORITY: {
-      return compileComparisonOperationSeparatorToken(machine, token_manager, token_index);
+      compileComparisonOperationSeparatorToken(machine, token_manager, token_index);
     } break;
     case EQUAL_PRIORITY: {
-      return compileEqualSeparatorToken(machine, token_manager, token_index);
+      compileEqualSeparatorToken(machine, token_manager, token_index);
     } break;
     case DEFAULT_PRIORITY: {
-      // TODO:
+      // Pushing variables, numbers and other stuff non compilable.
+      machine->addCommand(kCommandType_PushToTheStack, token.text);
+      token_manager.transferContentBetweenIDsInclusive(token_index, token_index);
+      token_index--;
     } break;
   }
 
@@ -148,6 +162,33 @@ Report TextParser::compileVariableToken(Machine* machine,
 
   // TODO:
   return kReport_NoErrors;
+}
+
+const bool TextParser::checkIfAndCompileCommasContent(Machine * machine, 
+                                                      TokenManager & token_manager) {
+
+  if (token_manager.areAnyCommaTokenInList()) {
+    int32 num_tokens = token_manager.numTokens();
+    // Compile tokens with comas recursively.
+    for (int32 i = 0; i < num_tokens; i++) {
+      if (token_manager.getToken(i).text == ",") {
+        TokenManager temp;
+        // In case that we find any comma, we will take the previous content to compile it.
+        // Example:   a b c d, e f     -> then we will transfer a b c d
+        token_manager.transferContentBetweenIDsInclusive(0, i - 1, &temp);
+        // Then we will delete the , and the RESULT token.
+        token_manager.removeToken(1);
+        token_manager.removeToken(0);
+        // Once compiled, the previous content, we will compile the following one 
+        compileTokens(machine, temp);
+        compileTokens(machine, token_manager);
+        // We will finish then the loop and we will end the compile of this line.
+        return true;
+      }
+    }
+    return true;
+  }
+  return false;
 }
 
 /*******************************************************************************
