@@ -18,17 +18,24 @@ namespace JMP {
 /// Token type.
 enum CommandType {
   kCommandType_None = 0,
+  // Separators -> mathematical operations
   kCommandType_Addition,
   kCommandType_Substraction,
   kCommandType_Multiply,
   kCommandType_Division,
   kCommandType_Power,
-  kCommandType_EqualAssigment,
+  // Separator -> "=" Assignment.
+  kCommandType_EqualAssigment, 
+  // Separator -> Comparisons.
   kCommandType_GreaterThanComparison,
   kCommandType_LowerThanComparison,
+  // Stack Actions
   kCommandType_PushToTheStack,
   kCommandType_Function,
   kCommandType_FunctionCall,
+  // Body state -> Conditional, loop iteration or function body ended.
+  kCommandType_Finished,
+  kCommandType_Started,
 };
 
 
