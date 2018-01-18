@@ -75,8 +75,7 @@ Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) 
   Token token = token_manager.getToken(id);
   
   if (token.type == kTokenType_Keyword) {
-    // TODO: Keywords compiling, and marking list.
-    return kReport_NoErrors;
+    return compileKeywordToken(machine, token_manager, id);
   }
 
   // If theres any } or ( we will compile this separator first.
@@ -109,9 +108,25 @@ Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) 
 Report TextParser::compileKeywordToken(Machine* machine, 
                                        TokenManager& token_manager, 
                                        int32& token_index) {
-  // TODO:
+  Token token = token_manager.getToken(token_index);
 
-  return kReport_NoErrors;
+  if (token.text == "if" || token.text == "else") {
+    return compileConditionalKeywordToken(machine, token_manager, token_index);
+  }
+  if (token.text == "return") {
+    return compileReturnKeywordToken(machine, token_manager, token_index);
+  }
+  if (token.text == "func") {
+    return compileFunctionKeywordToken(machine, token_manager, token_index);
+  }
+  if (token.text == "do" || token.text == "while" || token.text == "for") {
+    return compileLoopKeywordToken(machine, token_manager, token_index);
+  }
+  if (token.text == "var") {
+    return compileVariableKeywordToken(machine, token_manager, token_index);
+  }
+
+  return kReport_UnexpectedKeyword;
 }
 
 Report TextParser::compileSeparatorToken(Machine* machine,
@@ -119,10 +134,7 @@ Report TextParser::compileSeparatorToken(Machine* machine,
                                          int32& token_index) {
 
   Token token = token_manager.getToken(token_index);
-
-
-
-
+      
   switch (token.priority) {
     case ADDITION_OPERATION_PRIORITY: {
       compileAdditionOperationSeparatorToken(machine, token_manager, token_index);
@@ -357,6 +369,60 @@ Report TextParser::compileComparisonOperationSeparatorToken(Machine* machine,
 Report TextParser::compileEqualSeparatorToken(Machine* machine,
                                               TokenManager& token_manager,
                                               int32& token_index) {
+
+
+
+  // TODO:
+  return kReport_NoErrors;
+}
+
+/*******************************************************************************
+***                    KEYWORDS TOKEN COMPILER METHODS                       ***
+*******************************************************************************/
+
+Report TextParser::compileConditionalKeywordToken(Machine* machine,
+                                                  TokenManager& token_manager,
+                                                  int32& token_index) {
+
+
+
+  // TODO:
+  return kReport_NoErrors;
+}
+
+Report TextParser::compileReturnKeywordToken(Machine* machine,
+                                             TokenManager& token_manager,
+                                             int32& token_index) {
+
+
+
+  // TODO:
+  return kReport_NoErrors;
+}
+
+Report TextParser::compileFunctionKeywordToken(Machine* machine,
+                                               TokenManager& token_manager,
+                                               int32& token_index) {
+
+
+
+  // TODO:
+  return kReport_NoErrors;
+}
+
+Report TextParser::compileLoopKeywordToken(Machine* machine,
+                                           TokenManager& token_manager,
+                                           int32& token_index) {
+
+
+
+  // TODO:
+  return kReport_NoErrors;
+}
+
+Report TextParser::compileVariableKeywordToken(Machine* machine,
+                                               TokenManager& token_manager,
+                                               int32& token_index) {
 
 
 

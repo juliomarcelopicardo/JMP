@@ -207,6 +207,68 @@ class TextParser {
                                     TokenManager& token_manager,
                                     int32& token_index);
 
+/********************  KEYWORDS TOKEN COMPILER METHODS  ***********************/
+
+  /**
+  * @brief Compile the conditional keyword type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compileConditionalKeywordToken(Machine* machine,
+                                        TokenManager& token_manager,
+                                        int32& token_index);
+
+  /**
+  * @brief Compile the return keyword type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compileReturnKeywordToken(Machine* machine,
+                                   TokenManager& token_manager,
+                                   int32& token_index);
+
+  /**
+  * @brief Compile the function keyword type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compileFunctionKeywordToken(Machine* machine,
+                                     TokenManager& token_manager,
+                                     int32& token_index);
+
+  /**
+  * @brief Compile the loop keyword type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compileLoopKeywordToken(Machine* machine,
+                                 TokenManager& token_manager,
+                                 int32& token_index);
+
+  /**
+  * @brief Compile the variable keyword type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compileVariableKeywordToken(Machine* machine,
+                                     TokenManager& token_manager,
+                                     int32& token_index);
+
 /****************************  TOKEN GENERATION  ******************************/
 
   /**
