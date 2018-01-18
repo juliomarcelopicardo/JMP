@@ -38,7 +38,12 @@ namespace JMP {
     kReport_ExpectingNameOfVariable,
     kReport_ReturnShouldBeTheFirstToken,
     kReport_LoopKeywordShouldBeTheFirstToken,
+    kReport_FunctionKeywordShouldBeTheFirstToken,
+    kReport_FunctionDefinitionIncorrect,
     kReport_EqualNeedTokensBeforeAndAfter,
+    kReport_UnexpectedFunctionParameters,
+    kReport_InvalidNameOfFunction,
+    kReport_ExceededNumParamsAllowedPerFunction,
   };
 
   void ReportMsg(std::string msg);

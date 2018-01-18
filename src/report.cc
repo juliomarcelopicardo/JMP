@@ -51,8 +51,23 @@ void PrintReport(Report& report, uint32 line_number) {
     case JMP::kReport_LoopKeywordShouldBeTheFirstToken: {
       ReportError(": Expecting loop keyword to be the first of the line..");
     } break;
+    case JMP::kReport_FunctionKeywordShouldBeTheFirstToken: {
+      ReportError(": Expecting function keyword \"func\" to be the first of the line..");
+    } break;
+    case JMP::kReport_FunctionDefinitionIncorrect: {
+      ReportError(": Function definition incorrect, expecting at least \"func name() {\"..");
+    } break;
     case JMP::kReport_EqualNeedTokensBeforeAndAfter: {
       ReportError(": Expecting tokens before and after the \"=\" token..");
+    } break;
+    case JMP::kReport_UnexpectedFunctionParameters: {
+      ReportError(": Unexpected function parameters, only strings allowed..");
+    } break;
+    case JMP::kReport_ExceededNumParamsAllowedPerFunction: {
+      ReportError(": Too many parameters, the maximum allowed are 30..");
+    } break;
+    case JMP::kReport_InvalidNameOfFunction: {
+      ReportError(": Invalid function name..");
     } break;
   }
 }
