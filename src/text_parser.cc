@@ -426,10 +426,66 @@ Report TextParser::compileReturnKeywordToken(Machine* machine,
 Report TextParser::compileFunctionKeywordToken(Machine* machine,
                                                TokenManager& token_manager,
                                                int32& token_index) {
+  // ERROR CHECKINGS
+  // func keyword need to be the first word of the token_manager.
+  if (token_index != 0) {
+    return kReport_FunctionKeywordShouldBeTheFirstToken;
+  }
 
+  // Mininum function code... "func name() {
+  if (token_manager.numTokens() < 5) {
+    return kReport_FunctionDefinitionIncorrect;
+  }
+  
+  // Check that the last token is "{"
+  if (token_manager.getToken(token_manager.numTokens() - 1).text != "{") {
+    return kReport_ExpectingOpenBrackets;
+  }
 
+  // Check if the name is valid
+  Token token = token_manager.getToken(token_index + 1);
+  if (token.type != kTokenType_Variable) {
+    return kReport_InvalidNameOfFunction;
+  }
 
-  // TODO:
+  // FUNCTION DEFINITION
+  // Command to define the function.
+  machine->addCommand(kCommandType_Function, token.text);
+  // Deleting "func" and "funtion_name" tokens and the "{" one.
+  token_manager.removeToken(token_index);
+  token_manager.removeToken(token_index);
+  token_manager.removeToken(token_manager.numTokens() - 1);
+
+  // PARAMETERS OF THE FUNCTION
+  // Saving the parameters in strings.
+  std::vector<std::string> params;
+  int32 num_tokens = token_manager.numTokens();
+  for (int32 i = 1; i < num_tokens - 1; i++) { // Ignoring "(" and ")"
+    token = token_manager.getToken(i);
+    if (token.text != ",") {
+      if (token.type != kTokenType_Variable) {
+        return kReport_UnexpectedFunctionParameters;
+      }
+      // Save the parameter
+      params.push_back(token.text);
+    }
+  }
+
+  // Creating the commands -> Number of parameters, param1, param2...
+  int32 num_params = params.size();
+  if (num_params > MAX_PARAMETERS_PER_FUNCTION) {
+    return kReport_ExceededNumParamsAllowedPerFunction;
+  }
+  char num_params_text[3];
+  sprintf(num_params_text, "%d", num_params);
+  machine->addCommand(kCommandType_FunctionNumParameters, num_params_text);
+  for (int32 i = 0; i < num_params; i++) {
+    machine->addCommand(kCommandType_FunctionParameter, params[i]);
+  }
+
+  // Tagging the start of the definition of a function
+  addTag(kTag_Function);
+
   return kReport_NoErrors;
 }
 

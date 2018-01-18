@@ -20,6 +20,7 @@
 #define EQUAL_PRIORITY 95
 #define COMMA_PRIORITY -10
 #define DEFAULT_PRIORITY 0
+#define MAX_PARAMETERS_PER_FUNCTION 30
 
 
 #include "types.h"

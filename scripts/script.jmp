@@ -1,3 +1,5 @@
+func name(a,b,c,d) {
+
 if(a+b) {
 Example  {    ( code  ( , ( testing + 16 )
 a + b
