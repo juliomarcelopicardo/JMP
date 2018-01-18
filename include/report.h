@@ -36,6 +36,7 @@ namespace JMP {
     kReport_KeywordFunctionalityNotProgrammedYet,
     kReport_ExpectingOpenBrackets,
     kReport_ExpectingNameOfVariable,
+    kReport_ReturnShouldBeTheFirstToken,
   };
 
   void ReportMsg(std::string msg);

@@ -45,6 +45,9 @@ void PrintReport(Report& report, uint32 line_number) {
     case JMP::kReport_ExpectingNameOfVariable: {
       ReportError(": Expecting name of variable after the \"var\" keyword..");
     } break;
+    case JMP::kReport_ReturnShouldBeTheFirstToken: {
+      ReportError(": Expecting \"return\" to be the first word of the line..");
+    } break;
   }
 }
 
