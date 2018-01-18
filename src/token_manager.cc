@@ -9,6 +9,7 @@
 
 #include "token_manager.h"
 #include "report.h"
+#include "text_parser.h"
 #include <Windows.h>
 #include <string>
 
@@ -34,11 +35,27 @@ TokenManager::~TokenManager() {
 void TokenManager::addToken(const char * text, const TokenType type, int32 priority) {
   token_list_.push_back({ text, type, priority });
   token_list_length_++;
+
+  // To determine if there's a function name behind the token.
+  if (token_list_length_ >= 2) {
+    if (token_list_[token_list_length_ - 1].text == "(" &&
+      token_list_[token_list_length_ - 2].type == kTokenType_Variable) {
+      token_list_[token_list_length_ - 2].priority = FUNCTION_NAME_PRIORITY;
+    }
+  }
 }
 
 void TokenManager::addToken(const Token& token) {
   token_list_.push_back(token);
   token_list_length_++;
+
+  // To determine if there's a function name behind the token.
+  if (token_list_length_ >= 2) {
+    if (token_list_[token_list_length_ - 1].text == "(" &&
+      token_list_[token_list_length_ - 2].type == kTokenType_Variable) {
+      token_list_[token_list_length_ - 2].priority = FUNCTION_NAME_PRIORITY;
+    }
+  }
 }
 
 void TokenManager::clear() {
