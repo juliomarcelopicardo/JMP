@@ -397,7 +397,7 @@ Report TextParser::compileConditionalKeywordToken(Machine* machine,
     // Compiling the condition.
     Report report = compileTokens(machine, token_manager);
     machine->addCommand(kCommandType_Condition);
-    return report;
+    return report; 
   }
   
   ReportError("\"else\" keyword functionality not programmed yet in this version");
