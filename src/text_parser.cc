@@ -97,6 +97,12 @@ Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) 
     compileSeparatorToken(machine, token_manager, id);
   }
 
+  if (token.priority == DEFAULT_PRIORITY) {
+    // Pushing variables, numbers and other stuff non compilable.
+    machine->addCommand(kCommandType_PushToTheStack, token.text);
+    token_manager.transferContentBetweenIDsInclusive(id, id);
+  }
+
   // Compiling recursively what is not compiled yet.
   if (token_manager.numTokens() > 1) {
     return compileTokens(machine, token_manager);
@@ -137,25 +143,19 @@ Report TextParser::compileSeparatorToken(Machine* machine,
       
   switch (token.priority) {
     case ADDITION_OPERATION_PRIORITY: {
-      compileAdditionOperationSeparatorToken(machine, token_manager, token_index);
+      return compileAdditionOperationSeparatorToken(machine, token_manager, token_index);
     } break;
     case MULTIPLY_OPERATION_PRIORITY: {
-      compileMultiplyOperationSeparatorToken(machine, token_manager, token_index);
+      return compileMultiplyOperationSeparatorToken(machine, token_manager, token_index);
     } break;
     case POWER_OPERATION_PRIORITY: {
-      compilePowerOperationSeparatorToken(machine, token_manager, token_index);
+      return compilePowerOperationSeparatorToken(machine, token_manager, token_index);
     } break;
     case COMPARISON_PRIORITY: {
-      compileComparisonOperationSeparatorToken(machine, token_manager, token_index);
+      return compileComparisonOperationSeparatorToken(machine, token_manager, token_index);
     } break;
     case EQUAL_PRIORITY: {
-      compileEqualSeparatorToken(machine, token_manager, token_index);
-    } break;
-    case DEFAULT_PRIORITY: {
-      // Pushing variables, numbers and other stuff non compilable.
-      machine->addCommand(kCommandType_PushToTheStack, token.text);
-      token_manager.transferContentBetweenIDsInclusive(token_index, token_index);
-      token_index--;
+      return compileEqualSeparatorToken(machine, token_manager, token_index);
     } break;
   }
 
@@ -477,7 +477,7 @@ Report TextParser::compileFunctionKeywordToken(Machine* machine,
     return kReport_ExceededNumParamsAllowedPerFunction;
   }
   char num_params_text[3];
-  sprintf(num_params_text, "%d", num_params);
+  sprintf_s(num_params_text, 3, "%d", num_params);
   machine->addCommand(kCommandType_FunctionNumParameters, num_params_text);
   for (int32 i = 0; i < num_params; i++) {
     machine->addCommand(kCommandType_FunctionParameter, params[i]);
@@ -623,7 +623,7 @@ void TextParser::generateNextToken() {
 
 void TextParser::generateCurrentTokenInitialPriority() {
   switch (current_token_.type) {
-    case JMP::kTokenType_Keyword: { current_token_.priority = 500; } break;
+    case JMP::kTokenType_Keyword: { current_token_.priority = KEYWORD_PRIORITY; } break;
     case JMP::kTokenType_Separator: {
       std::string separator = current_token_.text;
       if (separator == "}") { current_token_.priority = CLOSE_BRACKETS_PRIORITY; }
