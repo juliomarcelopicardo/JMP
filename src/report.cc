@@ -42,6 +42,9 @@ void PrintReport(Report& report, uint32 line_number) {
     case JMP::kReport_ExpectingOpenBrackets: {
       ReportError(": \"{\" separator expected at the end of the line..");
     } break;
+    case JMP::kReport_ExpectingNameOfVariable: {
+      ReportError(": Expecting name of variable after the \"var\" keyword..");
+    } break;
   }
 }
 
