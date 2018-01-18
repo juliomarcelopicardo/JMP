@@ -48,6 +48,9 @@ void PrintReport(Report& report, uint32 line_number) {
     case JMP::kReport_ReturnShouldBeTheFirstToken: {
       ReportError(": Expecting \"return\" to be the first word of the line..");
     } break;
+    case JMP::kReport_LoopKeywordShouldBeTheFirstToken: {
+      ReportError(": Expecting loop keyword to be the first of the line..");
+    } break;
   }
 }
 
