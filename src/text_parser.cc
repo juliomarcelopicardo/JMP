@@ -370,9 +370,23 @@ Report TextParser::compileEqualSeparatorToken(Machine* machine,
                                               TokenManager& token_manager,
                                               int32& token_index) {
 
-
-
-  // TODO:
+  int32 num_tokens = token_manager.numTokens();
+  if (num_tokens < 3 || token_index <= 0) {
+    return kReport_EqualNeedTokensBeforeAndAfter;
+  }
+  // Transfer the content after the = to a temp token manager.
+  TokenManager temp;
+  token_manager.transferContentBetweenIDsInclusive(token_index + 1, num_tokens - 1, &temp);
+  // Compile the content of this manager recursively.
+  Report report = compileTokens(machine, temp);
+  // Gets the token before the equal symbol.
+  token_index--;
+  Token token = token_manager.getToken(token_index);
+  machine->addCommand(kCommandType_EqualAssigment, token.text);
+  // Then delete the content of from the one behind the "=", to the end of the sentence.
+  token_manager.transferContentBetweenIDsInclusive(token_index, num_tokens - 1);
+  token_index--;
+  
   return kReport_NoErrors;
 }
 
