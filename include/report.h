@@ -32,6 +32,7 @@ namespace JMP {
     kReport_NoTokensToCompile,
     kReport_NoMatchingCloseParenthesis,
     kReport_NoTagsToDelete,
+    kReport_UnexpectedKeyword,
   };
 
   void ReportMsg(std::string msg);

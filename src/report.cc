@@ -36,6 +36,9 @@ void PrintReport(Report& report, uint32 line_number) {
     case JMP::kReport_NoTagsToDelete: {
       ReportError(": No matching tag to remove was found, more conditional, functions or loops closed than created..");
     } break;
+    case JMP::kReport_UnexpectedKeyword: {
+      ReportError(": Unexpected or unkwown keyword used..");
+    } break;
   }
 }
 
