@@ -396,7 +396,7 @@ Report TextParser::compileConditionalKeywordToken(Machine* machine,
     addTag(kTag_Conditional);
     // Compiling the condition.
     Report report = compileTokens(machine, token_manager);
-    machine->addCommand(kCommandType_Condition);
+    machine->addCommand(kCommandType_ConditionToEvaluate);
     return report; 
   }
   
@@ -439,10 +439,31 @@ Report TextParser::compileLoopKeywordToken(Machine* machine,
                                            TokenManager& token_manager,
                                            int32& token_index) {
 
+  if (token_index != 0) {
+    return kReport_LoopKeywordShouldBeTheFirstToken;
+  }
 
+  if (token_manager.getToken(token_index).text == "while") {
+    machine->addCommand(kCommandType_Loop);
+    // removing the loop ("while") keyword.
+    token_manager.removeToken(token_index);
 
-  // TODO:
-  return kReport_NoErrors;
+    // Checks if the last token of the line sentence is a "{" to start the body.
+    if (token_manager.getToken(token_manager.numTokens() - 1).text != "{") {
+      return kReport_ExpectingOpenBrackets;
+    }
+    // Removing "{"
+    token_manager.removeToken(token_manager.numTokens() - 1);
+    addTag(kTag_Loop);
+    // Compiling the condition sentence.
+    Report report = compileTokens(machine, token_manager);
+    // Once compiled, we assign a command to evaluate the condition.
+    machine->addCommand(kCommandType_ConditionToEvaluate);
+    return report;
+  }
+
+  ReportError("\"do\" and \"for\" keywords functionality not programmed yet in this version");
+  return kReport_KeywordFunctionalityNotProgrammedYet;
 }
 
 Report TextParser::compileVariableKeywordToken(Machine* machine,
