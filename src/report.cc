@@ -51,6 +51,9 @@ void PrintReport(Report& report, uint32 line_number) {
     case JMP::kReport_LoopKeywordShouldBeTheFirstToken: {
       ReportError(": Expecting loop keyword to be the first of the line..");
     } break;
+    case JMP::kReport_EqualNeedTokensBeforeAndAfter: {
+      ReportError(": Expecting tokens before and after the \"=\" token..");
+    } break;
   }
 }
 
