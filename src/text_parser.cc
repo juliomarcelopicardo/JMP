@@ -408,10 +408,21 @@ Report TextParser::compileReturnKeywordToken(Machine* machine,
                                              TokenManager& token_manager,
                                              int32& token_index) {
 
+  Report report = kReport_NoErrors;
 
+  if (token_index != 0) {
+    return kReport_ReturnShouldBeTheFirstToken;
+  }
 
-  // TODO:
-  return kReport_NoErrors;
+  if (token_manager.numTokens() > 1) {
+    TokenManager temp; // use to save the content after return.
+    token_manager.transferContentBetweenIDsInclusive(token_index + 1, token_manager.numTokens() - 1, &temp);
+    // Compiling the right of return
+    report = compileTokens(machine, temp);
+    // After it the token_manager should be like: return "RESULT"
+  }
+  machine->addCommand(kCommandType_FunctionReturn);
+  return report;
 }
 
 Report TextParser::compileFunctionKeywordToken(Machine* machine,
