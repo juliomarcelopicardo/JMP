@@ -491,7 +491,7 @@ void TextParser::generateNextToken() {
   }
 
   // Numbers
-  if (isDigit(sentence_[sentence_index_])) {
+  else if (isDigit(sentence_[sentence_index_])) {
     while (!isSeparator(sentence_[sentence_index_]) && sentence_index_ < sentence_length) {
       current_token_.text.push_back(sentence_[sentence_index_]);
       sentence_index_++;
@@ -500,7 +500,7 @@ void TextParser::generateNextToken() {
   }
 
   // Vars and Keywords
-  if (isLetter(sentence_[sentence_index_])) {
+  else if (isLetter(sentence_[sentence_index_])) {
     while (!isSeparator(sentence_[sentence_index_]) && sentence_index_ < sentence_length) {
       current_token_.text.push_back(sentence_[sentence_index_]);
       sentence_index_++;
