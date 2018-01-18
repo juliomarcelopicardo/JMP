@@ -34,6 +34,8 @@ enum CommandType {
   kCommandType_Function,
   kCommandType_FunctionCall,
   kCommandType_FunctionReturn,
+  kCommandType_FunctionNumParameters,
+  kCommandType_FunctionParameter,
   // Body state -> Conditional, loop iteration or function body ended.
   kCommandType_Finished,
   kCommandType_Started,
