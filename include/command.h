@@ -33,13 +33,14 @@ enum CommandType {
   kCommandType_PushToTheStack,
   kCommandType_Function,
   kCommandType_FunctionCall,
+  kCommandType_FunctionReturn,
   // Body state -> Conditional, loop iteration or function body ended.
   kCommandType_Finished,
   kCommandType_Started,
   // Condition or comparation
   kCommandType_Condition,
   // Variable definition
-  kCommandType_VariableDefinition
+  kCommandType_VariableDefinition,
 };
 
 
