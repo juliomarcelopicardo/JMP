@@ -36,6 +36,8 @@ enum CommandType {
   // Body state -> Conditional, loop iteration or function body ended.
   kCommandType_Finished,
   kCommandType_Started,
+  // Condition or comparation
+  kCommandType_Condition,
 };
 
 

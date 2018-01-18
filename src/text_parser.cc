@@ -93,7 +93,7 @@ Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) 
   }
 
   // Once checked that there arent commas, then we will compile the other separators.
-  if (token.type == kTokenType_Separator) {
+  if (token.type == kTokenType_Separator && token.text != "(") {
     compileSeparatorToken(machine, token_manager, id);
   }
 
@@ -384,10 +384,24 @@ Report TextParser::compileConditionalKeywordToken(Machine* machine,
                                                   TokenManager& token_manager,
                                                   int32& token_index) {
 
-
-
-  // TODO:
-  return kReport_NoErrors;
+  if (token_manager.getToken(token_index).text == "if") {
+    // removing the "if" keyword.
+    token_manager.removeToken(token_index);
+    // Checks if the last token of the line sentence is a "{" to start the body.
+    if (token_manager.getToken(token_manager.numTokens() - 1).text != "{") {
+      return kReport_ExpectingOpenBrackets;
+    }
+    // Removing "{"
+    token_manager.removeToken(token_manager.numTokens() - 1);
+    addTag(kTag_Conditional);
+    // Compiling the condition.
+    Report report = compileTokens(machine, token_manager);
+    machine->addCommand(kCommandType_Condition);
+    return report;
+  }
+  
+  ReportError("\"else\" keyword functionality not programmed yet in this version");
+  return kReport_KeywordFunctionalityNotProgrammedYet;
 }
 
 Report TextParser::compileReturnKeywordToken(Machine* machine,
