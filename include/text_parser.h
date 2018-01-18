@@ -93,26 +93,6 @@ class TextParser {
   Report compileSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
 
   /**
-  * @brief Compile the number type token.
-  *
-  * @param machine Machine where all the process will be made.
-  * @param token_manager Manager where all the tokens are allocated.
-  * @param token_index index of the token manager list.
-  * @return Report with the compiling results.
-  */
-  Report compileNumberToken(Machine* machine, TokenManager& token_manager, int32& token_index);
-
-  /**
-  * @brief Compile the Variable type token.
-  *
-  * @param machine Machine where all the process will be made.
-  * @param token_manager Manager where all the tokens are allocated.
-  * @param token_index index of the token manager list.
-  * @return Report with the compiling results.
-  */
-  Report compileVariableToken(Machine* machine, TokenManager& token_manager, int32& token_index);
-
-  /**
   * @brief Checks if there are "," tokens in the list and compiles the content in both sides of the comma.
   *
   * @param machine Machine where all the process will be made.

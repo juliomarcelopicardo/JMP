@@ -162,22 +162,6 @@ Report TextParser::compileSeparatorToken(Machine* machine,
   return kReport_NoErrors;
 }
 
-Report TextParser::compileNumberToken(Machine* machine,
-                                      TokenManager& token_manager,
-                                      int32& token_index) {
-
-  // TODO:
-  return kReport_NoErrors;
-}
-
-Report TextParser::compileVariableToken(Machine* machine,
-                                        TokenManager& token_manager,
-                                        int32& token_index) {
-
-  // TODO:
-  return kReport_NoErrors;
-}
-
 const bool TextParser::checkIfAndCompileCommasContent(Machine * machine, 
                                                       TokenManager & token_manager) {
 
