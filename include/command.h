@@ -37,10 +37,12 @@ enum CommandType {
   // Body state -> Conditional, loop iteration or function body ended.
   kCommandType_Finished,
   kCommandType_Started,
-  // Condition or comparation
-  kCommandType_Condition,
+  // Condition Evaluation, can be the condition of a loop or an if.
+  kCommandType_ConditionToEvaluate,
   // Variable definition
   kCommandType_VariableDefinition,
+  // Loop
+  kCommandType_Loop,
 };
 
 
