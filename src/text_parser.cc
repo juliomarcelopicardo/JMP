@@ -253,8 +253,8 @@ Report TextParser::compileCloseBracketsSeparatorToken(Machine* machine,
   Tag tag = getAndRemoveLastTag();
   switch (tag) {
     case JMP::kTag_None:{ } break;
-    case JMP::kTag_Loop: { machine->addCommand(kCommandType_Finished, "while"); } break;
-    case JMP::kTag_Conditional: { machine->addCommand(kCommandType_Finished, "if"); } break;
+    case JMP::kTag_Loop: { machine->addCommand(kCommandType_Finished, "loop"); } break;
+    case JMP::kTag_Conditional: { machine->addCommand(kCommandType_Finished, "conditional"); } break;
     case JMP::kTag_Function:{ } break;
   } 
   return kReport_NoErrors;
@@ -438,10 +438,17 @@ Report TextParser::compileVariableKeywordToken(Machine* machine,
                                                TokenManager& token_manager,
                                                int32& token_index) {
 
-
-
-  // TODO:
-  return kReport_NoErrors;
+  // Gets the variable name.
+  Token var_name = token_manager.getToken(token_index + 1);
+  if (var_name.type != kTokenType_Variable) {
+    return kReport_ExpectingNameOfVariable;
+  }
+  // Delete de "var" keyword   
+  token_manager.removeToken(token_index);  // "var"
+  // Adds a command who defines the variable name.
+  machine->addCommand(kCommandType_VariableDefinition, var_name.text);
+  // Compile the rest of the line once the variable name is defined.
+  return compileTokens(machine, token_manager);
 }
 
 /*******************************************************************************
