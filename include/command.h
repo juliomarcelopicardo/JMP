@@ -38,6 +38,8 @@ enum CommandType {
   kCommandType_Started,
   // Condition or comparation
   kCommandType_Condition,
+  // Variable definition
+  kCommandType_VariableDefinition
 };
 
 
