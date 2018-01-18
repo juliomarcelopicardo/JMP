@@ -1,9 +1,11 @@
-func name(a,b,c,d) {
-
-if(a+b) {
-Example  {    ( code  ( , ( testing + 16 )
-a + b
+func example(first,second){
+	var text = "This is going to be a simple message"
+	
+	var iterator = 0
+	while(iterator < 5){		
+		print(text + first)
+		print(second)
+    print("Hello World")
+		i = i+1
+	}
 }
-tabs will	be ++ "quote quote  quote"  
-changed for blank spaces
-.
