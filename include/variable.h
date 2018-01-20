@@ -7,49 +7,28 @@
 *                                <b7026027@my.shu.ac.uk>
 */
 
-#ifndef __JMP_COMMAND_H__
-#define __JMP_COMMAND_H__ 1
+#ifndef __JMP_VARIABLE_H__
+#define __JMP_VARIABLE_H__ 1
 
 #include "types.h"
 #include <string>
 
 namespace JMP {
 
-/// Command type.
-enum CommandType {
-  kCommandType_None = 0,
-  // Separators -> mathematical operations
-  kCommandType_Addition,
-  kCommandType_Substraction,
-  kCommandType_Multiply,
-  kCommandType_Division,
-  kCommandType_Power,
-  // Separator -> "=" Assignment.
-  kCommandType_EqualAssigment, 
-  // Separator -> Comparisons.
-  kCommandType_GreaterThanComparison,
-  kCommandType_LowerThanComparison,
-  // Stack Actions
-  kCommandType_PushToTheStack,
-  kCommandType_Function,
-  kCommandType_FunctionCall,
-  kCommandType_FunctionReturn,
-  kCommandType_FunctionNumParameters,
-  kCommandType_FunctionParameter,
-  // Body state -> Conditional, loop iteration or function body ended.
-  kCommandType_Finished,
-  kCommandType_Started,
-  // Condition Evaluation, can be the condition of a loop or an if.
-  kCommandType_ConditionToEvaluate,
-  // Variable definition
-  kCommandType_VariableDefinition,
-  // Loop
-  kCommandType_Loop,
+#define VARIABLE_INITIAL_VALUE -99999.99f
+
+/// Variable type.
+enum VariableType {
+  kVariableType_None = 0,
+  kVariableType_Number,
+  kVariableType_Text,
 };
 
 
-/// Class used to save and manage the compiling commands.
-class Command {
+/// Class used to manage the variables that will be added to the registger.
+/// Depending on if the variable is a external registered one (created in C++) or
+/// if its one defined in the script, the attributes used will be different.
+class Variable {
 
  public: 
 
@@ -58,15 +37,13 @@ class Command {
 *******************************************************************************/
 
   /// Default class constructor.
-  Command();
-  /// Default class constructor.
-  Command(const CommandType type, const char* name);
+  Variable();
   /// Default class destructor.
-  ~Command();
+  ~Variable();
   /// Default copy constructor.
-  Command(const Command& copy);
+  Variable(const Variable& copy);
   /// Assignment operator.
-  Command& operator=(const Command& copy);
+  Variable& operator=(const Variable& copy);
 
 
 
@@ -78,10 +55,22 @@ class Command {
 ***                           PUBLIC ATTRIBUTES                              ***
 *******************************************************************************/
 
-  /// Command type.
-  CommandType type_;
-  /// Name of the command.
+  /// Will define if the variable is a external one or a script native one.
+  bool is_registered_;
+  /// Name of the variable.
   std::string name_;
+
+/******************************  REGISTERED  **********************************/
+  /// Variable type.
+  VariableType type_;
+  /// Pointer to the original variable defined in c++
+  void* pointer_to_the_original_;
+
+/****************************  NOT REGISTERED  ********************************/
+  /// String variable value.
+  std::string text_value_;
+  /// Number variable value.
+  float32 number_value_;
 
  private:
 
@@ -98,7 +87,7 @@ class Command {
 
 
 
-}; /* Command */
+}; /* Variable */
 }; /* JMP */
 
-#endif /* __JMP_COMMAND_H__ */
+#endif /* __JMP_VARIABLE_H__ */
