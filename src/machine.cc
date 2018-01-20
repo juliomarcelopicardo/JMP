@@ -167,4 +167,41 @@ const uint32 Machine::numCommands() {
   return cmd_list_length_;
 }
 
+
+/*******************************************************************************
+***                        VARIABLE REGISTRY METHODS                         ***
+*******************************************************************************/
+
+Report Machine::registerVariable(const char *name, 
+                                 VariableType type, 
+                                 void* ptr_to_var) {
+
+  if (!name || !ptr_to_var) {
+    return kReport_NullPointer;
+  }
+  
+  variable_registry_.push_back({ name, type, ptr_to_var });
+  variable_registry_length_++;
+
+  return kReport_NoErrors;
+}
+
+void Machine::unregisterVariable(const char* name) {
+
+  for (int32 i = 0; i < variable_registry_length_; i++) {
+    if (name == variable_registry_[i].name_) {
+      variable_registry_.erase(variable_registry_.begin() + i);
+      variable_registry_length_--;
+    }
+  }
+
+}
+
+void Machine::unregisterVariable(const int32 id) {
+  if (id >= 0 && id < variable_registry_length_) {
+    variable_registry_.erase(variable_registry_.begin() + id);
+    variable_registry_length_--;
+  }
+}
+
 }; /* JMP */

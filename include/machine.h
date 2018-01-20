@@ -13,6 +13,7 @@
 #include "types.h"
 #include "report.h"
 #include "command.h"
+#include "variable.h"
 #include "token_manager.h"
 
 namespace JMP {
@@ -107,6 +108,32 @@ class Machine {
   */
   const uint32 numCommands();
 
+/***********************  VARIABLE REGISTRY METHODS  **************************/
+
+  /**
+  * @brief Adds a variable to the registry.
+  *
+  * @param name Name of the variable in the script (Case sensitive).
+  * @param type Variable type, necessary to allocate enough memory.
+  * @param ptr_to_var Address of the variable of c++ that we want to register.
+  * @return Report with the result of the instruction. NoErrors if succesful.
+  */
+  Report registerVariable(const char* name, VariableType type, void* ptr_to_var);
+
+  /**
+  * @brief removes a variable to the registry.
+  *
+  * @param name Name of the variable in the registry (Case sensitive).
+  */
+  void unregisterVariable(const char* name);
+
+  /**
+  * @brief removes a variable to the registry.
+  *
+  * @param id ID of the variable in the registry vector.
+  */
+  void unregisterVariable(const int32 id);
+
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***
 *******************************************************************************/
@@ -135,6 +162,10 @@ class Machine {
   std::vector<Command> cmd_list_;
   /// Number of elements of the list.
   int32 cmd_list_length_;
+  /// List of all the variable registered.
+  std::vector<Variable> variable_registry_;
+  /// Number of elements of the list.
+  int32 variable_registry_length_;
 
 }; /* Machine */
 }; /* JMP */
