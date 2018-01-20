@@ -7,6 +7,7 @@
 *                                <b7026027@my.shu.ac.uk>
 */
 
+#include "machine.h" // Before because of the forward declaration used in .h
 #include "command.h"
 #include "report.h"
 #include <Windows.h>
@@ -39,6 +40,40 @@ Command & Command::operator=(const Command& copy) {
   type_ = copy.type_;
   name_ = copy.name_;
   return *this;
+}
+
+
+/*******************************************************************************
+***                              EXECUTION                                   ***
+*******************************************************************************/
+
+Report Command::execute(Machine* machine, int32& next_command_to_execute) {
+
+  // TODO: Functions to execute each type of command.
+  switch (type_) {
+    case JMP::kCommandType_None: {} break;
+    case JMP::kCommandType_Addition: {} break;
+    case JMP::kCommandType_Substraction: {} break;
+    case JMP::kCommandType_Multiply: {} break;
+    case JMP::kCommandType_Division: {} break;
+    case JMP::kCommandType_Power: {} break;
+    case JMP::kCommandType_EqualAssigment: {} break;
+    case JMP::kCommandType_GreaterThanComparison: {} break;
+    case JMP::kCommandType_LowerThanComparison: {} break;
+    case JMP::kCommandType_PushToTheStack: {} break;
+    case JMP::kCommandType_FunctionDefinition: {} break;
+    case JMP::kCommandType_FunctionCall: {} break;
+    case JMP::kCommandType_FunctionReturn: {} break;
+    case JMP::kCommandType_FunctionNumParameters: {} break;
+    case JMP::kCommandType_FunctionParameter: {} break;
+    case JMP::kCommandType_Finished: {} break;
+    case JMP::kCommandType_Started: {} break;
+    case JMP::kCommandType_ConditionToEvaluate: {} break;
+    case JMP::kCommandType_VariableDefinition: {} break;
+    case JMP::kCommandType_Loop: {} break;
+  }
+
+  return kReport_InvalidCommandType;
 }
 
 

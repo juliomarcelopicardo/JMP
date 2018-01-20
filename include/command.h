@@ -71,8 +71,16 @@ class Command {
 
 
 
-/********************************  GETTERS  ***********************************/
+/*******************************  EXECUTION  **********************************/
 
+  /**
+  * @brief Executes a command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report execute(class Machine* machine, int32& next_command_to_execute);
  
 
 /*******************************************************************************

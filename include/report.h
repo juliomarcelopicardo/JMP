@@ -45,6 +45,7 @@ namespace JMP {
     kReport_InvalidNameOfFunction,
     kReport_ExceededNumParamsAllowedPerFunction,
     kReport_FunctionDefinedMoreThanOnce,
+    kReport_InvalidCommandType,
   };
 
   void ReportMsg(std::string msg);
