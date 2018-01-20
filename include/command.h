@@ -81,7 +81,114 @@ class Command {
   * @return Report with possible errors, or NoErrors if succesful.
   */
   Report execute(class Machine* machine, int32& next_command_to_execute);
- 
+
+  /**
+  * @brief Executes the Addition command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeAddition(class Machine* machine, int32& next_command_to_execute);
+
+  /**
+  * @brief Executes the Substraction command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeSubstraction(class Machine* machine, int32& next_command_to_execute);
+
+  /**
+  * @brief Executes the Multiply command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeMultiply(class Machine* machine, int32& next_command_to_execute);
+
+  /**
+  * @brief Executes the Division command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeDivision(class Machine* machine, int32& next_command_to_execute);
+
+  /**
+  * @brief Executes the Power command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executePower(class Machine* machine, int32& next_command_to_execute);
+
+  /**
+  * @brief Executes the EqualAssigment command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeEqualAssignment(class Machine* machine, int32& next_command_to_execute);
+
+  /**
+  * @brief Executes the GreaterThan command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeGreaterThan(class Machine* machine, int32& next_command_to_execute);
+
+  /**
+  * @brief Executes the LowerThan command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeLowerThan(class Machine* machine, int32& next_command_to_execute);
+
+  /**
+  * @brief Executes the PushToTheStack command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executePushToTheStack(class Machine* machine, int32& next_command_to_execute);
+
+  /**
+  * @brief Executes the FunctionDefinition command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeFunctionDefinition(class Machine* machine, int32& next_command_to_execute);
+
+  /**
+  * @brief Executes the FunctionCall command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeFunctionCall(class Machine* machine, int32& next_command_to_execute);
+
+  /**
+  * @brief Executes the FunctionReturn command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeFunctionReturn(class Machine* machine, int32& next_command_to_execute);
 
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***

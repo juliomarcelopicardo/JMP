@@ -47,35 +47,69 @@ Command & Command::operator=(const Command& copy) {
 ***                              EXECUTION                                   ***
 *******************************************************************************/
 
-Report Command::execute(Machine* machine, int32& next_command_to_execute) {
+Report Command::execute(Machine* machine, int32& id) {
 
   // TODO: Functions to execute each type of command.
   switch (type_) {
-    case JMP::kCommandType_None: {} break;
-    case JMP::kCommandType_Addition: {} break;
-    case JMP::kCommandType_Substraction: {} break;
-    case JMP::kCommandType_Multiply: {} break;
-    case JMP::kCommandType_Division: {} break;
-    case JMP::kCommandType_Power: {} break;
-    case JMP::kCommandType_EqualAssigment: {} break;
-    case JMP::kCommandType_GreaterThanComparison: {} break;
-    case JMP::kCommandType_LowerThanComparison: {} break;
-    case JMP::kCommandType_PushToTheStack: {} break;
-    case JMP::kCommandType_FunctionDefinition: {} break;
-    case JMP::kCommandType_FunctionCall: {} break;
-    case JMP::kCommandType_FunctionReturn: {} break;
-    case JMP::kCommandType_FunctionNumParameters: {} break;
-    case JMP::kCommandType_FunctionParameter: {} break;
-    case JMP::kCommandType_Finished: {} break;
-    case JMP::kCommandType_Started: {} break;
-    case JMP::kCommandType_ConditionToEvaluate: {} break;
-    case JMP::kCommandType_VariableDefinition: {} break;
-    case JMP::kCommandType_Loop: {} break;
+    case JMP::kCommandType_None: { return kReport_NoErrors; } 
+    case JMP::kCommandType_PushToTheStack: { return executePushToTheStack(machine, id); }
+    case JMP::kCommandType_Addition: { return executeAddition(machine, id); }
+    case JMP::kCommandType_Substraction: { return executeAddition(machine, id); }
+    case JMP::kCommandType_Multiply: { return executeAddition(machine, id); }
+    case JMP::kCommandType_Division: { return executeAddition(machine, id); }
+    case JMP::kCommandType_Power: { return executeAddition(machine, id); }
+    case JMP::kCommandType_EqualAssigment: { return executeAddition(machine, id); }
+    case JMP::kCommandType_GreaterThanComparison: { return executeAddition(machine, id); }
+    case JMP::kCommandType_LowerThanComparison: { return executeAddition(machine, id); }
+    case JMP::kCommandType_FunctionDefinition: { return executeAddition(machine, id); }
+    case JMP::kCommandType_FunctionCall: { return executeAddition(machine, id); }
+    case JMP::kCommandType_FunctionReturn: { return executeAddition(machine, id); }
+    case JMP::kCommandType_FunctionNumParameters: { return executeAddition(machine, id); }
+    case JMP::kCommandType_FunctionParameter: { return executeAddition(machine, id); }
+    case JMP::kCommandType_Finished: { return executeAddition(machine, id); }
+    case JMP::kCommandType_Started: { return executeAddition(machine, id); }
+    case JMP::kCommandType_ConditionToEvaluate: { return executeAddition(machine, id); }
+    case JMP::kCommandType_VariableDefinition: { return executeAddition(machine, id); }
+    case JMP::kCommandType_Loop: {} 
   }
 
   return kReport_InvalidCommandType;
 }
 
+Report Command::executeAddition(Machine* machine, int32 & next_cmd_id) {
+  return Report();
+}
+
+Report Command::executeSubstraction(Machine* machine, int32 & next_cmd_id) {
+  return Report();
+}
+Report Command::executeMultiply(Machine* machine, int32 & next_cmd_id) {
+  return Report();
+}
+Report Command::executeDivision(Machine* machine, int32 & next_cmd_id) {
+  return Report();
+}
+Report Command::executePower(Machine* machine, int32 & next_cmd_id) {
+  return Report();
+}
+Report Command::executeEqualAssignment(Machine* machine, int32 & next_cmd_id) {
+  return Report();
+}
+Report Command::executeGreaterThan(Machine* machine, int32 & next_cmd_id) {
+  return Report();
+}
+Report Command::executeLowerThan(Machine* machine, int32 & next_cmd_id) {
+  return Report();
+}
+Report Command::executePushToTheStack(Machine* machine, int32 & next_cmd_id) {
+  return Report();
+}
+Report Command::executeFunctionDefinition(Machine* machine, int32 & next_cmd_id) {
+  return Report();
+}
+Report Command::executeFunctionCall(Machine* machine, int32 & next_cmd_id) {
+  return Report();
+}
 
 
 
