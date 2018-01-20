@@ -38,9 +38,9 @@ void TokenManager::addToken(const char * text, const TokenType type, int32 prior
 
   // To determine if there's a function name behind the token.
   if (token_list_length_ >= 2) {
-    if (token_list_[token_list_length_ - 1].text == "(" &&
-      token_list_[token_list_length_ - 2].type == kTokenType_Variable) {
-      token_list_[token_list_length_ - 2].priority = FUNCTION_NAME_PRIORITY;
+    if (token_list_[token_list_length_ - 1].text_ == "(" &&
+      token_list_[token_list_length_ - 2].type_ == kTokenType_Variable) {
+      token_list_[token_list_length_ - 2].priority_ = FUNCTION_NAME_PRIORITY;
     }
   }
 }
@@ -51,9 +51,9 @@ void TokenManager::addToken(const Token& token) {
 
   // To determine if there's a function name behind the token.
   if (token_list_length_ >= 2) {
-    if (token_list_[token_list_length_ - 1].text == "(" &&
-      token_list_[token_list_length_ - 2].type == kTokenType_Variable) {
-      token_list_[token_list_length_ - 2].priority = FUNCTION_NAME_PRIORITY;
+    if (token_list_[token_list_length_ - 1].text_ == "(" &&
+      token_list_[token_list_length_ - 2].type_ == kTokenType_Variable) {
+      token_list_[token_list_length_ - 2].priority_ = FUNCTION_NAME_PRIORITY;
     }
   }
 }
@@ -127,8 +127,8 @@ int32 TokenManager::getHighestPriorityTokenIndex() {
   int32 index = -1;
 
   for (int32 i = 0; i < token_list_length_; i++) {
-    if (token_list_[i].priority > maximum_priority) {
-      maximum_priority = token_list_[i].priority;
+    if (token_list_[i].priority_ > maximum_priority) {
+      maximum_priority = token_list_[i].priority_;
       index = i;
     }
   }
@@ -141,7 +141,7 @@ int32 TokenManager::getHighestPriorityTokenIndex() {
 int32 TokenManager::getNextCloseParenthesisIndex(int32 open_parenthesis_index) {
   
   for (int32 i = open_parenthesis_index; i < token_list_length_; ++i) {
-    if (token_list_[i].text == ")") {
+    if (token_list_[i].text_ == ")") {
       return i;
     }
   }
@@ -155,7 +155,7 @@ const uint32 TokenManager::numTokens() {
 
 const bool TokenManager::areAnyCommaTokenInList() {
   for (int32 i = 0; i < token_list_length_; i++) {
-    if (token_list_[i].text == ",") {
+    if (token_list_[i].text_ == ",") {
       return true;
     }
   }
@@ -171,7 +171,7 @@ const bool TokenManager::areAnyCommaTokenInList() {
 void TokenManager::printToken(int32 id) {
 
   OutputDebugString(" Type: ");
-  switch (token_list_[id].type) {
+  switch (token_list_[id].type_) {
     case JMP::kTokenType_None: { OutputDebugString("None \t\t"); }break;
     case JMP::kTokenType_Keyword: { OutputDebugString("Keyword \t\t"); }break;
     case JMP::kTokenType_Number: { OutputDebugString("Number \t\t"); }break;
@@ -181,16 +181,16 @@ void TokenManager::printToken(int32 id) {
   }
 
   char priority[32] = "";
-  if (token_list_[id].priority == 0) {
-    sprintf_s(priority, 32, "Priority: %d\t\t", token_list_[id].priority);
+  if (token_list_[id].priority_ == 0) {
+    sprintf_s(priority, 32, "Priority: %d\t\t", token_list_[id].priority_);
   }
   else {
-    sprintf_s(priority, 32, "Priority: %d\t", token_list_[id].priority);
+    sprintf_s(priority, 32, "Priority: %d\t", token_list_[id].priority_);
   }
   OutputDebugString(priority);
   
   OutputDebugString("Token: \"");
-  OutputDebugString(token_list_[id].text.c_str());
+  OutputDebugString(token_list_[id].text_.c_str());
   OutputDebugString("\"\n");
 
 }

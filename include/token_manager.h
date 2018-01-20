@@ -11,28 +11,11 @@
 #define __JMP_TOKENMANAGER_H__ 1
 
 #include "types.h"
+#include "token.h"
 #include <vector>
 
 namespace JMP {
 
-/// Token type.
-enum TokenType {
-  kTokenType_None = 0,
-  kTokenType_Keyword,
-  kTokenType_Separator,
-  kTokenType_Number,
-  kTokenType_Variable,
-};
-
-/// Allocates the basic info of each token.
-struct Token {
-  /// Token characters.
-  std::string text;
-  /// Token type.
-  TokenType type;
-  /// Token priority
-  int32 priority;
-};
 
 /// Class used to save and manage the tokens.
 class TokenManager {
