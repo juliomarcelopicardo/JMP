@@ -31,7 +31,8 @@ enum CommandType {
   kCommandType_LowerThanComparison,
   // Stack Actions
   kCommandType_PushToTheStack,
-  kCommandType_Function,
+  // Function
+  kCommandType_FunctionDefinition,
   kCommandType_FunctionCall,
   kCommandType_FunctionReturn,
   kCommandType_FunctionNumParameters,
