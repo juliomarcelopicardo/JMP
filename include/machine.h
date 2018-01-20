@@ -121,18 +121,44 @@ class Machine {
   Report registerVariable(const char* name, VariableType type, void* ptr_to_var);
 
   /**
-  * @brief removes a variable to the registry.
+  * @brief removes a variable from the registry.
   *
   * @param name Name of the variable in the registry (Case sensitive).
   */
   void unregisterVariable(const char* name);
 
   /**
-  * @brief removes a variable to the registry.
+  * @brief removes a variable from the registry.
   *
   * @param id ID of the variable in the registry vector.
   */
   void unregisterVariable(const int32 id);
+
+/**********************  DEFINED FUNCTION LIST METHODS  ************************/
+
+  /**
+  * @brief Adds a new function to the list.
+  *
+  * @param name Name of the function.
+  * @param command_index Position in the list of commands.
+  * @return kReport_NoErrors if succesful.
+  */
+  Report addDefinedFunction(const char* name, const int32 command_index);
+
+  /**
+  * @brief removes a function from the defined function list.
+  *
+  * @param name Name of the function in the defined function list (Case Sensitive).
+  */
+  void removeDefinedFunction(const char* name);
+
+  /**
+  * @brief removes a function from the defined function list.
+  *
+  * @param id ID of the function in the defined function list.
+  */
+  void removeDefinedFunction(const int32 id);
+
 
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***
@@ -166,6 +192,18 @@ class Machine {
   std::vector<Variable> variable_registry_;
   /// Number of elements of the list.
   int32 variable_registry_length_;
+
+  /** Everytime we declare a function in the script, we will add here its command
+      As we will need its position in the command list to execute it. */
+  struct DefinedFunction {
+    std::string name;
+    int32 command_index;
+  };
+
+  /// List of functions defined in the script using the syntax "func name(params)"
+  std::vector<DefinedFunction> defined_function_list_;
+  /// Defined function list length -> number of elements.
+  int32 defined_function_list_length_;
 
 }; /* Machine */
 }; /* JMP */

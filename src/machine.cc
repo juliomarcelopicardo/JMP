@@ -24,6 +24,8 @@ namespace JMP {
 Machine::Machine() {
   cmd_list_length_ = 0;
   cmd_list_.reserve(50);
+  variable_registry_length_ = 0;
+  defined_function_list_length_ = 0;
 }
 
 Machine::~Machine() {
@@ -224,5 +226,60 @@ void Machine::unregisterVariable(const int32 id) {
   sprintf_s(warning, 64, "Invalid variable registry id. Unregister failed");
   ReportWarning(warning);
 }
+
+Report Machine::addDefinedFunction(const char* name, const int32 command_index) {
+  // Error checkings
+  if (!name) {
+    return kReport_NullPointer;
+  }
+
+  // If the variable already exists, we will edit the existing one.
+  for (int32 i = 0; i < defined_function_list_length_; i++) {
+    if (name == defined_function_list_[i].name) {
+      char error[64];
+      sprintf_s(error, 64, "\"%s\": Function already defined", name);
+      ReportError(error);
+      return kReport_FunctionDefinedMoreThanOnce;
+    }
+  }
+
+  // if the variable is not registered yet, we will add a new one to the registry.
+  defined_function_list_.push_back({ name, command_index });
+  defined_function_list_length_++;
+
+  return kReport_NoErrors;
+}
+
+void Machine::removeDefinedFunction(const char* name) {
+  for (int32 i = 0; i < defined_function_list_length_; i++) {
+    if (name == defined_function_list_[i].name) {
+      defined_function_list_.erase(defined_function_list_.begin() + i);
+      defined_function_list_length_--;
+      return;
+    }
+  }
+  char warning[64];
+  sprintf_s(warning, 64, "\"%s\": Is not a defined function. Remove Defined Function failed", name);
+  ReportWarning(warning);
+}
+
+void Machine::removeDefinedFunction(const int32 id) {
+  if (id >= 0 && id < defined_function_list_length_) {
+    defined_function_list_.erase(defined_function_list_.begin() + id);
+    defined_function_list_length_--;
+    return;
+  }
+
+  char warning[64];
+  sprintf_s(warning, 64, "Invalid function id. Remove Defined Function failed");
+  ReportWarning(warning);
+}
+
+
+/*******************************************************************************
+***                      DEFINED FUNCTION LIST METHODS                       ***
+*******************************************************************************/
+
+
 
 }; /* JMP */
