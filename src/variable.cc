@@ -21,7 +21,8 @@ Variable::Variable() {
   name_ = "";
   pointer_to_the_original_ = nullptr;
   text_value_ = "";
-  number_value_ = VARIABLE_INITIAL_VALUE;
+  float_value_ = VARIABLE_INITIAL_VALUE;
+  integer_value_ = VARIABLE_INITIAL_VALUE;
 }
 
 Variable::~Variable() {}
@@ -32,7 +33,8 @@ Variable::Variable(const Variable& copy) {
   name_ = copy.name_;
   pointer_to_the_original_ = copy.pointer_to_the_original_;
   text_value_ = copy.text_value_;
-  number_value_ = copy.number_value_;
+  float_value_ = copy.float_value_;
+  integer_value_ = copy.integer_value_;
 }
 
 Variable & Variable::operator=(const Variable& copy) {
@@ -41,7 +43,8 @@ Variable & Variable::operator=(const Variable& copy) {
   name_ = copy.name_;
   pointer_to_the_original_ = copy.pointer_to_the_original_;
   text_value_ = copy.text_value_;
-  number_value_ = copy.number_value_;
+  float_value_ = copy.float_value_;
+  integer_value_ = copy.integer_value_;
   return *this;
 }
 

@@ -15,12 +15,13 @@
 
 namespace JMP {
 
-#define VARIABLE_INITIAL_VALUE -99999.99f
+#define VARIABLE_INITIAL_VALUE -99999
 
 /// Variable type.
 enum VariableType {
   kVariableType_None = 0,
-  kVariableType_Number,
+  kVariableType_Float,
+  kVariableType_Integer,
   kVariableType_Text,
 };
 
@@ -69,8 +70,10 @@ class Variable {
 /****************************  NOT REGISTERED  ********************************/
   /// String variable value.
   std::string text_value_;
-  /// Number variable value.
-  float32 number_value_;
+  /// Float variable value.
+  float32 float_value_;
+  /// Integer variable value.
+  int32 integer_value_;
 
  private:
 
