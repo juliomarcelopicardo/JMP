@@ -16,15 +16,15 @@ namespace JMP {
 *******************************************************************************/
 
 TextParser::TextParser() {
-  current_token_.text.clear();
-  current_token_.type = kTokenType_None;
+  current_token_.text_.clear();
+  current_token_.type_ = kTokenType_None;
   sentence_.clear();
   sentence_index_ = 0;
   tag_list_.reserve(10);
 }
 
 TextParser::~TextParser() {
-  current_token_.text.clear();
+  current_token_.text_.clear();
   sentence_.clear();
   tag_list_.clear();
 }
@@ -74,15 +74,15 @@ Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) 
   int32 id = token_manager.getHighestPriorityTokenIndex();
   Token token = token_manager.getToken(id);
   
-  if (token.type == kTokenType_Keyword) {
+  if (token.type_ == kTokenType_Keyword) {
     return compileKeywordToken(machine, token_manager, id);
   }
 
   // If theres any } or ( we will compile this separator first.
-  if (token.priority == CLOSE_BRACKETS_PRIORITY) { // "}"
+  if (token.priority_ == CLOSE_BRACKETS_PRIORITY) { // "}"
     return compileCloseBracketsSeparatorToken(machine, token_manager, id);
   }
-  if (token.text == "(") { // We dont use priority becasue it changes to solve parenthethical grouping problems. 
+  if (token.text_ == "(") { // We dont use priority becasue it changes to solve parenthethical grouping problems. 
     compileOpenParenthesisSeparatorToken(machine, token_manager, id);
   }
 
@@ -93,13 +93,13 @@ Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) 
   }
 
   // Once checked that there arent commas, then we will compile the other separators.
-  if (token.type == kTokenType_Separator && token.text != "(") {
+  if (token.type_ == kTokenType_Separator && token.text_ != "(") {
     compileSeparatorToken(machine, token_manager, id);
   }
 
-  if (token.priority == DEFAULT_PRIORITY) {
+  if (token.priority_ == DEFAULT_PRIORITY) {
     // Pushing variables, numbers and other stuff non compilable.
-    machine->addCommand(kCommandType_PushToTheStack, token.text);
+    machine->addCommand(kCommandType_PushToTheStack, token.text_);
     token_manager.transferContentBetweenIDsInclusive(id, id);
   }
 
@@ -116,19 +116,19 @@ Report TextParser::compileKeywordToken(Machine* machine,
                                        int32& token_index) {
   Token token = token_manager.getToken(token_index);
 
-  if (token.text == "if" || token.text == "else") {
+  if (token.text_ == "if" || token.text_ == "else") {
     return compileConditionalKeywordToken(machine, token_manager, token_index);
   }
-  if (token.text == "return") {
+  if (token.text_ == "return") {
     return compileReturnKeywordToken(machine, token_manager, token_index);
   }
-  if (token.text == "func") {
+  if (token.text_ == "func") {
     return compileFunctionKeywordToken(machine, token_manager, token_index);
   }
-  if (token.text == "do" || token.text == "while" || token.text == "for") {
+  if (token.text_ == "do" || token.text_ == "while" || token.text_ == "for") {
     return compileLoopKeywordToken(machine, token_manager, token_index);
   }
-  if (token.text == "var") {
+  if (token.text_ == "var") {
     return compileVariableKeywordToken(machine, token_manager, token_index);
   }
 
@@ -141,7 +141,7 @@ Report TextParser::compileSeparatorToken(Machine* machine,
 
   Token token = token_manager.getToken(token_index);
       
-  switch (token.priority) {
+  switch (token.priority_) {
     case ADDITION_OPERATION_PRIORITY: {
       return compileAdditionOperationSeparatorToken(machine, token_manager, token_index);
     } break;
@@ -169,7 +169,7 @@ const bool TextParser::checkIfAndCompileCommasContent(Machine * machine,
     int32 num_tokens = token_manager.numTokens();
     // Compile tokens with comas recursively.
     for (int32 i = 0; i < num_tokens; i++) {
-      if (token_manager.getToken(i).text == ",") {
+      if (token_manager.getToken(i).text_ == ",") {
         TokenManager temp;
         // In case that we find any comma, we will take the previous content to compile it.
         // Example:   a b c d, e f     -> then we will transfer a b c d
@@ -217,10 +217,10 @@ Report TextParser::compileOpenParenthesisSeparatorToken(Machine* machine,
   token_index--;
   if (token_index >= 0) { // means that theres something behind the parenthesis.
     Token token = token_manager.getToken(token_index);
-    if (token.type != kTokenType_Keyword &&
-        token.type != kTokenType_Separator &&
-        token.priority != 0) {      
-      machine->addCommand(kCommandType_FunctionCall, token.text);
+    if (token.type_ != kTokenType_Keyword &&
+        token.type_ != kTokenType_Separator &&
+        token.priority_ != 0) {      
+      machine->addCommand(kCommandType_FunctionCall, token.text_);
       token_manager.removeToken(token_index);
     }
   }
@@ -252,11 +252,11 @@ Report TextParser::compileAdditionOperationSeparatorToken(Machine* machine,
   Token left_operand = token_manager.getToken(token_index - 1);
 
   // Push the operands to the stack
-  machine->addCommand(kCommandType_PushToTheStack, left_operand.text);
-  machine->addCommand(kCommandType_PushToTheStack, right_operand.text);
+  machine->addCommand(kCommandType_PushToTheStack, left_operand.text_);
+  machine->addCommand(kCommandType_PushToTheStack, right_operand.text_);
 
   // Then the next command will set the action to be applied to the previous operands.
-  if (operator_token.text == "-") {
+  if (operator_token.text_ == "-") {
     machine->addCommand(kCommandType_Substraction);
   }
   else {
@@ -280,11 +280,11 @@ Report TextParser::compileMultiplyOperationSeparatorToken(Machine* machine,
   Token left_operand = token_manager.getToken(token_index - 1);
 
   // Push the operands to the stack
-  machine->addCommand(kCommandType_PushToTheStack, left_operand.text);
-  machine->addCommand(kCommandType_PushToTheStack, right_operand.text);
+  machine->addCommand(kCommandType_PushToTheStack, left_operand.text_);
+  machine->addCommand(kCommandType_PushToTheStack, right_operand.text_);
 
   // Then the next command will set the action to be applied to the previous operands.
-  if (operator_token.text == "/") {
+  if (operator_token.text_ == "/") {
     machine->addCommand(kCommandType_Division);
   }
   else {
@@ -308,8 +308,8 @@ Report TextParser::compilePowerOperationSeparatorToken(Machine* machine,
   Token left_operand = token_manager.getToken(token_index - 1);
 
   // Push the operands to the stack
-  machine->addCommand(kCommandType_PushToTheStack, left_operand.text);
-  machine->addCommand(kCommandType_PushToTheStack, right_operand.text);
+  machine->addCommand(kCommandType_PushToTheStack, left_operand.text_);
+  machine->addCommand(kCommandType_PushToTheStack, right_operand.text_);
 
   // Then the next command will set the action to be applied to the previous operands
   machine->addCommand(kCommandType_Power);
@@ -331,11 +331,11 @@ Report TextParser::compileComparisonOperationSeparatorToken(Machine* machine,
   Token left_operand = token_manager.getToken(token_index - 1);
 
   // Push the operands to the stack
-  machine->addCommand(kCommandType_PushToTheStack, left_operand.text);
-  machine->addCommand(kCommandType_PushToTheStack, right_operand.text);
+  machine->addCommand(kCommandType_PushToTheStack, left_operand.text_);
+  machine->addCommand(kCommandType_PushToTheStack, right_operand.text_);
 
   // Then the next command will set the action to be applied to the previous operands.
-  if (operator_token.text == "<") {
+  if (operator_token.text_ == "<") {
     machine->addCommand(kCommandType_LowerThanComparison);
   }
   else {
@@ -366,7 +366,7 @@ Report TextParser::compileEqualSeparatorToken(Machine* machine,
   // Gets the token before the equal symbol.
   token_index--;
   Token token = token_manager.getToken(token_index);
-  machine->addCommand(kCommandType_EqualAssigment, token.text);
+  machine->addCommand(kCommandType_EqualAssigment, token.text_);
   // Then delete the content of from the one behind the "=", to the end of the sentence.
   token_manager.transferContentBetweenIDsInclusive(token_index, num_tokens - 1);
   token_index--;
@@ -382,11 +382,11 @@ Report TextParser::compileConditionalKeywordToken(Machine* machine,
                                                   TokenManager& token_manager,
                                                   int32& token_index) {
 
-  if (token_manager.getToken(token_index).text == "if") {
+  if (token_manager.getToken(token_index).text_ == "if") {
     // removing the "if" keyword.
     token_manager.removeToken(token_index);
     // Checks if the last token of the line sentence is a "{" to start the body.
-    if (token_manager.getToken(token_manager.numTokens() - 1).text != "{") {
+    if (token_manager.getToken(token_manager.numTokens() - 1).text_ != "{") {
       return kReport_ExpectingOpenBrackets;
     }
     // Removing "{"
@@ -438,19 +438,19 @@ Report TextParser::compileFunctionKeywordToken(Machine* machine,
   }
   
   // Check that the last token is "{"
-  if (token_manager.getToken(token_manager.numTokens() - 1).text != "{") {
+  if (token_manager.getToken(token_manager.numTokens() - 1).text_ != "{") {
     return kReport_ExpectingOpenBrackets;
   }
 
   // Check if the name is valid
   Token token = token_manager.getToken(token_index + 1);
-  if (token.type != kTokenType_Variable) {
+  if (token.type_ != kTokenType_Variable) {
     return kReport_InvalidNameOfFunction;
   }
 
   // FUNCTION DEFINITION
   // Command to define the function.
-  machine->addCommand(kCommandType_FunctionDefinition, token.text);
+  machine->addCommand(kCommandType_FunctionDefinition, token.text_);
   // Deleting "func" and "funtion_name" tokens and the "{" one.
   token_manager.removeToken(token_index);
   token_manager.removeToken(token_index);
@@ -462,12 +462,12 @@ Report TextParser::compileFunctionKeywordToken(Machine* machine,
   int32 num_tokens = token_manager.numTokens();
   for (int32 i = 1; i < num_tokens - 1; i++) { // Ignoring "(" and ")"
     token = token_manager.getToken(i);
-    if (token.text != ",") {
-      if (token.type != kTokenType_Variable) {
+    if (token.text_ != ",") {
+      if (token.type_ != kTokenType_Variable) {
         return kReport_UnexpectedFunctionParameters;
       }
       // Save the parameter
-      params.push_back(token.text);
+      params.push_back(token.text_);
     }
   }
 
@@ -497,13 +497,13 @@ Report TextParser::compileLoopKeywordToken(Machine* machine,
     return kReport_LoopKeywordShouldBeTheFirstToken;
   }
 
-  if (token_manager.getToken(token_index).text == "while") {
+  if (token_manager.getToken(token_index).text_ == "while") {
     machine->addCommand(kCommandType_Loop);
     // removing the loop ("while") keyword.
     token_manager.removeToken(token_index);
 
     // Checks if the last token of the line sentence is a "{" to start the body.
-    if (token_manager.getToken(token_manager.numTokens() - 1).text != "{") {
+    if (token_manager.getToken(token_manager.numTokens() - 1).text_ != "{") {
       return kReport_ExpectingOpenBrackets;
     }
     // Removing "{"
@@ -526,13 +526,13 @@ Report TextParser::compileVariableKeywordToken(Machine* machine,
 
   // Gets the variable name.
   Token var_name = token_manager.getToken(token_index + 1);
-  if (var_name.type != kTokenType_Variable) {
+  if (var_name.type_ != kTokenType_Variable) {
     return kReport_ExpectingNameOfVariable;
   }
   // Delete de "var" keyword   
   token_manager.removeToken(token_index);  // "var"
   // Adds a command who defines the variable name.
-  machine->addCommand(kCommandType_VariableDefinition, var_name.text);
+  machine->addCommand(kCommandType_VariableDefinition, var_name.text_);
   // Compile the rest of the line once the variable name is defined.
   return compileTokens(machine, token_manager);
 }
@@ -553,16 +553,16 @@ void TextParser::generateTokens(std::string& sentence, TokenManager& token_manag
 
   generateNextToken(); // Setting the first token as current.
 
-  while(current_token_.text != "") {
+  while(current_token_.text_ != "") {
 
     // Everytime a parenthesis is opened, we increase the priority.
     // This way we will avoid the problem with multiple parenthetical groups.
-    if (current_token_.text == "(") {
-      current_token_.priority += num_parenthesis_opened;
+    if (current_token_.text_ == "(") {
+      current_token_.priority_ += num_parenthesis_opened;
       num_parenthesis_opened++;
     }
 
-    recoverSpacesFromQuotes(current_token_.text); // Replace '_' ==> ' ' in quotes
+    recoverSpacesFromQuotes(current_token_.text_); // Replace '_' ==> ' ' in quotes
     token_manager.addToken(current_token_);
     generateNextToken();
   }
@@ -574,8 +574,8 @@ void TextParser::generateNextToken() {
   uint32 sentence_length = sentence_.length();
 
   // Restarts the current token.
-  current_token_.text = "";
-  current_token_.type = kTokenType_None;
+  current_token_.text_ = "";
+  current_token_.type_ = kTokenType_None;
 
   // To analyze sentences, spaces will be ignored.
   while (sentence_index_ < sentence_length &&
@@ -585,36 +585,36 @@ void TextParser::generateNextToken() {
 
   // Checking end of line.
   if (sentence_index_ >= sentence_length) {
-    current_token_.text = "\0";
+    current_token_.text_ = "\0";
   }
 
   // TOKEN ANALYZE: We will get the token type and the token text.
 
   // Separators
   if (isSeparator(sentence_[sentence_index_])) {
-    current_token_.text.push_back(sentence_[sentence_index_]);
-    current_token_.type = kTokenType_Separator;
+    current_token_.text_.push_back(sentence_[sentence_index_]);
+    current_token_.type_ = kTokenType_Separator;
     sentence_index_++;
   }
 
   // Numbers
   else if (isDigit(sentence_[sentence_index_])) {
     while (!isSeparator(sentence_[sentence_index_]) && sentence_index_ < sentence_length) {
-      current_token_.text.push_back(sentence_[sentence_index_]);
+      current_token_.text_.push_back(sentence_[sentence_index_]);
       sentence_index_++;
     }
-    current_token_.type = kTokenType_Number;
+    current_token_.type_ = kTokenType_Number;
   }
 
   // Vars and Keywords
   else if (isLetter(sentence_[sentence_index_])) {
     while (!isSeparator(sentence_[sentence_index_]) && sentence_index_ < sentence_length) {
-      current_token_.text.push_back(sentence_[sentence_index_]);
+      current_token_.text_.push_back(sentence_[sentence_index_]);
       sentence_index_++;
     }
 
-    current_token_.type = kTokenType_Variable;
-    if (isKeyword(current_token_.text)) { current_token_.type = kTokenType_Keyword; }
+    current_token_.type_ = kTokenType_Variable;
+    if (isKeyword(current_token_.text_)) { current_token_.type_ = kTokenType_Keyword; }
   }
 
   // Once the type is set, we will assign an initial priority depending on the type.
@@ -622,20 +622,20 @@ void TextParser::generateNextToken() {
 }
 
 void TextParser::generateCurrentTokenInitialPriority() {
-  switch (current_token_.type) {
-    case JMP::kTokenType_Keyword: { current_token_.priority = KEYWORD_PRIORITY; } break;
+  switch (current_token_.type_) {
+    case JMP::kTokenType_Keyword: { current_token_.priority_ = KEYWORD_PRIORITY; } break;
     case JMP::kTokenType_Separator: {
-      std::string separator = current_token_.text;
-      if (separator == "}") { current_token_.priority = CLOSE_BRACKETS_PRIORITY; }
-      if (separator == "(") { current_token_.priority = OPEN_PARENTHESIS_PRIORITY; }
-      if (separator == "^") { current_token_.priority = POWER_OPERATION_PRIORITY; }
-      if (separator == "*" || separator == "/") { current_token_.priority = MULTIPLY_OPERATION_PRIORITY; }
-      if (separator == "+" || separator == "-") { current_token_.priority = ADDITION_OPERATION_PRIORITY; }
-      if (separator == ">" || separator == "<") { current_token_.priority = COMPARISON_PRIORITY; }
-      if (separator == "=") { current_token_.priority = EQUAL_PRIORITY; }
-      if (separator == ",") { current_token_.priority = COMMA_PRIORITY; }
+      std::string separator = current_token_.text_;
+      if (separator == "}") { current_token_.priority_ = CLOSE_BRACKETS_PRIORITY; }
+      if (separator == "(") { current_token_.priority_ = OPEN_PARENTHESIS_PRIORITY; }
+      if (separator == "^") { current_token_.priority_ = POWER_OPERATION_PRIORITY; }
+      if (separator == "*" || separator == "/") { current_token_.priority_ = MULTIPLY_OPERATION_PRIORITY; }
+      if (separator == "+" || separator == "-") { current_token_.priority_ = ADDITION_OPERATION_PRIORITY; }
+      if (separator == ">" || separator == "<") { current_token_.priority_ = COMPARISON_PRIORITY; }
+      if (separator == "=") { current_token_.priority_ = EQUAL_PRIORITY; }
+      if (separator == ",") { current_token_.priority_ = COMMA_PRIORITY; }
     }break;
-    default: { current_token_.priority = DEFAULT_PRIORITY; } break;
+    default: { current_token_.priority_ = DEFAULT_PRIORITY; } break;
   }
 }
 
