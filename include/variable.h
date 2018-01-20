@@ -11,20 +11,10 @@
 #define __JMP_VARIABLE_H__ 1
 
 #include "types.h"
+#include "value.h"
 #include <string>
 
 namespace JMP {
-
-#define VARIABLE_INITIAL_VALUE -99999
-
-/// Variable type.
-enum VariableType {
-  kVariableType_None = 0,
-  kVariableType_Float,
-  kVariableType_Integer,
-  kVariableType_Text,
-};
-
 
 /// Class used to manage the variables that will be added to the registger.
 /// Depending on if the variable is a external registered one (created in C++) or
@@ -46,7 +36,7 @@ class Variable {
   /// Overloaded class constructor.
   Variable(const char* name, const char* text_value);
   /// Overloaded class constructor.
-  Variable(const char* name, VariableType type, void* ptr_to_the_original);
+  Variable(const char* name, ValueType type, void* ptr_to_the_original);
   /// Default class destructor.
   ~Variable();
   /// Default copy constructor.
@@ -70,18 +60,13 @@ class Variable {
   std::string name_;
 
 /******************************  REGISTERED  **********************************/
-  /// Variable type.
-  VariableType type_;
+
   /// Pointer to the original variable defined in c++
   void* pointer_to_the_original_;
 
 /****************************  NOT REGISTERED  ********************************/
-  /// String variable value.
-  std::string text_value_;
-  /// Float variable value.
-  float32 float_value_;
-  /// Integer variable value.
-  int32 integer_value_;
+  /// Value of the variable
+  Value value_;
 
  private:
 
