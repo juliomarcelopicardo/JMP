@@ -450,7 +450,7 @@ Report TextParser::compileFunctionKeywordToken(Machine* machine,
 
   // FUNCTION DEFINITION
   // Command to define the function.
-  machine->addCommand(kCommandType_Function, token.text);
+  machine->addCommand(kCommandType_FunctionDefinition, token.text);
   // Deleting "func" and "funtion_name" tokens and the "{" one.
   token_manager.removeToken(token_index);
   token_manager.removeToken(token_index);
