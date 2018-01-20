@@ -176,10 +176,23 @@ Report Machine::registerVariable(const char *name,
                                  VariableType type, 
                                  void* ptr_to_var) {
 
+  // Error checkings
   if (!name || !ptr_to_var) {
     return kReport_NullPointer;
   }
   
+  // If the variable already exists, we will edit the existing one.
+  for (int32 i = 0; i < variable_registry_length_; i++) {
+    if (name == variable_registry_[i].name_) {
+      char warning[64];
+      sprintf_s(warning, 64, "\"%s\": Variable already registered", name);
+      ReportWarning(warning);
+      variable_registry_[i] = { name, type, ptr_to_var };
+      return kReport_NoErrors;
+    }
+  }
+
+  // if the variable is not registered yet, we will add a new one to the registry.
   variable_registry_.push_back({ name, type, ptr_to_var });
   variable_registry_length_++;
 
@@ -192,16 +205,24 @@ void Machine::unregisterVariable(const char* name) {
     if (name == variable_registry_[i].name_) {
       variable_registry_.erase(variable_registry_.begin() + i);
       variable_registry_length_--;
+      return;
     }
   }
-
+  char warning[64];
+  sprintf_s(warning, 64, "\"%s\": Can't be found in the registry. Unregister failed", name);
+  ReportWarning(warning);
 }
 
 void Machine::unregisterVariable(const int32 id) {
   if (id >= 0 && id < variable_registry_length_) {
     variable_registry_.erase(variable_registry_.begin() + id);
     variable_registry_length_--;
+    return;
   }
+
+  char warning[64];
+  sprintf_s(warning, 64, "Invalid variable registry id. Unregister failed");
+  ReportWarning(warning);
 }
 
 }; /* JMP */
