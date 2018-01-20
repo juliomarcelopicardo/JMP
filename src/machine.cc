@@ -30,6 +30,8 @@ Machine::Machine() {
 
 Machine::~Machine() {
   cmd_list_.clear();
+  variable_registry_.clear();
+  defined_function_list_.clear();
 }
 
 
@@ -38,7 +40,7 @@ Machine::~Machine() {
 *******************************************************************************/
 
 
-Report Machine::process(std::string script_filename) {
+Report Machine::processFile(std::string script_filename) {
 
   // To force .jmp extensions.
   if (checkExtension(script_filename) != kReport_NoErrors) {
@@ -101,10 +103,43 @@ Report Machine::checkExtension(std::string filename) {
   return kReport_InvalidFileExtension;
 }
 
+Report Machine::runFunction(std::string function_call_sentence) {
+
+  // Create a machine and a parser to compile the code received by parameter.
+  Machine other_machine;
+  TextParser other_parser;
+  Report report;
+  report = other_parser.compile(&other_machine, function_call_sentence, -1); // -1 as theres no line number
+  if (report != kReport_NoErrors) { return report; }
+
+  // Once compiled we will concatenate both machines command lists.
+  // The result will be, this_machine = this_machine + other_machine;
+  int32 this_machine_initial_num_commands = numCommands();
+  pushBackOtherMachineCommandList(&other_machine);
+  int32 num_commands_added = other_machine.numCommands();
+
+  // Now we will execute the complete command list
+  int32 index = this_machine_initial_num_commands;
+  while (index < cmd_list_length_) {
+    // possible results of the execution "NoError", "return is called" or "Error"
+    report = cmd_list_[index].execute(this, index);
+    if (report != kReport_NoErrors) { break; }
+  }
+
+  if (report == kReport_ReturnCalled) { report = kReport_NoErrors; }
+
+  // Delete the commands added from the other machine.
+  for (int32 i = 0; i < num_commands_added; i++) {
+    removeCommand(this_machine_initial_num_commands);
+  }
+
+  return report;
+}
 
 /*******************************************************************************
 ***                           COMMAND LIST METHODS                           ***
 *******************************************************************************/
+
 
 void Machine::addCommand(const CommandType type) {
   Command cmd = { type, "" };
@@ -162,8 +197,14 @@ Command Machine::getCommand(const int32 list_index) {
   return cmd_list_[list_index];
 }
 
-const uint32 Machine::numCommands() {
+const int32 Machine::numCommands() {
   return cmd_list_length_;
+}
+
+void Machine::pushBackOtherMachineCommandList(Machine* other_machine) {
+  for (int32 i = 0; i < other_machine->numCommands(); i++) {
+    addCommand(other_machine->getCommand(i));
+  }
 }
 
 

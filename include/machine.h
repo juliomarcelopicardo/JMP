@@ -40,7 +40,7 @@ class Machine {
   * @param script Script file path.
   * @return Report with the function result.
   */
-  Report process(std::string script_filename);
+  Report processFile(std::string script_filename);
 
   /**
   * @brief Checks if the extension of the file is .jpm
@@ -49,6 +49,17 @@ class Machine {
   * @return InvalidExtension if failed.
   */
   Report checkExtension(std::string filename);
+
+  /**
+  * @brief Runs or executes a function from a previous loaded script.
+  *
+  * Example: to call this function the correct way is << runFunction("FuncName(param1,param2...)"); >>
+  *
+  * @param function_call_sentence Code of the function we want to run.
+  * @return Report with the function result.
+  */
+  Report runFunction(std::string function_call_sentence = "main()");
+
 
 
 /***************************  COMMAND LIST METHODS  ***************************/
@@ -106,7 +117,15 @@ class Machine {
   *
   * @return Command list length.
   */
-  const uint32 numCommands();
+  const int32 numCommands();
+
+  /**
+  * @brief Concatenates the other machine command list, to the original one.
+  *
+  * @param other_machine Machine which command list will be added to this one.
+  * @return Command from the list.
+  */
+  void pushBackOtherMachineCommandList(Machine* other_machine);
 
 /***********************  VARIABLE REGISTRY METHODS  **************************/
 

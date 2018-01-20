@@ -17,7 +17,7 @@ JMP::int32 main() {
   JMP::TextParser text_parser;
   JMP::Machine machine;
 
-  machine.process("../scripts/script.jmp");
+  machine.processFile("../scripts/script.jmp");
 
 
 
