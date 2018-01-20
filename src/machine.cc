@@ -110,9 +110,6 @@ void Machine::addCommand(const CommandType type) {
   Command cmd = { type, "" };
   cmd_list_.push_back(cmd);
   cmd_list_length_++;
-  if (cmd.type_ == kCommandType_Function) {
-    // TODO:: FUNCTION TABLES TO ALLOCATE THE DIFFERENT FUNCTIONS OF THE SCRIPT.
-  }
 }
 
 void Machine::addCommand(const CommandType type, const char* name) {
@@ -120,8 +117,8 @@ void Machine::addCommand(const CommandType type, const char* name) {
   if (cmd.name_ != "RESULT") { // Temporal tokens waiting for result no added.
     cmd_list_.push_back(cmd);
     cmd_list_length_++;
-    if (cmd.type_ == kCommandType_Function) {
-      // TODO:: FUNCTION TABLES TO ALLOCATE THE DIFFERENT FUNCTIONS OF THE SCRIPT.
+    if (cmd.type_ == kCommandType_FunctionDefinition) {
+      addDefinedFunction(name, cmd_list_length_ - 1);
     }
   }
 }
@@ -131,8 +128,8 @@ void Machine::addCommand(const CommandType type, const std::string name) {
   if (cmd.name_ != "RESULT") {
     cmd_list_.push_back(cmd);
     cmd_list_length_++;
-    if (cmd.type_ == kCommandType_Function) {
-      // TODO:: FUNCTION TABLES TO ALLOCATE THE DIFFERENT FUNCTIONS OF THE SCRIPT.
+    if (cmd.type_ == kCommandType_FunctionDefinition) {
+      addDefinedFunction(name.c_str(), cmd_list_length_ - 1);
     }
   }
 }
@@ -141,8 +138,8 @@ void Machine::addCommand(const Command& command) {
   if (command.name_ != "RESULT") {
     cmd_list_.push_back(command);
     cmd_list_length_++;
-    if (command.type_ == kCommandType_Function) {
-      // TODO:: FUNCTION TABLES TO ALLOCATE THE DIFFERENT FUNCTIONS OF THE SCRIPT.
+    if (command.type_ == kCommandType_FunctionDefinition) {
+      addDefinedFunction(command.name_.c_str(), cmd_list_length_ - 1);
     }
   }
 }
