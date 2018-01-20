@@ -25,6 +25,46 @@ Variable::Variable() {
   integer_value_ = VARIABLE_INITIAL_VALUE;
 }
 
+Variable::Variable(const char* name, int32 integer_value) {
+  type_ = kVariableType_Integer;
+  is_registered_ = false;
+  name_ = name;
+  pointer_to_the_original_ = nullptr;
+  text_value_ = "";
+  float_value_ = VARIABLE_INITIAL_VALUE;
+  integer_value_ = integer_value;
+}
+
+Variable::Variable(const char* name, float32 float_value) {
+  type_ = kVariableType_Float;
+  is_registered_ = false;
+  name_ = name;
+  pointer_to_the_original_ = nullptr;
+  text_value_ = "";
+  float_value_ = float_value;
+  integer_value_ = VARIABLE_INITIAL_VALUE;
+}
+
+Variable::Variable(const char* name, const char* text_value) {
+  type_ = kVariableType_Text;
+  is_registered_ = false;
+  name_ = name;
+  pointer_to_the_original_ = nullptr;
+  text_value_ = text_value;
+  float_value_ = VARIABLE_INITIAL_VALUE;
+  integer_value_ = VARIABLE_INITIAL_VALUE;
+}
+
+Variable::Variable(const char* name, VariableType type, void* ptr_to_the_original) {
+  type_ = type;
+  is_registered_ = true;
+  name_ = name;
+  pointer_to_the_original_ = ptr_to_the_original;
+  text_value_ = "";
+  float_value_ = VARIABLE_INITIAL_VALUE;
+  integer_value_ = VARIABLE_INITIAL_VALUE;
+}
+
 Variable::~Variable() {}
 
 Variable::Variable(const Variable& copy) {
