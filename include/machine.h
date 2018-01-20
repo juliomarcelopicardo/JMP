@@ -133,11 +133,11 @@ class Machine {
   * @brief Adds a variable to the registry.
   *
   * @param name Name of the variable in the script (Case sensitive).
-  * @param type Variable type, necessary to allocate enough memory.
+  * @param type Value type, necessary to allocate enough memory.
   * @param ptr_to_var Address of the variable of c++ that we want to register.
   * @return Report with the result of the instruction. NoErrors if succesful.
   */
-  Report registerVariable(const char* name, VariableType type, void* ptr_to_var);
+  Report registerVariable(const char* name, ValueType type, void* ptr_to_var);
 
   /**
   * @brief removes a variable from the registry.

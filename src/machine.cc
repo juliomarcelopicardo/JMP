@@ -213,7 +213,7 @@ void Machine::pushBackOtherMachineCommandList(Machine* other_machine) {
 *******************************************************************************/
 
 Report Machine::registerVariable(const char *name, 
-                                 VariableType type, 
+                                 ValueType type, 
                                  void* ptr_to_var) {
 
   // Error checkings
