@@ -9,6 +9,7 @@
 
 #include "value.h"
 #include "report.h"
+#include <math.h>
 
 namespace JMP {
 
@@ -204,6 +205,31 @@ Value operator/(const Value& a, const Value& b) {
   }
 
   ReportWarning("Value Division Operation Failed.");
+  return Value();
+}
+
+Value operator^(const Value& a, const Value& b) {
+  // integer ^ integer = integer 
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
+    return{ (int32)pow(a.integer_, b.integer_) };
+  }
+
+  // float ^ float = float 
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
+    return{ powf(a.float_, b.float_) };
+  }
+
+  // integer ^ float = float
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Float) {
+    return{ (float32)pow(a.integer_, b.float_) };
+  }
+
+  // float ^ integer = float
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Integer) {
+    return{ pow(a.float_, b.integer_) };
+  }
+
+  ReportWarning("Value Multiply Operation Failed.");
   return Value();
 }
 
