@@ -76,39 +76,98 @@ Report Command::execute(Machine* machine, int32& id) {
   return kReport_InvalidCommandType;
 }
 
-Report Command::executeAddition(Machine* machine, int32 & next_cmd_id) {
+Report Command::executeAddition(Machine* machine, int32& next_cmd_id) {
   return Report();
 }
 
-Report Command::executeSubstraction(Machine* machine, int32 & next_cmd_id) {
+Report Command::executeSubstraction(Machine* machine, int32& next_cmd_id) {
   return Report();
 }
-Report Command::executeMultiply(Machine* machine, int32 & next_cmd_id) {
+Report Command::executeMultiply(Machine* machine, int32& next_cmd_id) {
   return Report();
 }
-Report Command::executeDivision(Machine* machine, int32 & next_cmd_id) {
+Report Command::executeDivision(Machine* machine, int32& next_cmd_id) {
   return Report();
 }
-Report Command::executePower(Machine* machine, int32 & next_cmd_id) {
+Report Command::executePower(Machine* machine, int32& next_cmd_id) {
   return Report();
 }
-Report Command::executeEqualAssignment(Machine* machine, int32 & next_cmd_id) {
+Report Command::executeEqualAssignment(Machine* machine, int32& next_cmd_id) {
   return Report();
 }
-Report Command::executeGreaterThan(Machine* machine, int32 & next_cmd_id) {
+Report Command::executeGreaterThan(Machine* machine, int32& next_cmd_id) {
   return Report();
 }
-Report Command::executeLowerThan(Machine* machine, int32 & next_cmd_id) {
+Report Command::executeLowerThan(Machine* machine, int32& next_cmd_id) {
   return Report();
 }
-Report Command::executePushToTheStack(Machine* machine, int32 & next_cmd_id) {
+Report Command::executePushToTheStack(Machine* machine, int32& next_cmd_id) {
+  
+  // We will check if its a quote.
+  switch (getNameDataType()) {
+  case JMP::kValueType_None: { 
+    // TODO: Variable pushing.
+  } break;
+  case JMP::kValueType_Float: { 
+    machine->addValueToTheStack((float32)atof(name_.c_str()));
+  } break;
+  case JMP::kValueType_Integer: { 
+    machine->addValueToTheStack((int32)atoi(name_.c_str()));
+  } break;
+  case JMP::kValueType_Text: { 
+    std::string temp = name_;
+    // remove quotes.
+    temp.erase(0, 1);
+    temp.erase(temp.size() - 1, 1);
+    machine->addValueToTheStack({ temp.c_str() });
+  } break;
+  }
+  return kReport_InvalidValueType;
+}
+Report Command::executeFunctionDefinition(Machine* machine, int32& next_cmd_id) {
   return Report();
 }
-Report Command::executeFunctionDefinition(Machine* machine, int32 & next_cmd_id) {
+Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) {
   return Report();
 }
-Report Command::executeFunctionCall(Machine* machine, int32 & next_cmd_id) {
-  return Report();
+
+
+
+
+/*******************************************************************************
+***                            TYPE CHECKINGS                                ***
+*******************************************************************************/
+
+ValueType Command::getNameDataType() {
+  int32 name_length = name_.size();
+  if (name_length == 0) { return kValueType_None; }
+  if (name_[0] == '"' && name_[name_length - 1] == '"') { return kValueType_Text; }
+  if (name_[0] == '-' || isDigit(name_[0])) { // Check type of number
+    int32 num_dots = 0;
+    for (int32 i = 1; i < name_length; i++) {
+      if (!isDigit(name_[i])) {
+        if (name_[i] == '.' && num_dots == 0) {
+          num_dots++;
+        }
+        else {
+          ReportWarning(" Incorrect name of command.");
+          return kValueType_None;
+        }
+      }
+    }
+    if (num_dots == 1) { return kValueType_Float; }
+    else { return kValueType_Integer; }
+  }
+  return kValueType_None;
+}
+
+const bool Command::isDigit(const char8& character) {
+  switch (character) {
+  case '0': case '1': case '2': case '3': case '4':
+  case '5': case '6': case '7': case '8': case '9':
+    return true;
+  }
+  return false;
 }
 
 

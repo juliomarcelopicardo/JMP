@@ -11,6 +11,7 @@
 #define __JMP_COMMAND_H__ 1
 
 #include "types.h"
+#include "value.h"
 #include <string>
 
 namespace JMP {
@@ -47,7 +48,6 @@ enum CommandType {
   // Loop
   kCommandType_Loop,
 };
-
 
 /// Class used to save and manage the compiling commands.
 class Command {
@@ -190,6 +190,23 @@ class Command {
   */
   Report executeFunctionReturn(class Machine* machine, int32& next_command_to_execute);
 
+
+/*****************************  TYPE CHECKING  ********************************/
+
+  /**
+  * @brief Check if the name is between quotes, which means that is a text.
+  *
+  * @return None (variable), Integer, Float or Text("string between quotes").
+  */
+  ValueType getNameDataType();
+
+  /**
+  * @brief Character analyzer getter, tells you if the character is a digit.
+  *
+  * @param character Character to analyze.
+  * @return true if it is a digit.
+  */
+  const bool isDigit(const char8& character);
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***
 *******************************************************************************/
