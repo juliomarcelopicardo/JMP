@@ -26,6 +26,7 @@ enum ValueType {
 };
 
 
+
 /// Class used to manage the different values used in the variables and the stack
 class Value {
 
@@ -52,7 +53,6 @@ class Value {
 
 
 
-/********************************  GETTERS  ***********************************/
 
  
 
@@ -85,6 +85,17 @@ class Value {
 
 
 }; /* Value */
+
+/*******************************  OPERATORS  **********************************/
+
+Value operator+(const Value&, const Value&);
+Value operator-(const Value&, const Value&);
+Value operator*(const Value&, const Value&);
+Value operator/(const Value&, const Value&);
+Value operator^(const Value&, const Value&);
+Value operator>(const Value&, const Value&);
+Value operator<(const Value&, const Value&);
+
 }; /* JMP */
 
 #endif /* __JMP_VALUE_H__ */
