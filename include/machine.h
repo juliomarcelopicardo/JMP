@@ -14,6 +14,7 @@
 #include "report.h"
 #include "command.h"
 #include "variable.h"
+#include "function.h"
 #include "token_manager.h"
 
 namespace JMP {
@@ -249,14 +250,6 @@ class Machine {
   std::vector<DefinedFunction> defined_function_list_;
   /// Defined function list length -> number of elements.
   int32 defined_function_list_length_;
-
-  /** Now we create a list of functions, that will be used to jump between different
-      function calls, getting it's variabes and being able to go back to the step
-      id where the function was called */
-  struct Function {
-    std::vector<Variable> variable_list;
-    int32 origin_id;
-  };
 
   /// List of functions used in the execution.
   std::vector<Function> function_list_;
