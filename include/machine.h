@@ -195,7 +195,7 @@ class Machine {
   *
   * @return Last value added to the stack, (default value if stack is empty).
   */
-  Value getAndRemoveTheStackValue();
+  Value getAndRemoveTheLastAddedStackValue();
 
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***

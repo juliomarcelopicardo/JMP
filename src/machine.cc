@@ -330,7 +330,7 @@ void Machine::addValueToTheStack(const Value value) {
   stack_length_++;
 }
 
-Value Machine::getAndRemoveTheStackValue() {
+Value Machine::getAndRemoveTheLastAddedStackValue() {
   Value value;
   if (stack_length_ <= 0) {
     ReportWarning(" Trying to extract a value from an empty stack.");

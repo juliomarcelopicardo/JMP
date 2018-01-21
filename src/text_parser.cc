@@ -237,8 +237,8 @@ Report TextParser::compileCloseBracketsSeparatorToken(Machine* machine,
   Tag tag = getAndRemoveLastTag();
   switch (tag) {
     case JMP::kTag_None:{ } break;
-    case JMP::kTag_Loop: { machine->addCommand(kCommandType_Finished, "loop"); } break;
-    case JMP::kTag_Conditional: { machine->addCommand(kCommandType_Finished, "conditional"); } break;
+    case JMP::kTag_Loop: { machine->addCommand(kCommandType_FinishedConditionalOrLoop, "loop"); } break;
+    case JMP::kTag_Conditional: { machine->addCommand(kCommandType_FinishedConditionalOrLoop, "conditional"); } break;
     case JMP::kTag_Function:{ } break;
   } 
   return kReport_NoErrors;
