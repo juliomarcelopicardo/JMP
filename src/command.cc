@@ -53,7 +53,7 @@ Report Command::execute(Machine* machine, int32& id) {
   switch (type_) {
     case JMP::kCommandType_None: { return kReport_NoErrors; } 
     case JMP::kCommandType_PushToTheStack: { return executePushToTheStack(machine, id); }
-    case JMP::kCommandType_Addition: {  }
+    case JMP::kCommandType_Addition: { return executeAddition(machine, id); }
     case JMP::kCommandType_Substraction: {  }
     case JMP::kCommandType_Multiply: {  }
     case JMP::kCommandType_Division: {  }
@@ -77,7 +77,12 @@ Report Command::execute(Machine* machine, int32& id) {
 }
 
 Report Command::executeAddition(Machine* machine, int32& next_cmd_id) {
-  return Report();
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first + second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
 }
 
 Report Command::executeSubstraction(Machine* machine, int32& next_cmd_id) {
