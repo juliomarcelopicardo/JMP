@@ -196,6 +196,13 @@ class Machine {
   */
   Function* getCurrentFunction();
 
+  /**
+  * @brief Removes a function from the execution function list.
+  *
+  * @param id ID or position in the list.
+  */
+  void removeFunction(const int32 id);
+
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***
 *******************************************************************************/

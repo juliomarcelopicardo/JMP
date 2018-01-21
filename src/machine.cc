@@ -353,10 +353,20 @@ void Machine::removeDefinedFunction(const int32 id) {
 *******************************************************************************/
 
 Function* Machine::getCurrentFunction() {
-  if (function_list_.size() == 0) {
+  if (function_list_length_ == 0) {
     return nullptr;
   }
-  return &function_list_[function_list_.size() - 1];
+  return &function_list_[function_list_length_ - 1];
+}
+
+void Machine::removeFunction(const int32 id) {
+  if (id >= 0 && id < function_list_length_) {
+    function_list_.erase(function_list_.begin() + id);
+    function_list_length_--;
+  }
+  else {
+    ReportWarning(" Can't remove function from the execution function list.");
+  }
 }
 
 /*******************************************************************************
