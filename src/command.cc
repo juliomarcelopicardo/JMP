@@ -66,7 +66,7 @@ Report Command::execute(Machine* machine, int32& id) {
     case JMP::kCommandType_FunctionReturn: { return executeAddition(machine, id); }
     case JMP::kCommandType_FunctionNumParameters: { return executeAddition(machine, id); }
     case JMP::kCommandType_FunctionParameter: { return executeAddition(machine, id); }
-    case JMP::kCommandType_Finished: { return executeAddition(machine, id); }
+    case JMP::kCommandType_FinishedConditionalOrLoop: { return executeFinishedConditionalOrLoop(machine, id); }
     case JMP::kCommandType_Started: { return executeAddition(machine, id); }
     case JMP::kCommandType_ConditionToEvaluate: { return executeAddition(machine, id); }
     case JMP::kCommandType_VariableDefinition: { return executeAddition(machine, id); }
@@ -105,38 +105,65 @@ Report Command::executePushToTheStack(Machine* machine, int32& next_cmd_id) {
   
   // We will check if its a quote.
   switch (getNameDataType()) {
-  case JMP::kValueType_None: { 
-    // TODO: Variable pushing.
-  } break;
-  case JMP::kValueType_Float: { 
-    machine->addValueToTheStack((float32)atof(name_.c_str()));
-  } break;
-  case JMP::kValueType_Integer: { 
-    machine->addValueToTheStack((int32)atoi(name_.c_str()));
-  } break;
-  case JMP::kValueType_Text: { 
-    std::string temp = name_;
-    // remove quotes.
-    temp.erase(0, 1);
-    temp.erase(temp.size() - 1, 1);
-    machine->addValueToTheStack({ temp.c_str() });
-  } break;
+    case JMP::kValueType_None: { 
+      // TODO: Variable pushing.
+    } break;
+    case JMP::kValueType_Float: { 
+      machine->addValueToTheStack((float32)atof(name_.c_str()));
+    } break;
+    case JMP::kValueType_Integer: { 
+      machine->addValueToTheStack((int32)atoi(name_.c_str()));
+    } break;
+    case JMP::kValueType_Text: { 
+      std::string temp = name_;
+      // remove quotes.
+      temp.erase(0, 1);
+      temp.erase(temp.size() - 1, 1);
+      machine->addValueToTheStack({ temp.c_str() });
+    } break;
   }
-  return kReport_InvalidValueType;
+
+  next_cmd_id++;
+  return kReport_NoErrors;
 }
+
+
 Report Command::executeFunctionDefinition(Machine* machine, int32& next_cmd_id) {
   return Report();
 }
+
 Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) {
   return Report();
 }
 
 
 
+Report Command::executeFinishedConditionalOrLoop(Machine* machine, int32& next_cmd_id) {
+  
+  if (name_ == "conditional") {
+    next_cmd_id++; // jump to the next command on the list
+    return kReport_NoErrors;
+  }
+  if (name_ == "loop") {
+    // if its the end of a loop, we will step back again to check the loop condition.
+    for (int32 i = next_cmd_id; i >= 0; i--) {
+      if (machine->getCommand(i).type_ == kCommandType_Loop) {
+        next_cmd_id = i; // Next step will be the init of the loop.
+        return kReport_NoErrors;
+      }
+    }
+  }
+
+  // if theres any error, we will jump to the next instruction.
+  next_cmd_id++;
+  ReportWarning("Unable to execute finished conditional or loop command");
+  return kReport_NoErrors;
+}
 
 /*******************************************************************************
 ***                            TYPE CHECKINGS                                ***
 *******************************************************************************/
+
 
 ValueType Command::getNameDataType() {
   int32 name_length = name_.size();
