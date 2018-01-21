@@ -229,7 +229,107 @@ Value operator^(const Value& a, const Value& b) {
     return{ pow(a.float_, b.integer_) };
   }
 
-  ReportWarning("Value Multiply Operation Failed.");
+  ReportWarning("Value Power Operation Failed.");
+  return Value();
+}
+
+Value operator>(const Value& a, const Value& b) {
+  // integer > integer = bool 
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
+    return{ a.integer_ > b.integer_ };
+  }
+
+  // float > float = bool 
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
+    return{ a.float_ > b.float_ };
+  }
+
+  // text > text = bool 
+  if (a.type_ == kValueType_Text && b.type_ == kValueType_Text) {
+    return{ a.text_ > b.text_ };
+  }
+
+  // integer > float = bool
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Float) {
+    return{ a.integer_ > b.float_ };
+  }
+
+  // float > integer = bool
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Integer) {
+    return{ a.float_ > b.integer_ };
+  }
+
+  // integer > text = bool
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Text) {
+    return{ std::to_string(a.integer_) > b.text_ };
+  }
+
+  // float > text = bool
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Text) {
+    return{ std::to_string(a.float_) > b.text_ };
+  }
+
+  // text > integer = bool
+  if (b.type_ == kValueType_Integer && a.type_ == kValueType_Text) {
+    return{ a.text_ > std::to_string(b.integer_) };
+  }
+
+  // text > float = bool
+  if (b.type_ == kValueType_Float && a.type_ == kValueType_Text) {
+    return{ a.text_ > std::to_string(b.float_) };
+  }
+
+  ReportWarning("Value Greater Than Comparison Operation Failed.");
+  return Value();
+}
+
+Value operator<(const Value& a, const Value& b) {
+  // integer < integer = bool 
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
+    return{ a.integer_ < b.integer_ };
+  }
+
+  // float < float = bool 
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
+    return{ a.float_ < b.float_ };
+  }
+
+  // text < text = bool 
+  if (a.type_ == kValueType_Text && b.type_ == kValueType_Text) {
+    return{ a.text_ < b.text_ };
+  }
+
+  // integer < float = bool
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Float) {
+    return{ a.integer_ < b.float_ };
+  }
+
+  // float < integer = bool
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Integer) {
+    return{ a.float_ < b.integer_ };
+  }
+
+  // integer < text = bool
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Text) {
+    return{ std::to_string(a.integer_) < b.text_ };
+  }
+
+  // float < text = bool
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Text) {
+    return{ std::to_string(a.float_) < b.text_ };
+  }
+
+  // text < integer = bool
+  if (b.type_ == kValueType_Integer && a.type_ == kValueType_Text) {
+    return{ a.text_ < std::to_string(b.integer_) };
+  }
+
+  // text < float = bool
+  if (b.type_ == kValueType_Float && a.type_ == kValueType_Text) {
+    return{ a.text_ < std::to_string(b.float_) };
+  }
+
+  ReportWarning("Value Greater Than Comparison Operation Failed.");
   return Value();
 }
 
