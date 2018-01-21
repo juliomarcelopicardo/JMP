@@ -59,8 +59,8 @@ Report Command::execute(Machine* machine, int32& id) {
     case JMP::kCommandType_Division: { return executeDivision(machine, id); }
     case JMP::kCommandType_Power: { return executePower(machine, id); }
     case JMP::kCommandType_EqualAssigment: {  }
-    case JMP::kCommandType_GreaterThanComparison: {  }
-    case JMP::kCommandType_LowerThanComparison: {  }
+    case JMP::kCommandType_GreaterThanComparison: { return executeGreaterThan(machine, id); }
+    case JMP::kCommandType_LowerThanComparison: { return executeLowerThan(machine, id); }
     case JMP::kCommandType_FunctionDefinition: {  }
     case JMP::kCommandType_FunctionCall: {  }
     case JMP::kCommandType_FunctionReturn: {  }
@@ -121,10 +121,20 @@ Report Command::executeEqualAssignment(Machine* machine, int32& next_cmd_id) {
   return Report();
 }
 Report Command::executeGreaterThan(Machine* machine, int32& next_cmd_id) {
-  return Report();
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first > second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
 }
 Report Command::executeLowerThan(Machine* machine, int32& next_cmd_id) {
-  return Report();
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first < second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
 }
 Report Command::executePushToTheStack(Machine* machine, int32& next_cmd_id) {
   
