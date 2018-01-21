@@ -86,7 +86,12 @@ Report Command::executeAddition(Machine* machine, int32& next_cmd_id) {
 }
 
 Report Command::executeSubstraction(Machine* machine, int32& next_cmd_id) {
-  return Report();
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first - second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
 }
 Report Command::executeMultiply(Machine* machine, int32& next_cmd_id) {
   return Report();
