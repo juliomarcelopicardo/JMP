@@ -153,7 +153,7 @@ class Machine {
   */
   void unregisterVariable(const int32 id);
 
-/**********************  DEFINED FUNCTION LIST METHODS  ************************/
+/**********************  DEFINED FUNCTION LIST METHODS  ***********************/
 
   /**
   * @brief Adds a new function to the list.
@@ -221,15 +221,22 @@ class Machine {
 ***                          PRIVATE ATTRIBUTES                              ***
 *******************************************************************************/
 
+/*****************************  COMMAND LIST **********************************/
+
 /// List of all the compiling commands.
   std::vector<Command> cmd_list_;
   /// Number of elements of the list.
   int32 cmd_list_length_;
 
+/************************* VARIABLE REGISTRY LIST *****************************/
+
   /// List of all the variable registered.
   std::vector<Variable> variable_registry_;
   /// Number of elements of the list.
   int32 variable_registry_length_;
+
+
+/***************************** FUNCTION LISTS *********************************/
 
   /** Everytime we declare a function in the script, we will add here its command
       As we will need its position in the command list to execute it. */
@@ -242,6 +249,21 @@ class Machine {
   std::vector<DefinedFunction> defined_function_list_;
   /// Defined function list length -> number of elements.
   int32 defined_function_list_length_;
+
+  /** Now we create a list of functions, that will be used to jump between different
+      function calls, getting it's variabes and being able to go back to the step
+      id where the function was called */
+  struct Function {
+    std::vector<Variable> variable_list;
+    int32 origin_id;
+  };
+
+  /// List of functions used in the execution.
+  std::vector<Function> function_list_;
+  /// Number of functions.
+  int32 function_list_length_;
+
+/***************************** STACK OF VALUES ********************************/
 
   /// Stack of inmediate values.
   std::vector<Value> stack_;

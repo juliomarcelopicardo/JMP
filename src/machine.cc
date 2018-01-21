@@ -25,9 +25,11 @@ Machine::Machine() {
   cmd_list_length_ = 0;
   cmd_list_.reserve(50);
   stack_.reserve(50);
+  function_list_.reserve(10);
   variable_registry_length_ = 0;
   defined_function_list_length_ = 0;
   stack_length_ = 0;
+  function_list_length_ = 0;
 }
 
 Machine::~Machine() {
@@ -35,6 +37,7 @@ Machine::~Machine() {
   variable_registry_.clear();
   defined_function_list_.clear();
   stack_.clear();
+  function_list_.clear();
 }
 
 
