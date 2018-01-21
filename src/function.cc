@@ -72,12 +72,12 @@ const int32 Function::getVariableID(const std::string& variable_name) {
   return INVALID_FUNCTION_ID;
 }
 
-const Variable Function::getVariable(const std::string& variable_name) {
+Variable* Function::getVariable(const std::string& variable_name) {
   int32 id = getVariableID(variable_name);
   if (id != INVALID_FUNCTION_ID) {
-    return variable_list_[id];
+    return &variable_list_[id];
   }
-  return Variable();
+  return nullptr;
 }
 
 const int32 Function::numVariables() {

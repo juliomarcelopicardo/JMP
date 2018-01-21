@@ -273,9 +273,24 @@ void Machine::unregisterVariable(const int32 id) {
   ReportWarning(warning);
 }
 
-Variable * Machine::getVariable(const std::string & variable_name)
-{
-  // TODO:
+Variable* Machine::getVariable(const std::string& variable_name) {
+  
+  // 1st step will be to look for the variable into the current function scope.
+  Function* function = getCurrentFunction();
+  if (function) {
+    Variable* variable = function->getVariable(variable_name);
+    if (variable) {
+      return variable;
+    }
+  }
+
+  // If not found, we will look for it in the variable registry.
+  for (int32 i = 0; i < variable_registry_length_; i++) {
+    if (variable_registry_[i].name_ == variable_name) {
+      return &variable_registry_[i];
+    }
+  }
+
   return nullptr;
 }
 

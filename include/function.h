@@ -64,12 +64,12 @@ class Function {
   const int32 getVariableID(const std::string& variable_name);
 
   /**
-  * @brief Looks for a variable in the list and return a copy.
+  * @brief Looks for a variable in the list.
   *
   * @param variable_name Name of the variable that we are looking for.
-  * @return Variable from the list.
+  * @return Pointer to the variable from the list. Nullptr if not found.
   */
-  const Variable getVariable(const std::string& variable_name);
+  Variable* getVariable(const std::string& variable_name);
 
   /**
   * @brief Number of variables allocated in the list getter. List length.
