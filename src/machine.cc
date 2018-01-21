@@ -80,6 +80,8 @@ Report Machine::processFile(std::string script_filename) {
     line_num++;
   }
   
+  script.clear();
+  script.close();
 
   return report;
 }
