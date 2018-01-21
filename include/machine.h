@@ -183,6 +183,24 @@ class Machine {
 ***                           PUBLIC ATTRIBUTES                              ***
 *******************************************************************************/
 
+  /**
+  * @brief Push back a value into the stack.
+  *
+  * @param value Value to push back.
+  */
+  void addValueToTheStack(const Value value);
+
+  /**
+  * @brief Gets and removes the last value added to the stack.
+  *
+  * @return Last value added to the stack, (default value if stack is empty).
+  */
+  Value getAndRemoveTheStackValue();
+
+/*******************************************************************************
+***                           PUBLIC ATTRIBUTES                              ***
+*******************************************************************************/
+
 
 
 
@@ -207,6 +225,7 @@ class Machine {
   std::vector<Command> cmd_list_;
   /// Number of elements of the list.
   int32 cmd_list_length_;
+
   /// List of all the variable registered.
   std::vector<Variable> variable_registry_;
   /// Number of elements of the list.
@@ -223,6 +242,11 @@ class Machine {
   std::vector<DefinedFunction> defined_function_list_;
   /// Defined function list length -> number of elements.
   int32 defined_function_list_length_;
+
+  /// Stack of inmediate values.
+  std::vector<Value> stack_;
+  /// Number of elements of the stack.
+  int32 stack_length_;
 
 }; /* Machine */
 }; /* JMP */

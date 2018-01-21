@@ -24,14 +24,17 @@ namespace JMP {
 Machine::Machine() {
   cmd_list_length_ = 0;
   cmd_list_.reserve(50);
+  stack_.reserve(50);
   variable_registry_length_ = 0;
   defined_function_list_length_ = 0;
+  stack_length_ = 0;
 }
 
 Machine::~Machine() {
   cmd_list_.clear();
   variable_registry_.clear();
   defined_function_list_.clear();
+  stack_.clear();
 }
 
 
@@ -265,6 +268,11 @@ void Machine::unregisterVariable(const int32 id) {
   ReportWarning(warning);
 }
 
+
+/*******************************************************************************
+***                      DEFINED FUNCTION LIST METHODS                       ***
+*******************************************************************************/
+
 Report Machine::addDefinedFunction(const char* name, const int32 command_index) {
   // Error checkings
   if (!name) {
@@ -313,10 +321,28 @@ void Machine::removeDefinedFunction(const int32 id) {
   ReportWarning(warning);
 }
 
-
 /*******************************************************************************
-***                      DEFINED FUNCTION LIST METHODS                       ***
+***                             STACK METHODS                                ***
 *******************************************************************************/
+
+void Machine::addValueToTheStack(const Value value) {
+  stack_.push_back(value);
+  stack_length_++;
+}
+
+Value Machine::getAndRemoveTheStackValue() {
+  Value value;
+  if (stack_length_ <= 0) {
+    ReportWarning(" Trying to extract a value from an empty stack.");
+    return value;
+  }
+  value = stack_[stack_length_ - 1];
+  stack_.erase(stack_.begin() + stack_length_ - 1);
+  stack_length_--;
+  return value;
+}
+
+
 
 
 
