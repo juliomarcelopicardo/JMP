@@ -154,6 +154,13 @@ class Machine {
   */
   void unregisterVariable(const int32 id);
 
+  /**
+  * @brief Variable getter, will look for it in the function lists and in the variable registry.
+  *
+  * @param Variable pointer, nullptr if not found.
+  */
+  Variable* getVariable(const std::string& variable_name);
+
 /**********************  DEFINED FUNCTION LIST METHODS  ***********************/
 
   /**
@@ -179,6 +186,15 @@ class Machine {
   */
   void removeDefinedFunction(const int32 id);
 
+
+/**********************  EXECUTION FUNCTION LIST METHODS  **********************/
+
+  /**
+  * @brief Last function added getter.
+  *
+  * @return Function pointer, or nullptr if not found.
+  */
+  Function* getCurrentFunction();
 
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***

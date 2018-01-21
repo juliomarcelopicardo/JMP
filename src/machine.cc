@@ -273,6 +273,12 @@ void Machine::unregisterVariable(const int32 id) {
   ReportWarning(warning);
 }
 
+Variable * Machine::getVariable(const std::string & variable_name)
+{
+  // TODO:
+  return nullptr;
+}
+
 
 /*******************************************************************************
 ***                      DEFINED FUNCTION LIST METHODS                       ***
@@ -324,6 +330,18 @@ void Machine::removeDefinedFunction(const int32 id) {
   char warning[64];
   sprintf_s(warning, 64, "Invalid function id. Remove Defined Function failed");
   ReportWarning(warning);
+}
+
+
+/*******************************************************************************
+***                     EXECUTION FUNCTION LIST METHODS                      ***
+*******************************************************************************/
+
+Function* Machine::getCurrentFunction() {
+  if (function_list_.size() == 0) {
+    return nullptr;
+  }
+  return &function_list_[function_list_.size() - 1];
 }
 
 /*******************************************************************************
