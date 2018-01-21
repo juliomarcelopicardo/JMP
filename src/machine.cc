@@ -134,7 +134,7 @@ Report Machine::runFunction(std::string function_call_sentence) {
     if (report != kReport_NoErrors) { break; }
   }
 
-  if (report == kReport_ReturnCalled) { report = kReport_NoErrors; }
+  if (report == kReport_LastActiveFunctionReturnCalled) { report = kReport_NoErrors; }
 
   // Delete the commands added from the other machine.
   for (int32 i = 0; i < num_commands_added; i++) {
@@ -367,6 +367,14 @@ void Machine::removeFunction(const int32 id) {
   else {
     ReportWarning(" Can't remove function from the execution function list.");
   }
+}
+
+void Machine::removeCurrentFunction() {
+  removeFunction(function_list_length_ - 1);
+}
+
+const int32 Machine::numActiveFunctions() {
+  return function_list_length_;
 }
 
 /*******************************************************************************

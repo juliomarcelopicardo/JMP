@@ -203,6 +203,18 @@ class Machine {
   */
   void removeFunction(const int32 id);
 
+  /**
+  * @brief Removes the last function from the execution function list.
+  */
+  void removeCurrentFunction();
+
+  /**
+  * @brief function list length getter.
+  *
+  * @return number of active functions, function list length.
+  */
+  const int32 numActiveFunctions();
+
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***
 *******************************************************************************/
