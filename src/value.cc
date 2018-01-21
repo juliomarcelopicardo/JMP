@@ -12,50 +12,6 @@
 
 namespace JMP {
 
-/*******************************************************************************
-***                               OPERATORS                                  ***
-*******************************************************************************/
-
-Value operator+(const Value& a, const Value& b) {
-  // integer + integer = integer 
-  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
-    return { a.integer_ + b.integer_ };
-  }
-
-  // float + float = float 
-  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
-    return { a.float_ + b.float_ };
-  }
-
-  // text + text = text 
-  if (a.type_ == kValueType_Text && b.type_ == kValueType_Text) {
-    return { (a.text_ + b.text_).c_str() };
-  }
-
-  // integer + text = text
-  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Text) {
-    return { (std::to_string(a.integer_) + b.text_).c_str() };
-  }
-
-  // float + text = text
-  if (a.type_ == kValueType_Float && b.type_ == kValueType_Text) {
-    return{ (std::to_string(a.float_) + b.text_).c_str() };
-  }
-
-  // text + integer = text
-  if (b.type_ == kValueType_Integer && a.type_ == kValueType_Text) {
-    return{ (a.text_ + std::to_string(b.integer_)).c_str() };
-  }
-
-  // text + float = text
-  if (b.type_ == kValueType_Float && a.type_ == kValueType_Text) {
-    return{ (a.text_ + std::to_string(b.float_)).c_str() };
-  }
-
-  ReportWarning("Value Addition Operation Failed.");
-  return Value();
-}
-
 
 /*******************************************************************************
 ***                       CONSTRUCTOR & DESTRUCTOR                           ***
@@ -109,7 +65,84 @@ Value& Value::operator=(const Value& copy) {
 
 
 
+/*******************************************************************************
+***                               OPERATORS                                  ***
+*******************************************************************************/
+
+Value operator+(const Value& a, const Value& b) {
+  // integer + integer = integer 
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
+    return{ a.integer_ + b.integer_ };
+  }
+
+  // float + float = float 
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
+    return{ a.float_ + b.float_ };
+  }
+
+  // text + text = text 
+  if (a.type_ == kValueType_Text && b.type_ == kValueType_Text) {
+    return{ (a.text_ + b.text_).c_str() };
+  }
+
+  // integer + float = float
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Float) {
+    return{ (float32)a.integer_ + b.float_ };
+  }
+
+  // float + integer = float
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Integer) {
+    return{ a.float_ + (float32)b.integer_ };
+  }
+
+  // integer + text = text
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Text) {
+    return{ (std::to_string(a.integer_) + b.text_).c_str() };
+  }
+
+  // float + text = text
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Text) {
+    return{ (std::to_string(a.float_) + b.text_).c_str() };
+  }
+
+  // text + integer = text
+  if (b.type_ == kValueType_Integer && a.type_ == kValueType_Text) {
+    return{ (a.text_ + std::to_string(b.integer_)).c_str() };
+  }
+
+  // text + float = text
+  if (b.type_ == kValueType_Float && a.type_ == kValueType_Text) {
+    return{ (a.text_ + std::to_string(b.float_)).c_str() };
+  }
+
+  ReportWarning("Value Addition Operation Failed.");
+  return Value();
+}
 
 
+Value operator-(const Value& a, const Value& b) {
+  // integer - integer = integer 
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
+    return{ a.integer_ - b.integer_ };
+  }
+
+  // float - float = float 
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
+    return{ a.float_ - b.float_ };
+  }
+
+  // integer - float = float
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Float) {
+    return{ (float32)a.integer_ - b.float_ };
+  }
+
+  // float - integer = float
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Integer) {
+    return{ a.float_ - (float32)b.integer_ };
+  }
+
+  ReportWarning("Value Substraction Operation Failed.");
+  return Value();
+}
 
 }; /* JMP */
