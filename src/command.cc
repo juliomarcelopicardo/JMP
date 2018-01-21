@@ -53,24 +53,24 @@ Report Command::execute(Machine* machine, int32& id) {
   switch (type_) {
     case JMP::kCommandType_None: { return kReport_NoErrors; } 
     case JMP::kCommandType_PushToTheStack: { return executePushToTheStack(machine, id); }
-    case JMP::kCommandType_Addition: { return executeAddition(machine, id); }
-    case JMP::kCommandType_Substraction: { return executeAddition(machine, id); }
-    case JMP::kCommandType_Multiply: { return executeAddition(machine, id); }
-    case JMP::kCommandType_Division: { return executeAddition(machine, id); }
-    case JMP::kCommandType_Power: { return executeAddition(machine, id); }
-    case JMP::kCommandType_EqualAssigment: { return executeAddition(machine, id); }
-    case JMP::kCommandType_GreaterThanComparison: { return executeAddition(machine, id); }
-    case JMP::kCommandType_LowerThanComparison: { return executeAddition(machine, id); }
-    case JMP::kCommandType_FunctionDefinition: { return executeAddition(machine, id); }
-    case JMP::kCommandType_FunctionCall: { return executeAddition(machine, id); }
-    case JMP::kCommandType_FunctionReturn: { return executeAddition(machine, id); }
-    case JMP::kCommandType_FunctionNumParameters: { return executeAddition(machine, id); }
-    case JMP::kCommandType_FunctionParameter: { return executeAddition(machine, id); }
+    case JMP::kCommandType_Addition: {  }
+    case JMP::kCommandType_Substraction: {  }
+    case JMP::kCommandType_Multiply: {  }
+    case JMP::kCommandType_Division: {  }
+    case JMP::kCommandType_Power: {  }
+    case JMP::kCommandType_EqualAssigment: {  }
+    case JMP::kCommandType_GreaterThanComparison: {  }
+    case JMP::kCommandType_LowerThanComparison: {  }
+    case JMP::kCommandType_FunctionDefinition: {  }
+    case JMP::kCommandType_FunctionCall: {  }
+    case JMP::kCommandType_FunctionReturn: {  }
+    case JMP::kCommandType_FunctionNumParameters: {  }
+    case JMP::kCommandType_FunctionParameter: {  }
     case JMP::kCommandType_FinishedConditionalOrLoop: { return executeFinishedConditionalOrLoop(machine, id); }
-    case JMP::kCommandType_Started: { return executeAddition(machine, id); }
-    case JMP::kCommandType_ConditionToEvaluate: { return executeAddition(machine, id); }
-    case JMP::kCommandType_VariableDefinition: { return executeAddition(machine, id); }
-    case JMP::kCommandType_Loop: {} 
+    case JMP::kCommandType_Started: {  }
+    case JMP::kCommandType_ConditionToEvaluate: {  }
+    case JMP::kCommandType_VariableDefinition: {  }
+    case JMP::kCommandType_LoopStartPoint: { return executeLoopStartPoint(machine, id); }
   }
 
   return kReport_InvalidCommandType;
@@ -147,7 +147,7 @@ Report Command::executeFinishedConditionalOrLoop(Machine* machine, int32& next_c
   if (name_ == "loop") {
     // if its the end of a loop, we will step back again to check the loop condition.
     for (int32 i = next_cmd_id; i >= 0; i--) {
-      if (machine->getCommand(i).type_ == kCommandType_Loop) {
+      if (machine->getCommand(i).type_ == kCommandType_LoopStartPoint) {
         next_cmd_id = i; // Next step will be the init of the loop.
         return kReport_NoErrors;
       }
@@ -157,6 +157,11 @@ Report Command::executeFinishedConditionalOrLoop(Machine* machine, int32& next_c
   // if theres any error, we will jump to the next instruction.
   next_cmd_id++;
   ReportWarning("Unable to execute finished conditional or loop command");
+  return kReport_NoErrors;
+}
+
+Report Command::executeLoopStartPoint(Machine* machine, int32& next_cmd_id) {
+  next_cmd_id++; // Just go to the next step that would be the condition check.
   return kReport_NoErrors;
 }
 

@@ -498,7 +498,7 @@ Report TextParser::compileLoopKeywordToken(Machine* machine,
   }
 
   if (token_manager.getToken(token_index).text_ == "while") {
-    machine->addCommand(kCommandType_Loop);
+    machine->addCommand(kCommandType_LoopStartPoint);
     // removing the loop ("while") keyword.
     token_manager.removeToken(token_index);
 

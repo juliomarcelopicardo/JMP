@@ -46,7 +46,7 @@ enum CommandType {
   // Variable definition
   kCommandType_VariableDefinition,
   // Loop
-  kCommandType_Loop,
+  kCommandType_LoopStartPoint,
 };
 
 /// Class used to save and manage the compiling commands.
@@ -216,6 +216,16 @@ class Command {
   * @return Report with possible errors, or NoErrors if succesful.
   */
   Report executeFinishedConditionalOrLoop(class Machine* machine, int32& next_command_to_execute);
+
+  /**
+  * @brief Executes the LoopStartPoint command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeLoopStartPoint(class Machine* machine, int32& next_command_to_execute);
+
 
 /*****************************  TYPE CHECKING  ********************************/
 
