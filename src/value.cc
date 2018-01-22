@@ -25,6 +25,19 @@ Value::Value() {
   integer_ = INITIALIZATION_VALUE;
 }
 
+Value::Value(const bool condition_result) {
+
+  type_ = kValueType_Integer;
+  text_ = "BOOLEAN";
+  float_ = INITIALIZATION_VALUE;
+  if (condition_result) {
+    integer_ = CONDITION_RESULT_TRUE;
+  }
+  else {
+    integer_ = 0;
+  }
+}
+
 Value::Value(const int32 integer_value) {
   type_ = kValueType_Integer;
   text_ = "";

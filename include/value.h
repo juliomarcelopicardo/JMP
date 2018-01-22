@@ -16,6 +16,7 @@
 namespace JMP {
 
 #define INITIALIZATION_VALUE -99999
+#define CONDITION_RESULT_TRUE 30 // Random number
 
 /// Value type.
 enum ValueType {
@@ -38,6 +39,8 @@ class Value {
 
   /// Default class constructor.
   Value();
+  /// Overloaded class constructor.
+  Value(const bool condition_result);
   /// Overloaded class constructor.
   Value(const int32 integer_value);
   /// Overloaded class constructor.
