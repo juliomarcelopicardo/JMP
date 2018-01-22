@@ -403,6 +403,10 @@ Value Machine::getAndRemoveTheLastAddedStackValue() {
   return value;
 }
 
+int32 Machine::numStackValues() {
+  return stack_length_;
+}
+
 
 
 

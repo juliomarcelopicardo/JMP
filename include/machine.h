@@ -242,6 +242,13 @@ class Machine {
   */
   Value getAndRemoveTheLastAddedStackValue();
 
+  /**
+  * @brief Gets the number of values allocated in the stack.
+  *
+  * @return number of values.
+  */
+  int32 numStackValues();
+
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***
 *******************************************************************************/
