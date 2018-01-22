@@ -50,6 +50,7 @@ namespace JMP {
     kReport_InvalidValueType,
     kReport_ReturnCalledWithoutAnyActiveFunction,
     kReport_NotEnoughFunctionParamsInTheStack,
+    kReport_ParamsNeedAFunctionToBeExecuted,
   };
 
   void ReportMsg(std::string msg);
