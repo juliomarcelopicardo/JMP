@@ -21,6 +21,12 @@ Variable::Variable() {
   pointer_to_the_original_ = nullptr;
 }
 
+Variable::Variable(const char* name) {
+  is_registered_ = false;
+  name_ = name;
+  pointer_to_the_original_ = nullptr;
+}
+
 Variable::Variable(const char* name, int32 integer_value) {
   is_registered_ = false;
   name_ = name;

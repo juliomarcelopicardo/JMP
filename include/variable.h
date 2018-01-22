@@ -31,6 +31,8 @@ class Variable {
   /// Default class constructor.
   Variable();
   /// Overloaded class constructor.
+  Variable(const char* name);
+  /// Overloaded class constructor.
   Variable(const char* name, int32 integer_value);
   /// Overloaded class constructor.
   Variable(const char* name, float32 float_value);
