@@ -40,7 +40,6 @@ enum CommandType {
   kCommandType_FunctionParameter,
   // Body state -> Conditional, loop iteration or function body ended.
   kCommandType_FinishedConditionalOrLoop,
-  kCommandType_Started,
   // Condition Evaluation, can be the condition of a loop or an if.
   kCommandType_ConditionToEvaluate,
   // Variable definition
@@ -216,15 +215,6 @@ class Command {
   * @return Report with possible errors, or NoErrors if succesful.
   */
   Report executeFinishedConditionalOrLoop(class Machine* machine, int32& next_command_to_execute);
-
-  /**
-  * @brief Executes the Started command from the list.
-  *
-  * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
-  * @return Report with possible errors, or NoErrors if succesful.
-  */
-  Report executeStarted(class Machine* machine, int32& next_command_to_execute);
 
   /**
   * @brief Executes the ConditionToEvaluate command from the list.

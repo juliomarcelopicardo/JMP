@@ -67,9 +67,8 @@ Report Command::execute(Machine* machine, int32& id) {
     case JMP::kCommandType_FunctionNumParameters: { return executeFunctionNumParams(machine, id); }
     case JMP::kCommandType_FunctionParameter: { return executeFunctionParam(machine, id); }
     case JMP::kCommandType_FinishedConditionalOrLoop: { return executeFinishedConditionalOrLoop(machine, id); }
-    case JMP::kCommandType_Started: {  }
     case JMP::kCommandType_ConditionToEvaluate: {  }
-    case JMP::kCommandType_VariableDefinition: {  }
+    case JMP::kCommandType_VariableDefinition: { return executeVariableDefinition(machine, id); }
     case JMP::kCommandType_LoopStartPoint: { return executeLoopStartPoint(machine, id); }
   }
 
@@ -254,12 +253,6 @@ Report Command::executeFinishedConditionalOrLoop(Machine* machine, int32& next_c
   next_cmd_id++;
   ReportWarning("Unable to execute finished conditional or loop command");
   return kReport_NoErrors;
-}
-
-
-Report Command::executeStarted(Machine* machine, int32& next_cmd_id) {
-
-  return Report();
 }
 
 
