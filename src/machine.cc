@@ -294,6 +294,11 @@ Variable* Machine::getVariable(const std::string& variable_name) {
   return nullptr;
 }
 
+void Machine::addFunction(const int32 origin_id) {
+  function_list_.push_back({ origin_id });
+  function_list_length_++;
+}
+
 
 /*******************************************************************************
 ***                      DEFINED FUNCTION LIST METHODS                       ***

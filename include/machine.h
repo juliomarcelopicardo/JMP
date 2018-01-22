@@ -166,6 +166,13 @@ class Machine {
   /**
   * @brief Adds a new function to the list.
   *
+  * @param origin_id Once finished the execution of the function will return to this command.
+  */
+  void addFunction(const int32 origin_id);
+
+  /**
+  * @brief Adds a new function to the list.
+  *
   * @param name Name of the function.
   * @param command_index Position in the list of commands.
   * @return kReport_NoErrors if succesful.
@@ -188,6 +195,8 @@ class Machine {
 
 
 /**********************  EXECUTION FUNCTION LIST METHODS  **********************/
+
+
 
   /**
   * @brief Last function added getter.
