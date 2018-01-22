@@ -42,6 +42,13 @@ Variable::Variable(const char* name, const char* text_value) {
   value_ = { text_value };
 }
 
+Variable::Variable(const char* name, Value value) {
+  is_registered_ = false;
+  name_ = name;
+  pointer_to_the_original_ = nullptr;
+  value_ = value;
+}
+
 Variable::Variable(const char* name, ValueType type, void* ptr_to_the_original) {
   is_registered_ = true;
   name_ = name;

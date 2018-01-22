@@ -37,6 +37,8 @@ class Variable {
   /// Overloaded class constructor.
   Variable(const char* name, const char* text_value);
   /// Overloaded class constructor.
+  Variable(const char* name, Value value);
+  /// Overloaded class constructor.
   Variable(const char* name, ValueType type, void* ptr_to_the_original);
   /// Default class destructor.
   ~Variable();
