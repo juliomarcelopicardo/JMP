@@ -182,8 +182,27 @@ Report Command::executeFunctionDefinition(Machine* machine, int32& next_cmd_id) 
 }
 
 Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) {
-  // TODO:
-  return Report();
+
+  // First step will be checking if the function is called PRINT.
+  if (name_ == "PRINT") {
+    machine->getAndRemoveTheLastAddedStackValue().print();
+    next_cmd_id++; // Jump to the next command
+    return kReport_NoErrors;
+  }
+
+  // TODO, function register. to execute functions from C++
+
+  // Look for the function in the registry to know where its body starts.
+  int32 function_start_command_id = machine->getDefinedFunctionID(name_.c_str());
+  if (function_start_command_id != INVALID_FUNCTION_ID) {
+    // Then we will push a new function and we will assign the next command to 
+    // be the returning point.
+    machine->addFunction(next_cmd_id + 1); // To continue the execution after finishing it.
+    next_cmd_id = function_start_command_id + 1; // To avoid the step of function definition.
+    kReport_NoErrors;
+  }
+
+  return kReport_CallingUndefinedFunction;
 }
 
 Report Command::executeFunctionReturn(Machine* machine, int32& next_cmd_id) {
