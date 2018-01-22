@@ -61,7 +61,7 @@ Report Command::execute(Machine* machine, int32& id) {
     case JMP::kCommandType_GreaterThanComparison: { return executeGreaterThan(machine, id); }
     case JMP::kCommandType_LowerThanComparison: { return executeLowerThan(machine, id); }
     case JMP::kCommandType_FunctionDefinition: { return executeFunctionDefinition(machine, id); }
-    case JMP::kCommandType_FunctionCall: {  }
+    case JMP::kCommandType_FunctionCall: { return executeFunctionCall(machine, id); }
     case JMP::kCommandType_FunctionReturn: { return executeFunctionReturn(machine, id); }
     case JMP::kCommandType_FunctionNumParameters: { return executeFunctionNumParams(machine, id); }
     case JMP::kCommandType_FunctionParameter: { return executeFunctionParam(machine, id); }
@@ -199,7 +199,7 @@ Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) {
     // be the returning point.
     machine->addFunction(next_cmd_id + 1); // To continue the execution after finishing it.
     next_cmd_id = function_start_command_id + 1; // To avoid the step of function definition.
-    kReport_NoErrors;
+    return kReport_NoErrors;
   }
 
   return kReport_CallingUndefinedFunction;
