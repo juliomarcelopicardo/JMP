@@ -61,7 +61,7 @@ Report Command::execute(Machine* machine, int32& id) {
     case JMP::kCommandType_EqualAssigment: { return executeEqualAssignment(machine, id); }
     case JMP::kCommandType_GreaterThanComparison: { return executeGreaterThan(machine, id); }
     case JMP::kCommandType_LowerThanComparison: { return executeLowerThan(machine, id); }
-    case JMP::kCommandType_FunctionDefinition: {  }
+    case JMP::kCommandType_FunctionDefinition: { return executeFunctionDefinition(machine, id); }
     case JMP::kCommandType_FunctionCall: {  }
     case JMP::kCommandType_FunctionReturn: { return executeFunctionReturn(machine, id); }
     case JMP::kCommandType_FunctionNumParameters: {  }
@@ -178,7 +178,9 @@ Report Command::executePushToTheStack(Machine* machine, int32& next_cmd_id) {
 
 
 Report Command::executeFunctionDefinition(Machine* machine, int32& next_cmd_id) {
-  return Report();
+  next_cmd_id++; // Jump to the next command
+  machine->addFunction(next_cmd_id);
+  return kReport_NoErrors;
 }
 
 Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) {
