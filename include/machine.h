@@ -166,18 +166,20 @@ class Machine {
   /**
   * @brief Adds a new function to the list.
   *
-  * @param origin_id Once finished the execution of the function will return to this command.
-  */
-  void addFunction(const int32 origin_id);
-
-  /**
-  * @brief Adds a new function to the list.
-  *
   * @param name Name of the function.
   * @param command_index Position in the list of commands.
   * @return kReport_NoErrors if succesful.
   */
   Report addDefinedFunction(const char* name, const int32 command_index);
+
+  /**
+  * @brief Looks for a function in the defined function list and return its ID.
+  *
+  * @param name Name of the function.
+  * @param command_index Position in the list of commands.
+  * @return The ID which is the command where the function body starts.
+  */
+  int32 getDefinedFunctionID(const char* name);
 
   /**
   * @brief removes a function from the defined function list.
@@ -196,6 +198,13 @@ class Machine {
 
 /**********************  EXECUTION FUNCTION LIST METHODS  **********************/
 
+
+  /**
+  * @brief Adds a new function to the list.
+  *
+  * @param origin_id Once finished the execution of the function will return to this command.
+  */
+  void addFunction(const int32 origin_id);
 
 
   /**

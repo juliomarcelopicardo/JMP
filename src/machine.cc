@@ -327,6 +327,18 @@ Report Machine::addDefinedFunction(const char* name, const int32 command_index) 
   return kReport_NoErrors;
 }
 
+int32 Machine::getDefinedFunctionID(const char* name) {
+  std::string function_name = name;
+  for (int32 i = 0; i < defined_function_list_length_; i++) {
+    if (defined_function_list_[i].name == function_name) {
+      return defined_function_list_[i].command_index;
+    }
+  }
+
+  ReportError("Function not defined, so theres no ID for function name: " + function_name);
+  return INVALID_FUNCTION_ID;
+}
+
 void Machine::removeDefinedFunction(const char* name) {
   for (int32 i = 0; i < defined_function_list_length_; i++) {
     if (name == defined_function_list_[i].name) {
