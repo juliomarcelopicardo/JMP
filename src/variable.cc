@@ -169,6 +169,32 @@ Report Variable::setValue(const Value value) {
 
 
 
+/*******************************************************************************
+***                                GETTERS                                   ***
+*******************************************************************************/
 
+const Value Variable::getValue() {
+  if (!is_registered_) {
+    return value_;
+  }
+
+  if (value_.type_ == kValueType_Text) {
+    std::string* ptr = static_cast<std::string*>(pointer_to_the_original_);
+    return { ptr->c_str() };
+  }
+
+  if (value_.type_ == kValueType_Float) {
+    float32* ptr = static_cast<float32*>(pointer_to_the_original_);
+    return { *ptr };
+  }
+
+  if (value_.type_ == kValueType_Integer) {
+    int32* ptr = static_cast<int32*>(pointer_to_the_original_);
+    return { *ptr };
+  }
+
+  ReportError("Error getting the value of the variable which name is : " + name_);
+  return Value();
+}
 
 }; /* JMP */

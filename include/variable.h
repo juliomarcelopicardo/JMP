@@ -57,6 +57,15 @@ class Variable {
   */
   Report setValue(const Value value);
 
+/********************************  GETTERS  ***********************************/
+
+  /**
+  * @brief Value getter, will get the value from the original variable if registered.
+  *
+  * @return Value of the variable even if its a registered one.
+  */
+  const Value getValue();
+
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***
 *******************************************************************************/
