@@ -52,6 +52,7 @@ namespace JMP {
     kReport_NotEnoughFunctionParamsInTheStack,
     kReport_ParamsNeedAFunctionToBeExecuted,
     kReport_EndOfConditionalOrLoopNotFound,
+    kReport_CallingUndefinedFunction,
   };
 
   void ReportMsg(std::string msg);
