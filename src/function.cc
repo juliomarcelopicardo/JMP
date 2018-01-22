@@ -57,6 +57,11 @@ Report Function::addVariable(const Variable variable) {
   return kReport_NoErrors;
 }
 
+Report Function::addVariable(const char* name, const Value value) {
+  variable_list_.push_back({ name, value });
+  variable_list_length_++;
+  return kReport_NoErrors;
+}
 
 /*******************************************************************************
 ***                               GETTERS                                    ***

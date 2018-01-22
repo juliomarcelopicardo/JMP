@@ -53,6 +53,14 @@ class Function {
   */
   Report addVariable(const Variable variable);
 
+  /**
+  * @brief Push back an unregistered type variable in the list.
+  *
+  * @param value Value of the variable.
+  * @return Report with the result of the function.
+  */
+  Report addVariable(const char* name, const Value value);
+
 /********************************  GETTERS  ***********************************/
 
   /**
