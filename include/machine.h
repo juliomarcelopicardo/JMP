@@ -263,8 +263,19 @@ class Machine {
 *******************************************************************************/
 
 
+/***************************** STACK OF VALUES ********************************/
 
+  /// Stack of inmediate values. Need to be static as will be shared between machines.
+  struct Stack { 
+    Stack() { length = 0; value.reserve(30); }
+    /// Values list
+    std::vector<Value> value;
+    /// Number of elements of the stack.
+    int32 length; 
+  };
 
+  /// Stack of inmediate values.Need to be static as will be shared between machines.
+  static Stack stack_;
 
  private:
 
@@ -315,13 +326,6 @@ class Machine {
   std::vector<Function> function_list_;
   /// Number of functions.
   int32 function_list_length_;
-
-/***************************** STACK OF VALUES ********************************/
-
-  /// Stack of inmediate values.
-  std::vector<Value> stack_;
-  /// Number of elements of the stack.
-  int32 stack_length_;
 
 }; /* Machine */
 }; /* JMP */

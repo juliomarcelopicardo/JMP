@@ -16,6 +16,8 @@
 
 namespace JMP {
 
+// Declaration of the static stack
+Machine::Stack Machine::stack_; 
 
 /*******************************************************************************
 ***                         CONSTRUCTOR & DESTRUCTOR                         ***
@@ -24,11 +26,9 @@ namespace JMP {
 Machine::Machine() {
   cmd_list_length_ = 0;
   cmd_list_.reserve(50);
-  stack_.reserve(50);
   function_list_.reserve(10);
   variable_registry_length_ = 0;
   defined_function_list_length_ = 0;
-  stack_length_ = 0;
   function_list_length_ = 0;
 }
 
@@ -36,7 +36,6 @@ Machine::~Machine() {
   cmd_list_.clear();
   variable_registry_.clear();
   defined_function_list_.clear();
-  stack_.clear();
   function_list_.clear();
 }
 
@@ -399,24 +398,24 @@ const int32 Machine::numActiveFunctions() {
 *******************************************************************************/
 
 void Machine::addValueToTheStack(const Value value) {
-  stack_.push_back(value);
-  stack_length_++;
+  stack_.value.push_back(value);
+  stack_.length++;
 }
 
 Value Machine::getAndRemoveTheLastAddedStackValue() {
   Value value;
-  if (stack_length_ <= 0) {
+  if (stack_.length <= 0) {
     ReportWarning(" Trying to extract a value from an empty stack.");
     return value;
   }
-  value = stack_[stack_length_ - 1];
-  stack_.erase(stack_.begin() + stack_length_ - 1);
-  stack_length_--;
+  value = stack_.value[stack_.length - 1];
+  stack_.value.erase(stack_.value.begin() + stack_.length - 1);
+  stack_.length--;
   return value;
 }
 
 int32 Machine::numStackValues() {
-  return stack_length_;
+  return stack_.length;
 }
 
 
