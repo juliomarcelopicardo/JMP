@@ -1,21 +1,30 @@
 func PrintExample(a,b,c) {
-  PRINT(a)
-  PRINT(b)
-  PRINT(c)
-  PRINT(variable)
+	PRINT(a)
+	PRINT(b)
+	PRINT(c)
+  PRINT(a + b)
+  PRINT(a - a)
+  PRINT(a * c)
+	PRINT(variable)
+
+  return 0
 }
 
-func example(first,second){
+func Example(first,second){
 	var text = "This is going to be a simple message"
+  var result = "End of the loop. iterator value : "
 	
 	var iterator = 0
 	while(iterator < 5){		
 		PRINT(text + first)
 		PRINT(second)
-    PRINT("Hello World")
-    PrintExample()
-		i = i+1
+		PRINT("Hello World")
+		PrintExample(first, second, first)
+    PRINT(" ")
+    PRINT(result + iterator)
+    PRINT(" ")
+		iterator = iterator + 1
 	}
 
-  return 0
+	return 0
 }

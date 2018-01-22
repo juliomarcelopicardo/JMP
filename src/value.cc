@@ -78,9 +78,9 @@ Value& Value::operator=(const Value& copy) {
 
 void Value::print() {
   switch (type_) {
-    case JMP::kValueType_Float: { printf("%f", float_); }  break;
-    case JMP::kValueType_Integer: { printf("%d", integer_); } break;
-    case JMP::kValueType_Text: { printf("%s", text_.c_str()); } break;
+    case JMP::kValueType_Float: { printf("%f\n", float_); }  break;
+    case JMP::kValueType_Integer: { printf("%d\n", integer_); } break;
+    case JMP::kValueType_Text: { printf("%s\n", text_.c_str()); } break;
   }
 }
 
@@ -350,7 +350,7 @@ Value operator<(const Value& a, const Value& b) {
     return{ a.text_ < std::to_string(b.float_) };
   }
 
-  ReportWarning("Value Greater Than Comparison Operation Failed.");
+  ReportWarning("Value Lesser Than Comparison Operation Failed.");
   return Value();
 }
 
