@@ -1,5 +1,8 @@
-func PrintExample() {
-  PRINT("Example of a function inside another function")
+func PrintExample(a,b,c) {
+  PRINT(a)
+  PRINT(b)
+  PRINT(c)
+  PRINT(variable)
 }
 
 func example(first,second){
