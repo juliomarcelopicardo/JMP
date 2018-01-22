@@ -118,7 +118,6 @@ Report Command::executePower(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 Report Command::executeEqualAssignment(Machine* machine, int32& next_cmd_id) {
-
   Variable* variable = machine->getVariable(name_);
   if (!variable) {
     ReportError(" Unable to find variable name: " + name_);
@@ -150,7 +149,13 @@ Report Command::executePushToTheStack(Machine* machine, int32& next_cmd_id) {
   // We will check if its a quote.
   switch (getNameDataType()) {
     case JMP::kValueType_None: { 
-      // TODO: Variable pushing.
+      // this means that its a name of possible variable, so we will check it.
+      Variable* variable = machine->getVariable(name_);
+      if (!variable) {
+        ReportError(" Expecting name of variable, cannot find variable name: " + name_);
+        return kReport_ExpectingNameOfVariable;
+      }
+      machine->addValueToTheStack(variable->getValue());
     } break;
     case JMP::kValueType_Float: { 
       machine->addValueToTheStack((float32)atof(name_.c_str()));
@@ -167,7 +172,7 @@ Report Command::executePushToTheStack(Machine* machine, int32& next_cmd_id) {
     } break;
   }
 
-  next_cmd_id++;
+  next_cmd_id++; // Jump to the next step.
   return kReport_NoErrors;
 }
 
