@@ -176,6 +176,12 @@ Report Variable::setValue(const Value value) {
     return kReport_NoErrors;
   }
 
+  // If the variable doesnt have a type, then we assign the external value type.
+  if (value_.type_ == kValueType_None) {
+    value_ = value;
+    return kReport_NoErrors;
+  }
+
   ReportError(" Cant set variable value, types not match. " + name_);
   return kReport_InvalidValueType;
 }
