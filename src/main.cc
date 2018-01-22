@@ -10,6 +10,13 @@
 #include "jmp.h"
 #include <Windows.h>
 
+void RegisteredFunction(std::vector<JMP::Value> params) {
+
+  for (JMP::uint32 i = 0; i < params.size(); i++) {
+    params[i].print();
+  }
+}
+
 JMP::int32 main() {
   OutputDebugString("\n Starting application... \n\n");
 
@@ -22,6 +29,7 @@ JMP::int32 main() {
   machine.runFunction("Example(11111,22222)");
   machine.unregisterVariable("variable");
   OutputDebugString("\n Ending application... \n\n");
+  system("pause");
   return 0;
 }
 

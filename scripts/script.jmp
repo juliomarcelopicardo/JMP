@@ -28,3 +28,7 @@ func Example(first,second){
 
 	return 0
 }
+
+func Example2() {
+  ExternalFunction(1, "text", 3.2)
+}

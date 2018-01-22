@@ -302,10 +302,22 @@ class Machine {
 
 /************************* VARIABLE REGISTRY LIST *****************************/
 
-  /// List of all the variable registered.
+  /// List of all the variable registered from C++.
   std::vector<Variable> variable_registry_;
   /// Number of elements of the list.
   int32 variable_registry_length_;
+
+/************************* VARIABLE REGISTRY LIST *****************************/
+
+  struct RegisteredFunction {
+    std::vector<Value> params;
+    std::string name;
+  };
+
+  /// List of all the functions registered from C++.
+  std::vector<RegisteredFunction> function_registry_;
+  /// Number of elements of the list.
+  int32 function_registry_length_;
 
 
 /***************************** FUNCTION LISTS *********************************/
