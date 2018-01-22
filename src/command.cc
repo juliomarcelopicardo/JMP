@@ -58,7 +58,7 @@ Report Command::execute(Machine* machine, int32& id) {
     case JMP::kCommandType_Multiply: { return executeMultiply(machine, id); }
     case JMP::kCommandType_Division: { return executeDivision(machine, id); }
     case JMP::kCommandType_Power: { return executePower(machine, id); }
-    case JMP::kCommandType_EqualAssigment: {  }
+    case JMP::kCommandType_EqualAssigment: { return executeEqualAssignment(machine, id); }
     case JMP::kCommandType_GreaterThanComparison: { return executeGreaterThan(machine, id); }
     case JMP::kCommandType_LowerThanComparison: { return executeLowerThan(machine, id); }
     case JMP::kCommandType_FunctionDefinition: {  }
@@ -118,7 +118,16 @@ Report Command::executePower(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 Report Command::executeEqualAssignment(Machine* machine, int32& next_cmd_id) {
-  return Report();
+
+  Variable* variable = machine->getVariable(name_);
+  if (!variable) {
+    ReportError(" Unable to find variable name: " + name_);
+    return kReport_ExpectingNameOfVariable;
+  }
+  // Assign the last value of the stack to the variable.
+  variable->setValue(machine->getAndRemoveTheLastAddedStackValue());
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
 }
 Report Command::executeGreaterThan(Machine* machine, int32& next_cmd_id) {
   // Take the last members pushed in the stack
