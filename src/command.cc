@@ -51,7 +51,6 @@ Report Command::execute(Machine* machine, int32& id) {
 
   // TODO: Functions to execute each type of command.
   switch (type_) {
-    case JMP::kCommandType_None: { return kReport_NoErrors; } 
     case JMP::kCommandType_PushToTheStack: { return executePushToTheStack(machine, id); }
     case JMP::kCommandType_Addition: { return executeAddition(machine, id); }
     case JMP::kCommandType_Substraction: { return executeSubstraction(machine, id); }
@@ -67,7 +66,7 @@ Report Command::execute(Machine* machine, int32& id) {
     case JMP::kCommandType_FunctionNumParameters: { return executeFunctionNumParams(machine, id); }
     case JMP::kCommandType_FunctionParameter: { return executeFunctionParam(machine, id); }
     case JMP::kCommandType_FinishedConditionalOrLoop: { return executeFinishedConditionalOrLoop(machine, id); }
-    case JMP::kCommandType_ConditionToEvaluate: {  }
+    case JMP::kCommandType_ConditionToEvaluate: { return executeConditionToEvaluate(machine, id); }
     case JMP::kCommandType_VariableDefinition: { return executeVariableDefinition(machine, id); }
     case JMP::kCommandType_LoopStartPoint: { return executeLoopStartPoint(machine, id); }
   }
@@ -183,6 +182,7 @@ Report Command::executeFunctionDefinition(Machine* machine, int32& next_cmd_id) 
 }
 
 Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) {
+  // TODO:
   return Report();
 }
 
@@ -257,8 +257,49 @@ Report Command::executeFinishedConditionalOrLoop(Machine* machine, int32& next_c
 
 
 Report Command::executeConditionToEvaluate(Machine* machine, int32& next_cmd_id) {
+  
+  // The condition is true, so we will enter in the loop or conditional.
+  if (machine->getAndRemoveTheLastAddedStackValue().integer_ == CONDITION_RESULT_TRUE) {
+    next_cmd_id++;
+    return kReport_NoErrors;
+  }
+  
+  // If not we will jump to the end of this conditional or loop.
+  // To avoid the problem with nested loops and conditionals we will do the next:
+  /*
+    <<<< exit counter (EC) starts with value 0 >>>>
 
-  return Report();
+    LOOP (condition) { EC++        >>>> 1
+      if (condition2) { EC++       >>>> 2
+        loop(condition3) { EC++    >>>> 3
+        } EC--                     >>>> 2
+      } EC--                       >>>> 1
+    } EC--                         >>>> 0 -> end of LOOP body or condition. 
+    NEXT COMMMAND
+    Then we assign the next_cmd id to this next command.
+  */
+  
+  int32 exit_counter = 0;
+  Command cmd;
+  for (int32 i = next_cmd_id; i < machine->numCommands(); i++) {
+    cmd = machine->getCommand(i);
+    if (cmd.type_ == kCommandType_ConditionToEvaluate) {
+      exit_counter++;
+    }
+    else if (cmd.type_ == kCommandType_FinishedConditionalOrLoop) {
+      exit_counter--;
+    }
+
+    // Then we check if we are at the end of the main conditionl or loop body.
+    if (exit_counter == 0) {
+      next_cmd_id = i + 1; // Next command after "}"
+      return kReport_NoErrors;
+    }
+  }
+
+
+  ReportError("Cant find the end of the conditional or loop");
+  return kReport_EndOfConditionalOrLoopNotFound;
 }
 
 
