@@ -208,6 +208,16 @@ Report Command::executeFunctionReturn(Machine* machine, int32& next_cmd_id) {
   return report;
 }
 
+Report Command::executeFunctionNumParams(Machine* machine, int32& next_cmd_id) {
+
+  if (machine->numStackValues() < atoi(name_.c_str())) {
+    ReportError("Function couldn't take enough params from the stack");
+    return kReport_NotEnoughFunctionParamsInTheStack;
+  }
+  next_cmd_id++; // Jump to the next command
+  return kReport_NoErrors;
+}
+
 
 
 Report Command::executeFinishedConditionalOrLoop(Machine* machine, int32& next_cmd_id) {
