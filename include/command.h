@@ -218,6 +218,34 @@ class Command {
   Report executeFinishedConditionalOrLoop(class Machine* machine, int32& next_command_to_execute);
 
   /**
+  * @brief Executes the Started command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeStarted(class Machine* machine, int32& next_command_to_execute);
+
+  /**
+  * @brief Executes the ConditionToEvaluate command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeConditionToEvaluate(class Machine* machine, int32& next_command_to_execute);
+
+  /**
+  * @brief Executes the VariableDefinition command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeVariableDefinition(class Machine* machine, int32& next_command_to_execute);
+
+
+  /**
   * @brief Executes the LoopStartPoint command from the list.
   *
   * @param machine Machine where the command is allocated.

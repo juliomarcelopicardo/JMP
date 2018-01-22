@@ -256,6 +256,38 @@ Report Command::executeFinishedConditionalOrLoop(Machine* machine, int32& next_c
   return kReport_NoErrors;
 }
 
+
+Report Command::executeStarted(Machine* machine, int32& next_cmd_id) {
+
+  return Report();
+}
+
+
+Report Command::executeConditionToEvaluate(Machine* machine, int32& next_cmd_id) {
+
+  return Report();
+}
+
+
+Report Command::executeVariableDefinition(Machine* machine, int32& next_cmd_id) {
+
+  Function* function = machine->getCurrentFunction();
+  // Allocate the variable in the current function scope list.
+  if (function) {
+    function->addVariable({ name_.c_str() });
+    next_cmd_id++; // jump to the next command on the list
+    return kReport_NoErrors;
+  }
+
+  // TODO: System to allow variables from outside of the scope to be accesible.
+  // Maybe creating a global variable stack.
+  ReportWarning("Still not implemented global variable system, definition failed");
+  next_cmd_id++; // jump to the next command on the list
+  return kReport_NoErrors;
+
+}
+
+
 Report Command::executeLoopStartPoint(Machine* machine, int32& next_cmd_id) {
   next_cmd_id++; // Just go to the next step that would be the condition check.
   return kReport_NoErrors;
