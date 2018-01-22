@@ -76,6 +76,14 @@ Value& Value::operator=(const Value& copy) {
   return *this;
 }
 
+void Value::print() {
+  switch (type_) {
+    case JMP::kValueType_Float: { printf("%f", float_); }  break;
+    case JMP::kValueType_Integer: { printf("%d", integer_); } break;
+    case JMP::kValueType_Text: { printf("%s", text_.c_str()); } break;
+  }
+}
+
 
 
 

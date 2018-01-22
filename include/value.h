@@ -55,8 +55,8 @@ class Value {
   Value& operator=(const Value& copy);
 
 
-
-
+  /// @brief Prints the value.
+  void print();
  
 
 /*******************************************************************************
