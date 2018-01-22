@@ -66,6 +66,107 @@ Variable & Variable::operator=(const Variable& copy) {
   return *this;
 }
 
+/*******************************************************************************
+***                                SETTERS                                   ***
+*******************************************************************************/
+
+Report Variable::setValue(const Value value) {
+  
+  if (is_registered_) {
+
+    // Original value is a TEXT.
+    if (value_.type_ == kValueType_Text && value.type_ == kValueType_Text) {
+      std::string* ptr = static_cast<std::string*>(pointer_to_the_original_);
+      *ptr = value.text_;
+      return kReport_NoErrors;
+    }
+
+    if (value_.type_ == kValueType_Text && value.type_ == kValueType_Float) {
+      std::string* ptr = static_cast<std::string*>(pointer_to_the_original_);
+      *ptr = std::to_string(value.float_);
+      return kReport_NoErrors;
+    }
+
+    if (value_.type_ == kValueType_Text && value.type_ == kValueType_Integer) {
+      std::string* ptr = static_cast<std::string*>(pointer_to_the_original_);
+      *ptr = std::to_string(value.integer_);
+      return kReport_NoErrors;
+    }
+
+    // Original value is an INTEGER.
+    if (value_.type_ == kValueType_Integer && value.type_ == kValueType_Integer) {
+      int32* ptr = static_cast<int32*>(pointer_to_the_original_);
+      *ptr = value.integer_;
+      return kReport_NoErrors;
+    }
+
+    if (value_.type_ == kValueType_Integer && value.type_ == kValueType_Float) {
+      int32* ptr = static_cast<int32*>(pointer_to_the_original_);
+      *ptr = (int32)value.float_;
+      return kReport_NoErrors;
+    }
+
+    // Original value is a FLOAT.
+    if (value_.type_ == kValueType_Float && value.type_ == kValueType_Float) {
+      float32* ptr = static_cast<float32*>(pointer_to_the_original_);
+      *ptr = value.float_;
+      return kReport_NoErrors;
+    }
+
+    if (value_.type_ == kValueType_Float && value.type_ == kValueType_Integer) {
+      float32* ptr = static_cast<float32*>(pointer_to_the_original_);
+      *ptr = (float32)value.integer_;
+      return kReport_NoErrors;
+    }
+
+    ReportError(" Cant set variable value, types not match. " + name_);
+    return kReport_InvalidValueType;
+  }
+
+  // if its not a registered variable.
+
+  // Original value is a TEXT.
+  if (value_.type_ == kValueType_Text && value.type_ == kValueType_Text) {
+    value_.text_ = value.text_;
+    return kReport_NoErrors;
+  }
+
+  if (value_.type_ == kValueType_Text && value.type_ == kValueType_Float) {
+    value_.text_ = std::to_string(value.float_);
+    return kReport_NoErrors;
+  }
+
+  if (value_.type_ == kValueType_Text && value.type_ == kValueType_Integer) {
+    value_.text_ = std::to_string(value.integer_);
+    return kReport_NoErrors;
+  }
+
+  // Original value is an INTEGER.
+  if (value_.type_ == kValueType_Integer && value.type_ == kValueType_Integer) {
+    value_.integer_ = value.integer_;
+    return kReport_NoErrors;
+  }
+
+  if (value_.type_ == kValueType_Integer && value.type_ == kValueType_Float) {
+    value_.integer_ = (int32)value.float_;
+    return kReport_NoErrors;
+  }
+
+  // Original value is a FLOAT.
+  if (value_.type_ == kValueType_Float && value.type_ == kValueType_Float) {
+    value_.float_ = value.float_;
+    return kReport_NoErrors;
+  }
+
+  if (value_.type_ == kValueType_Float && value.type_ == kValueType_Integer) {
+    value_.float_ = (float32)value.integer_;
+    return kReport_NoErrors;
+  }
+
+  ReportError(" Cant set variable value, types not match. " + name_);
+  return kReport_InvalidValueType;
+}
+
 
 
 

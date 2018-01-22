@@ -13,6 +13,7 @@
 #include "types.h"
 #include "value.h"
 #include <string>
+#include "report.h"
 
 namespace JMP {
 
@@ -46,9 +47,15 @@ class Variable {
 
 
 
-/********************************  GETTERS  ***********************************/
+/********************************  SETTERS  ***********************************/
 
- 
+  /**
+  * @brief Set the value of a variable.
+  *
+  * @param value Value to set to the variable.
+  * @return Report with the result of the function.
+  */
+  Report setValue(const Value value);
 
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***
