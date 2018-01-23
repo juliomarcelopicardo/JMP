@@ -31,4 +31,5 @@ func Example(first,second){
 
 func Example2() {
   ExternalFunction(1, "text", 3.2)
+  return 0
 }
