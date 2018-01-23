@@ -191,8 +191,25 @@ Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) {
   }
 
   // TODO, function register. to execute functions from C++
+  RegisteredFunction* function = machine->getRegisteredFunction(name_);
+  if (function) {
+    // Get the num of params. (do this because of the order of them.
+    int32 num_params = 0; 
+    for (int32 i = next_cmd_id - 1; machine->getCommand(i).type_ == kCommandType_PushToTheStack; i--) {
+      num_params++;
+    }
+    // Save the values in the registered function params list.
+    function->params.resize(num_params);
+    for (int32 j = num_params - 1; j >= 0 ; j--) {
+      function->params[j] = machine->getAndRemoveTheLastAddedStackValue();
+    }
+    // Then executes the function.
+    function->function_pointer(function->params);
+    next_cmd_id++;
+    return kReport_NoErrors;
+  }
 
-  // Look for the function in the registry to know where its body starts.
+  // Look for the function in the defined function list to know where its body starts.
   int32 function_start_command_id = machine->getDefinedFunctionID(name_.c_str());
   if (function_start_command_id != INVALID_FUNCTION_ID) {
     // Then we will push a new function and we will assign the next command to 
