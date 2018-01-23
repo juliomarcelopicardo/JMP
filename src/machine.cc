@@ -296,11 +296,75 @@ Variable* Machine::getVariable(const std::string& variable_name) {
   return nullptr;
 }
 
-void Machine::addFunction(const int32 origin_id) {
-  function_list_.push_back({ origin_id });
-  function_list_length_++;
+
+/*******************************************************************************
+***                        FUNCTION REGISTRY METHODS                         ***
+*******************************************************************************/
+
+Report Machine::registerFunction(const char* name, 
+                                 void(*function_ptr)(std::vector<Value>&)) {
+
+  // Error checkings
+  if (!name || !function_ptr) {
+    return kReport_NullPointer;
+  }
+
+  // If the function already exists, we will edit the existing one.
+  for (int32 i = 0; i < function_registry_length_; i++) {
+    if (name == function_registry_[i].name) {
+      char warning[64];
+      sprintf_s(warning, 64, "\"%s\": Function already registered", name);
+      ReportWarning(warning);
+      function_registry_[i].name = name;
+      function_registry_[i].function_pointer = function_ptr;
+      return kReport_NoErrors;
+    }
+  }
+
+  // if the variable is not registered yet, we will add a new one to the registry.
+  function_registry_.push_back({ name, function_ptr });
+  function_registry_length_++;
+
+  return kReport_NoErrors;
 }
 
+void Machine::unregisterFunction(const char* name) {
+
+  for (int32 i = 0; i < function_registry_length_; i++) {
+    if (name == function_registry_[i].name) {
+      function_registry_.erase(function_registry_.begin() + i);
+      function_registry_length_--;
+      return;
+    }
+  }
+  char warning[64];
+  sprintf_s(warning, 64, "\"%s\": Can't be found in the registry. Unregister failed", name);
+  ReportWarning(warning);
+}
+
+void Machine::unregisterFunction(const int32 id) {
+  if (id >= 0 && id < function_registry_length_) {
+    function_registry_.erase(function_registry_.begin() + id);
+    function_registry_length_--;
+    return;
+  }
+
+  char warning[64];
+  sprintf_s(warning, 64, "Invalid variable registry id. Unregister failed");
+  ReportWarning(warning);
+}
+
+RegisteredFunction* Machine::getRegisteredFunction(const std::string& function_name) {
+
+  // If not found, we will look for it in the function registry.
+  for (int32 i = 0; i < function_registry_length_; i++) {
+    if (function_registry_[i].name == function_name) {
+      return &function_registry_[i];
+    }
+  }
+
+  return nullptr;
+}
 
 /*******************************************************************************
 ***                      DEFINED FUNCTION LIST METHODS                       ***
@@ -370,6 +434,11 @@ void Machine::removeDefinedFunction(const int32 id) {
 /*******************************************************************************
 ***                     EXECUTION FUNCTION LIST METHODS                      ***
 *******************************************************************************/
+
+void Machine::addFunction(const int32 origin_id) {
+  function_list_.push_back({ origin_id });
+  function_list_length_++;
+}
 
 Function* Machine::getCurrentFunction() {
   if (function_list_length_ == 0) {

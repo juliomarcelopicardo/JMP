@@ -19,6 +19,13 @@
 
 namespace JMP {
 
+// TODO: Move to a separate class file.
+struct RegisteredFunction {
+  std::string name;
+  void(*function_pointer)(std::vector<Value>&);
+  std::vector<Value> params;
+};
+
 /// Core of the language, this machine will be used to process .jpm script files.
 class Machine {
 
@@ -157,9 +164,47 @@ class Machine {
   /**
   * @brief Variable getter, will look for it in the function lists and in the variable registry.
   *
-  * @param Variable pointer, nullptr if not found.
+  * @param name Name of the variable in the registry (Case sensitive).
+  * @return Variable from the list, null if not found.
   */
   Variable* getVariable(const std::string& variable_name);
+
+  /***********************  FUNCTION REGISTRY METHODS  **************************/
+
+  /**
+  * @brief Adds a function to the registry.
+  *
+  *         To register a function its declaration needs to be:
+  *    <<<<<  void FunctionName(std::vector<Value>& params);  >>>>>
+  * Params is a list of the parameters used everytime we call it from the script.
+  *
+  * @param name Name of the function in the script (Case sensitive).
+  * @param function_ptr Pointer to the function defined in c++.
+  * @return Report with the result of the instruction. NoErrors if succesful.
+  */
+  Report registerFunction(const char* name, void(*function_ptr)(std::vector<Value>&));
+
+  /**
+  * @brief removes a function from the registry.
+  *
+  * @param name Name of the function in the registry (Case sensitive).
+  */
+  void unregisterFunction(const char* name);
+
+  /**
+  * @brief removes a function from the registry.
+  *
+  * @param id ID of the function in the registry vector.
+  */
+  void unregisterFunction(const int32 id);
+
+  /**
+  * @brief Function getter, will look for it in the function lists and in the variable registry.
+  *
+  * @param name Name of the function in the registry (Case sensitive).
+  * @return Pointer to the registered function. Nullptr if not found.
+  */
+  RegisteredFunction* getRegisteredFunction(const std::string& variable_name);
 
 /**********************  DEFINED FUNCTION LIST METHODS  ***********************/
 
@@ -307,12 +352,7 @@ class Machine {
   /// Number of elements of the list.
   int32 variable_registry_length_;
 
-/************************* VARIABLE REGISTRY LIST *****************************/
-
-  struct RegisteredFunction {
-    std::vector<Value> params;
-    std::string name;
-  };
+/************************* FUNCTION REGISTRY LIST *****************************/
 
   /// List of all the functions registered from C++.
   std::vector<RegisteredFunction> function_registry_;
