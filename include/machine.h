@@ -15,16 +15,10 @@
 #include "command.h"
 #include "variable.h"
 #include "function.h"
+#include "registered_function.h"
 #include "token_manager.h"
 
 namespace JMP {
-
-// TODO: Move to a separate class file.
-struct RegisteredFunction {
-  std::string name;
-  void(*function_pointer)(std::vector<Value>&);
-  std::vector<Value> params;
-};
 
 /// Core of the language, this machine will be used to process .jpm script files.
 class Machine {

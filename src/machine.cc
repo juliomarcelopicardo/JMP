@@ -311,12 +311,12 @@ Report Machine::registerFunction(const char* name,
 
   // If the function already exists, we will edit the existing one.
   for (int32 i = 0; i < function_registry_length_; i++) {
-    if (name == function_registry_[i].name) {
+    if (name == function_registry_[i].name_) {
       char warning[64];
       sprintf_s(warning, 64, "\"%s\": Function already registered", name);
       ReportWarning(warning);
-      function_registry_[i].name = name;
-      function_registry_[i].function_pointer = function_ptr;
+      function_registry_[i].name_ = name;
+      function_registry_[i].function_pointer_ = function_ptr;
       return kReport_NoErrors;
     }
   }
@@ -331,7 +331,7 @@ Report Machine::registerFunction(const char* name,
 void Machine::unregisterFunction(const char* name) {
 
   for (int32 i = 0; i < function_registry_length_; i++) {
-    if (name == function_registry_[i].name) {
+    if (name == function_registry_[i].name_) {
       function_registry_.erase(function_registry_.begin() + i);
       function_registry_length_--;
       return;
@@ -358,7 +358,7 @@ RegisteredFunction* Machine::getRegisteredFunction(const std::string& function_n
 
   // If not found, we will look for it in the function registry.
   for (int32 i = 0; i < function_registry_length_; i++) {
-    if (function_registry_[i].name == function_name) {
+    if (function_registry_[i].name_ == function_name) {
       return &function_registry_[i];
     }
   }

@@ -199,12 +199,12 @@ Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) {
       num_params++;
     }
     // Save the values in the registered function params list.
-    function->params.resize(num_params);
+    function->params_.resize(num_params);
     for (int32 j = num_params - 1; j >= 0 ; j--) {
-      function->params[j] = machine->getAndRemoveTheLastAddedStackValue();
+      function->params_[j] = machine->getAndRemoveTheLastAddedStackValue();
     }
     // Then executes the function.
-    function->function_pointer(function->params);
+    function->function_pointer_(function->params_);
     next_cmd_id++;
     return kReport_NoErrors;
   }
