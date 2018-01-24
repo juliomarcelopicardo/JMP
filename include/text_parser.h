@@ -7,8 +7,8 @@
 *                                <b7026027@my.shu.ac.uk>
 */
 
-#ifndef __JMP_TEXTPARSER_H__
-#define __JMP_TEXTPARSER_H__ 1
+#ifndef __JMP_COMPILER_H__
+#define __JMP_COMPILER_H__ 1
 
 // Priorities
 #define KEYWORD_PRIORITY 500
@@ -38,8 +38,8 @@ enum Tag {
   kTag_Function,
 };
 
-/// Text parser used to save and manage all the tokens from .jmp files.
-class TextParser {
+/// Text parser and compiler used to save and manage all the tokens from .jmp files.
+class Compiler {
 
  public: 
 
@@ -48,14 +48,14 @@ class TextParser {
 *******************************************************************************/
 
   /// Default class constructor.
-  TextParser();
+  Compiler();
   /// Default class destructor.
-  ~TextParser();
+  ~Compiler();
 
 /***************************  PARSER CORE METHODS  ****************************/
 
   /**
-  * @brief Main function of the text parser, will compile a sentence or expression.
+  * @brief Main function of the compiler, will compile a sentence or expression.
   *
   * @param machine Machine where all the process will be made.
   * @param sentence Text, sentence or expression to compile.
@@ -374,9 +374,9 @@ class TextParser {
 
 
   /// Default copy constructor.
-  TextParser(const TextParser& copy);
+  Compiler(const Compiler& copy);
   /// Assignment operator.
-  TextParser& operator=(const TextParser& copy);
+  Compiler& operator=(const Compiler& copy);
 
 /*******************************************************************************
 ***                          PRIVATE ATTRIBUTES                              ***
@@ -385,7 +385,7 @@ class TextParser {
   /// List of tags used to group different bodys of conditionals, loops or functions.
   std::vector<Tag> tag_list_;
 
-}; /* TextParser */
+}; /* Compiler */
 }; /* JMP */
 
-#endif /* __JMP_TEXTPARSER_H__ */
+#endif /* __JMP_COMPILER_H__ */

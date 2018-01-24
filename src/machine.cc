@@ -63,7 +63,7 @@ Report Machine::processFile(std::string script_filename) {
     return kReport_InvalidFilename;
   }
 
-  TextParser parser;
+  Compiler compiler;
   uint32 line_num = 1;
   Report report = kReport_NoErrors;
 
@@ -81,7 +81,7 @@ Report Machine::processFile(std::string script_filename) {
     /*
       PROCESS THE LINES - COMPILING THEM.
     */
-    report = parser.compile(this, code_line, line_num);
+    report = compiler.compile(this, code_line, line_num);
     line_num++;
   }
   
@@ -117,9 +117,9 @@ Report Machine::runFunction(std::string function_call_sentence) {
 
   // Create a machine and a parser to compile the code received by parameter.
   Machine other_machine;
-  TextParser other_parser;
+  Compiler other_compiler;
   Report report;
-  report = other_parser.compile(&other_machine, function_call_sentence, -1); // -1 as theres no line number
+  report = other_compiler.compile(&other_machine, function_call_sentence, -1); // -1 as theres no line number
   if (report != kReport_NoErrors) { return report; }
 
   // Once compiled we will concatenate both machines command lists.

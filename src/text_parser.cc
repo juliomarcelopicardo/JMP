@@ -15,7 +15,7 @@ namespace JMP {
 ***                       CONSTRUCTOR & DESTRUCTOR                           ***
 *******************************************************************************/
 
-TextParser::TextParser() {
+Compiler::Compiler() {
   current_token_.text_.clear();
   current_token_.type_ = kTokenType_None;
   sentence_.clear();
@@ -23,7 +23,7 @@ TextParser::TextParser() {
   tag_list_.reserve(10);
 }
 
-TextParser::~TextParser() {
+Compiler::~Compiler() {
   current_token_.text_.clear();
   sentence_.clear();
   tag_list_.clear();
@@ -33,7 +33,7 @@ TextParser::~TextParser() {
 ***                          PARSER CORE METHODS                             ***
 *******************************************************************************/
 
-Report TextParser::compile(Machine* machine, 
+Report Compiler::compile(Machine* machine, 
                            std::string sentence, 
                            uint32 line_number) {
 
@@ -60,7 +60,7 @@ Report TextParser::compile(Machine* machine,
 ***                        TOKEN COMPILER METHODS                            ***
 *******************************************************************************/
 
-Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) {
+Report Compiler::compileTokens(Machine* machine, TokenManager& token_manager) {
   
   // Error checkings.
   if (!machine) {
@@ -111,7 +111,7 @@ Report TextParser::compileTokens(Machine* machine, TokenManager& token_manager) 
   return kReport_NoErrors;
 }
 
-Report TextParser::compileKeywordToken(Machine* machine, 
+Report Compiler::compileKeywordToken(Machine* machine, 
                                        TokenManager& token_manager, 
                                        int32& token_index) {
   Token token = token_manager.getToken(token_index);
@@ -135,7 +135,7 @@ Report TextParser::compileKeywordToken(Machine* machine,
   return kReport_UnexpectedKeyword;
 }
 
-Report TextParser::compileSeparatorToken(Machine* machine,
+Report Compiler::compileSeparatorToken(Machine* machine,
                                          TokenManager& token_manager,
                                          int32& token_index) {
 
@@ -162,7 +162,7 @@ Report TextParser::compileSeparatorToken(Machine* machine,
   return kReport_NoErrors;
 }
 
-const bool TextParser::checkIfAndCompileCommasContent(Machine * machine, 
+const bool Compiler::checkIfAndCompileCommasContent(Machine * machine, 
                                                       TokenManager & token_manager) {
 
   if (token_manager.areAnyCommaTokenInList()) {
@@ -193,7 +193,7 @@ const bool TextParser::checkIfAndCompileCommasContent(Machine * machine,
 ***                   SEPARATORS TOKEN COMPILER METHODS                      ***
 *******************************************************************************/
 
-Report TextParser::compileOpenParenthesisSeparatorToken(Machine* machine,
+Report Compiler::compileOpenParenthesisSeparatorToken(Machine* machine,
                                                         TokenManager& token_manager,
                                                         int32& token_index) {
 
@@ -229,7 +229,7 @@ Report TextParser::compileOpenParenthesisSeparatorToken(Machine* machine,
   return report;
 }
 
-Report TextParser::compileCloseBracketsSeparatorToken(Machine* machine, 
+Report Compiler::compileCloseBracketsSeparatorToken(Machine* machine, 
                                                       TokenManager& token_manager, 
                                                       int32& token_index) {
   
@@ -244,7 +244,7 @@ Report TextParser::compileCloseBracketsSeparatorToken(Machine* machine,
   return kReport_NoErrors;
 }
 
-Report TextParser::compileAdditionOperationSeparatorToken(Machine* machine,
+Report Compiler::compileAdditionOperationSeparatorToken(Machine* machine,
                                                           TokenManager& token_manager, 
                                                           int32& token_index) {
   Token operator_token = token_manager.getToken(token_index);
@@ -271,7 +271,7 @@ Report TextParser::compileAdditionOperationSeparatorToken(Machine* machine,
   return kReport_NoErrors;
 }
 
-Report TextParser::compileMultiplyOperationSeparatorToken(Machine* machine,
+Report Compiler::compileMultiplyOperationSeparatorToken(Machine* machine,
                                                           TokenManager& token_manager,
                                                           int32& token_index) {
 
@@ -299,7 +299,7 @@ Report TextParser::compileMultiplyOperationSeparatorToken(Machine* machine,
   return kReport_NoErrors;
 }
 
-Report TextParser::compilePowerOperationSeparatorToken(Machine* machine,
+Report Compiler::compilePowerOperationSeparatorToken(Machine* machine,
                                                        TokenManager& token_manager,
                                                        int32& token_index) {
 
@@ -322,7 +322,7 @@ Report TextParser::compilePowerOperationSeparatorToken(Machine* machine,
   return kReport_NoErrors;
 }
 
-Report TextParser::compileComparisonOperationSeparatorToken(Machine* machine,
+Report Compiler::compileComparisonOperationSeparatorToken(Machine* machine,
                                                             TokenManager& token_manager,
                                                             int32& token_index) {
 
@@ -350,7 +350,7 @@ Report TextParser::compileComparisonOperationSeparatorToken(Machine* machine,
   return kReport_NoErrors;
 }
 
-Report TextParser::compileEqualSeparatorToken(Machine* machine,
+Report Compiler::compileEqualSeparatorToken(Machine* machine,
                                               TokenManager& token_manager,
                                               int32& token_index) {
 
@@ -378,7 +378,7 @@ Report TextParser::compileEqualSeparatorToken(Machine* machine,
 ***                    KEYWORDS TOKEN COMPILER METHODS                       ***
 *******************************************************************************/
 
-Report TextParser::compileConditionalKeywordToken(Machine* machine,
+Report Compiler::compileConditionalKeywordToken(Machine* machine,
                                                   TokenManager& token_manager,
                                                   int32& token_index) {
 
@@ -402,7 +402,7 @@ Report TextParser::compileConditionalKeywordToken(Machine* machine,
   return kReport_KeywordFunctionalityNotProgrammedYet;
 }
 
-Report TextParser::compileReturnKeywordToken(Machine* machine,
+Report Compiler::compileReturnKeywordToken(Machine* machine,
                                              TokenManager& token_manager,
                                              int32& token_index) {
 
@@ -423,7 +423,7 @@ Report TextParser::compileReturnKeywordToken(Machine* machine,
   return report;
 }
 
-Report TextParser::compileFunctionKeywordToken(Machine* machine,
+Report Compiler::compileFunctionKeywordToken(Machine* machine,
                                                TokenManager& token_manager,
                                                int32& token_index) {
   // ERROR CHECKINGS
@@ -489,7 +489,7 @@ Report TextParser::compileFunctionKeywordToken(Machine* machine,
   return kReport_NoErrors;
 }
 
-Report TextParser::compileLoopKeywordToken(Machine* machine,
+Report Compiler::compileLoopKeywordToken(Machine* machine,
                                            TokenManager& token_manager,
                                            int32& token_index) {
 
@@ -520,7 +520,7 @@ Report TextParser::compileLoopKeywordToken(Machine* machine,
   return kReport_KeywordFunctionalityNotProgrammedYet;
 }
 
-Report TextParser::compileVariableKeywordToken(Machine* machine,
+Report Compiler::compileVariableKeywordToken(Machine* machine,
                                                TokenManager& token_manager,
                                                int32& token_index) {
 
@@ -542,7 +542,7 @@ Report TextParser::compileVariableKeywordToken(Machine* machine,
 *******************************************************************************/
 
 
-void TextParser::generateTokens(std::string& sentence, TokenManager& token_manager) {
+void Compiler::generateTokens(std::string& sentence, TokenManager& token_manager) {
   
   int32 num_parenthesis_opened = 0;
 
@@ -569,7 +569,7 @@ void TextParser::generateTokens(std::string& sentence, TokenManager& token_manag
   
 }
 
-void TextParser::generateNextToken() {
+void Compiler::generateNextToken() {
 
   uint32 sentence_length = sentence_.length();
 
@@ -621,7 +621,7 @@ void TextParser::generateNextToken() {
   generateCurrentTokenInitialPriority();
 }
 
-void TextParser::generateCurrentTokenInitialPriority() {
+void Compiler::generateCurrentTokenInitialPriority() {
   switch (current_token_.type_) {
     case JMP::kTokenType_Keyword: { current_token_.priority_ = KEYWORD_PRIORITY; } break;
     case JMP::kTokenType_Separator: {
@@ -644,7 +644,7 @@ void TextParser::generateCurrentTokenInitialPriority() {
 ***                            TEXT MODIFIERS                                ***
 *******************************************************************************/
 
-void TextParser::replaceSpacesFromQuotes(std::string& sentence, char8 replacement) {
+void Compiler::replaceSpacesFromQuotes(std::string& sentence, char8 replacement) {
 
   uint32 length = sentence.length();
   
@@ -661,7 +661,7 @@ void TextParser::replaceSpacesFromQuotes(std::string& sentence, char8 replacemen
   
 }
 
-void TextParser::recoverSpacesFromQuotes(std::string & sentence, char8 replacement) {
+void Compiler::recoverSpacesFromQuotes(std::string & sentence, char8 replacement) {
   uint32 length = sentence.length();
 
   if (sentence[0] == '"') {	
@@ -677,7 +677,7 @@ void TextParser::recoverSpacesFromQuotes(std::string & sentence, char8 replaceme
 ***                        TEXT ANALYZING GETTERS                            ***
 *******************************************************************************/
 
-const bool TextParser::isSeparator(const char8& character) {
+const bool Compiler::isSeparator(const char8& character) {
   switch (character) {
     case ' ': case ',': case ';': case '?': case '!': case '^':
     case '+': case '-': case '*': case '/': case '=': case '%':
@@ -687,14 +687,14 @@ const bool TextParser::isSeparator(const char8& character) {
   return false;
 }
 
-const bool TextParser::isBlankSpace(const char8& character) {
+const bool Compiler::isBlankSpace(const char8& character) {
   if (character == ' ') { 
     return true; 
   }
   return false;
 }
 
-const bool TextParser::isLetter(const char8& character) { 
+const bool Compiler::isLetter(const char8& character) { 
   if ((character >= 'a' && character <= 'z') || 
       (character >= 'A' && character <= 'Z') || 
       (character == '"') || (character == '_')) { // needed for quotes.
@@ -703,7 +703,7 @@ const bool TextParser::isLetter(const char8& character) {
   return false;
 }
 
-const bool TextParser::isDigit(const char8& character) {
+const bool Compiler::isDigit(const char8& character) {
   switch (character) {
     case '0': case '1': case '2': case '3': case '4':  
     case '5': case '6': case '7': case '8': case '9':
@@ -712,7 +712,7 @@ const bool TextParser::isDigit(const char8& character) {
   return false;
 }
 
-const bool TextParser::isKeyword(const std::string& word) {
+const bool Compiler::isKeyword(const std::string& word) {
 
   if (word == "IF" || word == "ELSE" ||                   // Conditionals
       word == "FUNC" || word == "RETURN" ||               // Functions
@@ -729,11 +729,11 @@ const bool TextParser::isKeyword(const std::string& word) {
 ***                        TAG SYSTEM LIST METHODS                           ***
 *******************************************************************************/
 
-void TextParser::addTag(const Tag tag) {
+void Compiler::addTag(const Tag tag) {
   tag_list_.push_back(tag);
 }
 
-const Tag TextParser::getAndRemoveLastTag() {
+const Tag Compiler::getAndRemoveLastTag() {
   int32 num_tags = tag_list_.size();
   if (num_tags <= 0) {
     Report report = kReport_NoTagsToDelete;
