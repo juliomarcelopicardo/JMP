@@ -13,6 +13,6 @@
 #include "types.h"
 #include "machine.h"
 #include "token_manager.h"
-#include "text_parser.h"
+#include "compiler.h"
 
 #endif /* __JMP_H__ */

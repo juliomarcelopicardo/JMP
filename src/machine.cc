@@ -8,7 +8,7 @@
 */
 
 #include "machine.h"
-#include "text_parser.h"
+#include "compiler.h"
 #include <Windows.h>
 #include <string>
 #include <fstream>

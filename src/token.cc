@@ -8,7 +8,7 @@
 */
 
 #include "token.h"
-#include "text_parser.h"
+#include "compiler.h"
 
 namespace JMP {
 

@@ -7,7 +7,7 @@
 *                                <b7026027@my.shu.ac.uk>
 */
 
-#include "text_parser.h"
+#include "compiler.h"
 
 namespace JMP {
 

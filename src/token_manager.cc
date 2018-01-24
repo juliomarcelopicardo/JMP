@@ -9,7 +9,7 @@
 
 #include "token_manager.h"
 #include "report.h"
-#include "text_parser.h"
+#include "compiler.h"
 #include <Windows.h>
 #include <string>
 
