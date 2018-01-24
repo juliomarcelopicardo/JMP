@@ -28,7 +28,8 @@ JMP::int32 main() {
   machine.registerFunction("ExternalFunction", &RegFunc);
   //machine.runFunction("PrintExample(40, \"texto\", 40.34)");
   //machine.runFunction("Example(11111,22222)");
-  machine.runFunction("Example2()");
+  //machine.runFunction("Example2()");
+  machine.runFunction();
   machine.unregisterFunction("ExternalFunction");
   machine.unregisterVariable("variable");
   OutputDebugString("\n Ending application... \n\n");

@@ -116,22 +116,22 @@ Report TextParser::compileKeywordToken(Machine* machine,
                                        int32& token_index) {
   Token token = token_manager.getToken(token_index);
 
-  if (token.text_ == "if" || token.text_ == "else") {
+  if (token.text_ == "IF" || token.text_ == "ELSE") {
     return compileConditionalKeywordToken(machine, token_manager, token_index);
   }
-  if (token.text_ == "return") {
+  if (token.text_ == "RETURN") {
     return compileReturnKeywordToken(machine, token_manager, token_index);
   }
-  if (token.text_ == "func") {
+  if (token.text_ == "FUNC") {
     return compileFunctionKeywordToken(machine, token_manager, token_index);
   }
-  if (token.text_ == "do" || token.text_ == "while" || token.text_ == "for") {
+  if (token.text_ == "DO" || token.text_ == "WHILE" || token.text_ == "FOR") {
     return compileLoopKeywordToken(machine, token_manager, token_index);
   }
-  if (token.text_ == "var") {
+  if (token.text_ == "VAR") {
     return compileVariableKeywordToken(machine, token_manager, token_index);
   }
-
+  
   return kReport_UnexpectedKeyword;
 }
 
@@ -382,8 +382,8 @@ Report TextParser::compileConditionalKeywordToken(Machine* machine,
                                                   TokenManager& token_manager,
                                                   int32& token_index) {
 
-  if (token_manager.getToken(token_index).text_ == "if") {
-    // removing the "if" keyword.
+  if (token_manager.getToken(token_index).text_ == "IF") {
+    // removing the "vayword.
     token_manager.removeToken(token_index);
     // Checks if the last token of the line sentence is a "{" to start the body.
     if (token_manager.getToken(token_manager.numTokens() - 1).text_ != "{") {
@@ -497,9 +497,9 @@ Report TextParser::compileLoopKeywordToken(Machine* machine,
     return kReport_LoopKeywordShouldBeTheFirstToken;
   }
 
-  if (token_manager.getToken(token_index).text_ == "while") {
+  if (token_manager.getToken(token_index).text_ == "WHILE") {
     machine->addCommand(kCommandType_LoopStartPoint);
-    // removing the loop ("while") keyword.
+    // removing the loop ("WHILE") keyword.
     token_manager.removeToken(token_index);
 
     // Checks if the last token of the line sentence is a "{" to start the body.
@@ -714,10 +714,10 @@ const bool TextParser::isDigit(const char8& character) {
 
 const bool TextParser::isKeyword(const std::string& word) {
 
-  if (word == "if" || word == "else" ||                   // Conditionals
-      word == "func" || word == "return" ||               // Functions
-      word == "do" || word == "while" || word == "for" || // Loops
-      word == "var") {                                    // Variable
+  if (word == "IF" || word == "ELSE" ||                   // Conditionals
+      word == "FUNC" || word == "RETURN" ||               // Functions
+      word == "DO" || word == "WHILE" || word == "FOR" || // Loops
+      word == "VAR") {                                    // Variable
     return true;
   }
   return false;

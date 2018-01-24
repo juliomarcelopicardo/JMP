@@ -1,4 +1,4 @@
-func PrintExample(a,b,c) {
+FUNC PrintExample(a,b,c) {
 	PRINT(a)
 	PRINT(b)
 	PRINT(c)
@@ -7,15 +7,15 @@ func PrintExample(a,b,c) {
   PRINT(a * c)
 	PRINT(variable)
 
-  return 0
+  RETURN
 }
 
-func Example(first,second){
-	var text = "This is going to be a simple message"
-  var result = "End of the loop. iterator value : "
+FUNC Example(first,second){
+	VAR text = "This is going to be a simple message"
+  VAR result = "End of the loop. iterator value : "
 	
-	var iterator = 0
-	while(iterator < 5){		
+	VAR iterator = 0
+	WHILE(iterator < 5){		
 		PRINT(text + first)
 		PRINT(second)
 		PRINT("Hello World")
@@ -26,10 +26,16 @@ func Example(first,second){
 		iterator = iterator + 1
 	}
 
-	return 0
+	RETURN
 }
 
-func Example2() {
+FUNC Example2() {
   ExternalFunction(1, "text", 3.2)
-  return 0
+  RETURN
+}
+
+FUNC main() {
+  Example(1, 2)
+  Example2()
+  RETURN
 }
