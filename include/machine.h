@@ -62,7 +62,8 @@ class Machine {
   */
   Report runFunction(std::string function_call_sentence = "main()");
 
-
+  ///@brief Deletes the last compilation and process and compile the last file.
+  void reload();
 
 /***************************  COMMAND LIST METHODS  ***************************/
 
@@ -372,6 +373,9 @@ class Machine {
   std::vector<Function> function_list_;
   /// Number of functions.
   int32 function_list_length_;
+
+  /// Last script compiled file path.
+  std::string last_script_compiled_path_;
 
 }; /* Machine */
 }; /* JMP */

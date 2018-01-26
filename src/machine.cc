@@ -24,14 +24,17 @@ Machine::Stack Machine::stack_;
 *******************************************************************************/
 
 Machine::Machine() {
-  cmd_list_length_ = 0;
   cmd_list_.reserve(50);
+  cmd_list_length_ = 0;
   function_list_.reserve(10);
+  function_list_length_ = 0;
   function_registry_.reserve(5);
   function_registry_length_ = 0;
+  variable_registry_.reserve(5);
   variable_registry_length_ = 0;
+  defined_function_list_.reserve(10);
   defined_function_list_length_ = 0;
-  function_list_length_ = 0;
+  last_script_compiled_path_ = "";
 }
 
 Machine::~Machine() {
@@ -40,6 +43,12 @@ Machine::~Machine() {
   function_registry_.clear();
   defined_function_list_.clear();
   function_list_.clear();
+  cmd_list_length_ = 0;
+  variable_registry_length_ = 0;
+  function_registry_length_ = 0;
+  defined_function_list_length_ = 0;
+  function_list_length_ = 0;
+  last_script_compiled_path_.clear();
 }
 
 
@@ -87,6 +96,11 @@ Report Machine::processFile(std::string script_filename) {
   
   script.clear();
   script.close();
+
+  // If the file has been loaded properly, then we will save its path for possible reloadings.
+  if (report == kReport_NoErrors) {
+    last_script_compiled_path_ = script_filename;
+  }
 
   return report;
 }
@@ -144,6 +158,37 @@ Report Machine::runFunction(std::string function_call_sentence) {
   }
 
   return report;
+}
+
+void Machine::reload() {
+
+  // We will clean all the buffers used. We will reserve the same size it needed before.
+  cmd_list_.clear();
+  cmd_list_.reserve(cmd_list_length_);
+  cmd_list_length_ = 0;
+  function_list_.clear();
+  function_list_.reserve(function_list_length_);
+  function_list_length_ = 0;
+  defined_function_list_.clear();
+  defined_function_list_.reserve(defined_function_list_length_);
+  defined_function_list_length_ = 0;
+
+  /* 
+    We wont delete the registrys, as functions or variables registered from c++
+    doesnt depend on the file, is the user the one who should manage what to
+    register and unregister in each moment.
+  */
+  /*
+  function_registry_.clear();
+  function_registry_.reserve(function_registry_length_);
+  function_registry_length_ = 0;
+  variable_registry_.clear();
+  variable_registry_.reserve(variable_registry_length_);
+  variable_registry_length_ = 0;
+  */
+
+  // Then we proccess the file again.
+  processFile(last_script_compiled_path_);
 }
 
 /*******************************************************************************
