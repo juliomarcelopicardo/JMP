@@ -36,6 +36,7 @@ enum Tag {
   kTag_Loop,
   kTag_Conditional,
   kTag_Function,
+  kTag_VarPack,
 };
 
 /// Text parser and compiler used to save and manage all the tokens from .jmp files.
@@ -251,6 +252,18 @@ class Compiler {
   Report compileVariableKeywordToken(Machine* machine,
                                      TokenManager& token_manager,
                                      int32& token_index);
+
+  /**
+  * @brief Compile the variable pack keyword type token.
+  *
+  * @param machine Machine where all the process will be made.
+  * @param token_manager Manager where all the tokens are allocated.
+  * @param token_index index of the token manager list.
+  * @return Report with the compiling results.
+  */
+  Report compileVariablePackKeywordToken(Machine* machine,
+                                         TokenManager& token_manager,
+                                         int32& token_index);
 
 /****************************  TOKEN GENERATION  ******************************/
 

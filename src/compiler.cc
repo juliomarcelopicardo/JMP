@@ -34,8 +34,8 @@ Compiler::~Compiler() {
 *******************************************************************************/
 
 Report Compiler::compile(Machine* machine, 
-                           std::string sentence, 
-                           uint32 line_number) {
+                         std::string sentence, 
+                         uint32 line_number) {
 
   // Error checkings.
   if (!machine) {
@@ -112,8 +112,8 @@ Report Compiler::compileTokens(Machine* machine, TokenManager& token_manager) {
 }
 
 Report Compiler::compileKeywordToken(Machine* machine, 
-                                       TokenManager& token_manager, 
-                                       int32& token_index) {
+                                     TokenManager& token_manager, 
+                                     int32& token_index) {
   Token token = token_manager.getToken(token_index);
 
   if (token.text_ == "IF" || token.text_ == "ELSE") {
@@ -135,9 +135,11 @@ Report Compiler::compileKeywordToken(Machine* machine,
   return kReport_UnexpectedKeyword;
 }
 
+
+
 Report Compiler::compileSeparatorToken(Machine* machine,
-                                         TokenManager& token_manager,
-                                         int32& token_index) {
+                                       TokenManager& token_manager,
+                                       int32& token_index) {
 
   Token token = token_manager.getToken(token_index);
       
@@ -163,7 +165,7 @@ Report Compiler::compileSeparatorToken(Machine* machine,
 }
 
 const bool Compiler::checkIfAndCompileCommasContent(Machine * machine, 
-                                                      TokenManager & token_manager) {
+                                                    TokenManager & token_manager) {
 
   if (token_manager.areAnyCommaTokenInList()) {
     int32 num_tokens = token_manager.numTokens();
@@ -194,8 +196,8 @@ const bool Compiler::checkIfAndCompileCommasContent(Machine * machine,
 *******************************************************************************/
 
 Report Compiler::compileOpenParenthesisSeparatorToken(Machine* machine,
-                                                        TokenManager& token_manager,
-                                                        int32& token_index) {
+                                                      TokenManager& token_manager,
+                                                      int32& token_index) {
 
   Report report = kReport_NoErrors;
 
@@ -230,8 +232,8 @@ Report Compiler::compileOpenParenthesisSeparatorToken(Machine* machine,
 }
 
 Report Compiler::compileCloseBracketsSeparatorToken(Machine* machine, 
-                                                      TokenManager& token_manager, 
-                                                      int32& token_index) {
+                                                    TokenManager& token_manager, 
+                                                    int32& token_index) {
   
   // Will untag the end of a loop, conditional or function.
   Tag tag = getAndRemoveLastTag();
@@ -245,8 +247,8 @@ Report Compiler::compileCloseBracketsSeparatorToken(Machine* machine,
 }
 
 Report Compiler::compileAdditionOperationSeparatorToken(Machine* machine,
-                                                          TokenManager& token_manager, 
-                                                          int32& token_index) {
+                                                        TokenManager& token_manager, 
+                                                        int32& token_index) {
   Token operator_token = token_manager.getToken(token_index);
   Token right_operand = token_manager.getToken(token_index + 1);
   Token left_operand = token_manager.getToken(token_index - 1);
@@ -272,8 +274,8 @@ Report Compiler::compileAdditionOperationSeparatorToken(Machine* machine,
 }
 
 Report Compiler::compileMultiplyOperationSeparatorToken(Machine* machine,
-                                                          TokenManager& token_manager,
-                                                          int32& token_index) {
+                                                        TokenManager& token_manager,
+                                                        int32& token_index) {
 
   Token operator_token = token_manager.getToken(token_index);
   Token right_operand = token_manager.getToken(token_index + 1);
@@ -300,8 +302,8 @@ Report Compiler::compileMultiplyOperationSeparatorToken(Machine* machine,
 }
 
 Report Compiler::compilePowerOperationSeparatorToken(Machine* machine,
-                                                       TokenManager& token_manager,
-                                                       int32& token_index) {
+                                                     TokenManager& token_manager,
+                                                     int32& token_index) {
 
   Token operator_token = token_manager.getToken(token_index);
   Token right_operand = token_manager.getToken(token_index + 1);
@@ -323,8 +325,8 @@ Report Compiler::compilePowerOperationSeparatorToken(Machine* machine,
 }
 
 Report Compiler::compileComparisonOperationSeparatorToken(Machine* machine,
-                                                            TokenManager& token_manager,
-                                                            int32& token_index) {
+                                                          TokenManager& token_manager,
+                                                          int32& token_index) {
 
   Token operator_token = token_manager.getToken(token_index);
   Token right_operand = token_manager.getToken(token_index + 1);
@@ -351,8 +353,8 @@ Report Compiler::compileComparisonOperationSeparatorToken(Machine* machine,
 }
 
 Report Compiler::compileEqualSeparatorToken(Machine* machine,
-                                              TokenManager& token_manager,
-                                              int32& token_index) {
+                                            TokenManager& token_manager,
+                                            int32& token_index) {
 
   int32 num_tokens = token_manager.numTokens();
   if (num_tokens < 3 || token_index <= 0) {
@@ -537,6 +539,14 @@ Report Compiler::compileVariableKeywordToken(Machine* machine,
   return compileTokens(machine, token_manager);
 }
 
+Report Compiler::compileVariablePackKeywordToken(Machine* machine,
+                                                 TokenManager& token_manager,
+                                                 int32& token_index) {
+
+  // TODO
+  return kReport_NoErrors;
+}
+
 /*******************************************************************************
 ***                           TOKEN GENERATION                               ***
 *******************************************************************************/
@@ -717,7 +727,7 @@ const bool Compiler::isKeyword(const std::string& word) {
   if (word == "IF" || word == "ELSE" ||                   // Conditionals
       word == "FUNC" || word == "RETURN" ||               // Functions
       word == "DO" || word == "WHILE" || word == "FOR" || // Loops
-      word == "VAR") {                                    // Variable
+      word == "VAR" || word == "VARPACK") {               // Variables and packs
     return true;
   }
   return false;
