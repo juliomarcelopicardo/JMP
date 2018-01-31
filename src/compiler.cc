@@ -241,7 +241,9 @@ Report Compiler::compileCloseBracketsSeparatorToken(Machine* machine,
     case JMP::kTag_None:{ } break;
     case JMP::kTag_Loop: { machine->addCommand(kCommandType_FinishedConditionalOrLoop, "loop"); } break;
     case JMP::kTag_Conditional: { machine->addCommand(kCommandType_FinishedConditionalOrLoop, "conditional"); } break;
-    case JMP::kTag_Function: { machine->addCommand(kCommandType_FunctionEnd, "EndFunc"); } break;
+    case JMP::kTag_Function: { machine->addCommand(kCommandType_FunctionEnd, "endfunc"); } break;
+    case JMP::kTag_VariablePack: { machine->addCommand(kCommandType_VariablePackEnd, "endvarpack"); } break;
+  
   } 
   return kReport_NoErrors;
 }
@@ -434,7 +436,7 @@ Report Compiler::compileFunctionKeywordToken(Machine* machine,
     return kReport_FunctionKeywordShouldBeTheFirstToken;
   }
 
-  // Mininum function code... "func name() {
+  // Mininum function code... "FUNC name() {
   if (token_manager.numTokens() < 5) {
     return kReport_FunctionDefinitionIncorrect;
   }
@@ -543,7 +545,39 @@ Report Compiler::compileVariablePackKeywordToken(Machine* machine,
                                                  TokenManager& token_manager,
                                                  int32& token_index) {
 
-  // TODO
+  // ERROR CHECKINGS
+  // VARPACK keyword need to be the first word of the token_manager.
+  if (token_index != 0) {
+    return kReport_VariablePackKeywordShouldBeTheFirstToken;
+  }
+
+  // Mininum varpack code... "VARPACK name {"
+  if (token_manager.numTokens() < 3) {
+    return kReport_VariablePackDefinitionIncorrect;
+  }
+
+  // Check that the last token is "{"
+  if (token_manager.getToken(token_manager.numTokens() - 1).text_ != "{") {
+    return kReport_ExpectingOpenBrackets;
+  }
+
+  // Check if the name is valid
+  Token token = token_manager.getToken(token_index + 1);
+  if (token.type_ != kTokenType_Variable) {
+    return kReport_InvalidNameOfVariablePack;
+  }
+
+  // VARIABLE PACK DEFINITION
+  // Command to define the variable pack.
+  machine->addCommand(kCommandType_VariablePackDefinition, token.text_);
+  // Deleting "VARPACK" and "variable pack name" tokens and the "{" one.
+  token_manager.removeToken(token_index);
+  token_manager.removeToken(token_index);
+  token_manager.removeToken(token_manager.numTokens() - 1);
+
+  // Tagging the start of the definition of a variable pack
+  addTag(kTag_Function);
+
   return kReport_NoErrors;
 }
 

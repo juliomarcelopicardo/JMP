@@ -36,7 +36,7 @@ enum Tag {
   kTag_Loop,
   kTag_Conditional,
   kTag_Function,
-  kTag_VarPack,
+  kTag_VariablePack,
 };
 
 /// Text parser and compiler used to save and manage all the tokens from .jmp files.
