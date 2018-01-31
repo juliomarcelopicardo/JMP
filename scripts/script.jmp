@@ -1,3 +1,6 @@
+VAR paco = 1
+VAR pedro = paco
+
 FUNC PrintExample(a,b,c) {
 	PRINT(a)
 	PRINT(b)
@@ -38,9 +41,10 @@ FUNC main() {
   VAR pepe = 0
   WHILE(4 < 5){
     PRINT("PAUL PARRY")
-    pepe = pepe + 1
+    pepe = pepe + pedro
     IF (pepe > 10) {
       RETURN
     }
   }
+
 }

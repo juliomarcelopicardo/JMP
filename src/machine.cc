@@ -34,6 +34,8 @@ Machine::Machine() {
   variable_registry_length_ = 0;
   defined_function_list_.reserve(10);
   defined_function_list_length_ = 0;
+  //global_variable_list_.reserve(10);
+  global_variable_list_length_ = 0;
   last_script_compiled_path_ = "";
 }
 
@@ -49,6 +51,8 @@ Machine::~Machine() {
   defined_function_list_length_ = 0;
   function_list_length_ = 0;
   last_script_compiled_path_.clear();
+  global_variable_list_length_ = 0;
+  global_variable_list_.clear();
 }
 
 
@@ -93,14 +97,17 @@ Report Machine::processFile(std::string script_filename) {
     report = compiler.compile(this, code_line, line_num);
     line_num++;
   }
-  
-  script.clear();
-  script.close();
+
 
   // If the file has been loaded properly, then we will save its path for possible reloadings.
   if (report == kReport_NoErrors) {
     last_script_compiled_path_ = script_filename;
   }
+
+  report = runScriptToSaveGlobalVariables();
+  
+  script.clear();
+  script.close();
 
   return report;
 }
@@ -162,15 +169,23 @@ Report Machine::runFunction(std::string function_call_sentence) {
 
 Report Machine::runScriptToSaveGlobalVariables() {
   Report report = kReport_NoErrors;
-  /*
-
+  Command cmd;
   int32 index = 0;
   while (index < cmd_list_length_) {
     // possible results of the execution "NoError", "return is called" or "Error"
-    report = cmd_list_[index].execute(this, index);
-    if (report != kReport_NoErrors) { break; }
+    cmd = cmd_list_[index];
+    if (cmd.type_ == kCommandType_FunctionDefinition) { // To avoid functions
+      while (index < cmd_list_length_ && cmd_list_[index].type_ != kCommandType_FunctionEnd ) {
+        index++;
+      }
+      index++;
+    }
+    else {
+      report = cmd.execute(this, index);
+      if (report != kReport_NoErrors) { break; }
+    }
   }
-  */
+
   return report;
 }
 
@@ -186,6 +201,8 @@ void Machine::reload() {
   defined_function_list_.clear();
   defined_function_list_.reserve(defined_function_list_length_);
   defined_function_list_length_ = 0;
+  global_variable_list_.reserve(global_variable_list_length_);
+  global_variable_list_length_ = 0;
 
   /* 
     We wont delete the registrys, as functions or variables registered from c++
