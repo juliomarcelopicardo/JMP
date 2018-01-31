@@ -62,6 +62,15 @@ class Machine {
   */
   Report runFunction(std::string function_call_sentence = "main()");
 
+  /**
+  * @brief Runs or executes a script in order to take all the global variables.
+  *
+  * Execution will ignore loops, functions and conditionals. Just Variables.
+  *
+  * @return Report with the function result.
+  */
+  Report runScriptToSaveGlobalVariables();
+
   ///@brief Deletes the last compilation and process and compile the last file.
   void reload();
 
@@ -130,7 +139,7 @@ class Machine {
   */
   void pushBackOtherMachineCommandList(Machine* other_machine);
 
-/***********************  VARIABLE REGISTRY METHODS  **************************/
+/****************************  VARIABLE METHODS  ******************************/
 
   /**
   * @brief Adds a variable to the registry.
@@ -155,6 +164,22 @@ class Machine {
   * @param id ID of the variable in the registry vector.
   */
   void unregisterVariable(const int32 id);
+
+  /**
+  * @brief Push back a global variable in the list.
+  *
+  * @param variable Variable to push back in the list
+  * @return Report with the result of the function.
+  */
+  Report addGlobalVariable(const Variable variable);
+
+  /**
+  * @brief Push back a global type variable in the list.
+  *
+  * @param value Value of the variable.
+  * @return Report with the result of the function.
+  */
+  Report addGlobalVariable(const char* name, const Value value);
 
   /**
   * @brief Variable getter, will look for it in the function lists and in the variable registry.
@@ -346,6 +371,13 @@ class Machine {
   std::vector<Variable> variable_registry_;
   /// Number of elements of the list.
   int32 variable_registry_length_;
+
+/************************** GLOBAL VARIABLE LIST ******************************/
+
+  /// List of global variables"
+  std::vector<Variable> global_variable_list_;
+  /// Global variable list length.
+  int32 global_variable_list_length_;
 
 /************************* FUNCTION REGISTRY LIST *****************************/
 

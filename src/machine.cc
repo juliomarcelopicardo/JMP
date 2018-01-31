@@ -160,6 +160,20 @@ Report Machine::runFunction(std::string function_call_sentence) {
   return report;
 }
 
+Report Machine::runScriptToSaveGlobalVariables() {
+  Report report = kReport_NoErrors;
+  /*
+
+  int32 index = 0;
+  while (index < cmd_list_length_) {
+    // possible results of the execution "NoError", "return is called" or "Error"
+    report = cmd_list_[index].execute(this, index);
+    if (report != kReport_NoErrors) { break; }
+  }
+  */
+  return report;
+}
+
 void Machine::reload() {
 
   // We will clean all the buffers used. We will reserve the same size it needed before.
@@ -320,6 +334,18 @@ void Machine::unregisterVariable(const int32 id) {
   ReportWarning(warning);
 }
 
+Report Machine::addGlobalVariable(const Variable variable) {
+  global_variable_list_.push_back(variable);
+  global_variable_list_length_++;
+  return kReport_NoErrors;
+}
+
+Report Machine::addGlobalVariable(const char* name, const Value value) {
+  global_variable_list_.push_back({ name, value });
+  global_variable_list_length_++;
+  return kReport_NoErrors;
+}
+
 Variable* Machine::getVariable(const std::string& variable_name) {
   
   // 1st step will be to look for the variable into the current function scope.
@@ -328,6 +354,13 @@ Variable* Machine::getVariable(const std::string& variable_name) {
     Variable* variable = function->getVariable(variable_name);
     if (variable) {
       return variable;
+    }
+  }
+
+  // If not, then we will look for it in the global variable stack.
+  for (int32 i = 0; i < global_variable_list_length_; i++) {
+    if (global_variable_list_[i].name_ == variable_name) {
+      return &global_variable_list_[i];
     }
   }
 

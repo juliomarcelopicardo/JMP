@@ -239,7 +239,7 @@ Report Compiler::compileCloseBracketsSeparatorToken(Machine* machine,
     case JMP::kTag_None:{ } break;
     case JMP::kTag_Loop: { machine->addCommand(kCommandType_FinishedConditionalOrLoop, "loop"); } break;
     case JMP::kTag_Conditional: { machine->addCommand(kCommandType_FinishedConditionalOrLoop, "conditional"); } break;
-    case JMP::kTag_Function:{ } break;
+    case JMP::kTag_Function: { machine->addCommand(kCommandType_FunctionEnd, "EndFunc"); } break;
   } 
   return kReport_NoErrors;
 }
@@ -379,8 +379,8 @@ Report Compiler::compileEqualSeparatorToken(Machine* machine,
 *******************************************************************************/
 
 Report Compiler::compileConditionalKeywordToken(Machine* machine,
-                                                  TokenManager& token_manager,
-                                                  int32& token_index) {
+                                                TokenManager& token_manager,
+                                                int32& token_index) {
 
   if (token_manager.getToken(token_index).text_ == "IF") {
     // removing the "vayword.
@@ -403,8 +403,8 @@ Report Compiler::compileConditionalKeywordToken(Machine* machine,
 }
 
 Report Compiler::compileReturnKeywordToken(Machine* machine,
-                                             TokenManager& token_manager,
-                                             int32& token_index) {
+                                           TokenManager& token_manager,
+                                           int32& token_index) {
 
   Report report = kReport_NoErrors;
 
@@ -424,8 +424,8 @@ Report Compiler::compileReturnKeywordToken(Machine* machine,
 }
 
 Report Compiler::compileFunctionKeywordToken(Machine* machine,
-                                               TokenManager& token_manager,
-                                               int32& token_index) {
+                                             TokenManager& token_manager,
+                                             int32& token_index) {
   // ERROR CHECKINGS
   // func keyword need to be the first word of the token_manager.
   if (token_index != 0) {
@@ -490,8 +490,8 @@ Report Compiler::compileFunctionKeywordToken(Machine* machine,
 }
 
 Report Compiler::compileLoopKeywordToken(Machine* machine,
-                                           TokenManager& token_manager,
-                                           int32& token_index) {
+                                         TokenManager& token_manager,
+                                         int32& token_index) {
 
   if (token_index != 0) {
     return kReport_LoopKeywordShouldBeTheFirstToken;
@@ -521,8 +521,8 @@ Report Compiler::compileLoopKeywordToken(Machine* machine,
 }
 
 Report Compiler::compileVariableKeywordToken(Machine* machine,
-                                               TokenManager& token_manager,
-                                               int32& token_index) {
+                                             TokenManager& token_manager,
+                                             int32& token_index) {
 
   // Gets the variable name.
   Token var_name = token_manager.getToken(token_index + 1);

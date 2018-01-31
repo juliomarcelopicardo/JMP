@@ -7,7 +7,7 @@ FUNC PrintExample(a,b,c) {
   PRINT(a * c)
 	PRINT(variable)
 
-  RETURN
+
 }
 
 FUNC Example(first,second){
@@ -15,7 +15,7 @@ FUNC Example(first,second){
   VAR result = "End of the loop. iterator value : "
 	
 	VAR iterator = 0
-	WHILE(iterator < 5){		
+	WHILE(4 < 5){		
 		PRINT(text + first)
 		PRINT(second)
 		PRINT("Hello World")
@@ -25,17 +25,22 @@ FUNC Example(first,second){
     PRINT(" ")
 		iterator = iterator + 1
 	}
+  
 
-	RETURN
 }
 
 FUNC Example2() {
   ExternalFunction(1, "text", 3.2)
-  RETURN
+
 }
 
 FUNC main() {
-  Example(1, 2)
-  Example2()
-  RETURN
+  VAR pepe = 0
+  WHILE(4 < 5){
+    PRINT("PAUL PARRY")
+    pepe = pepe + 1
+    IF (pepe > 10) {
+      RETURN
+    }
+  }
 }

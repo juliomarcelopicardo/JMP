@@ -73,7 +73,7 @@ const int32 Function::getVariableID(const std::string& variable_name) {
       return i;
     }
   }
-  ReportWarning(" Couldnt get variable from function. Variable name: " + variable_name);
+  //ReportWarning(" Couldnt get variable from function. Variable name: " + variable_name);
   return INVALID_FUNCTION_ID;
 }
 
