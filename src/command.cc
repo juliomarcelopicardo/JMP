@@ -63,6 +63,7 @@ Report Command::execute(Machine* machine, int32& id) {
     case JMP::kCommandType_FunctionDefinition: { return executeFunctionDefinition(machine, id); }
     case JMP::kCommandType_FunctionCall: { return executeFunctionCall(machine, id); }
     case JMP::kCommandType_FunctionReturn: { return executeFunctionReturn(machine, id); }
+    case JMP::kCommandType_FunctionEnd: { return executeFunctionEnd(machine, id); }
     case JMP::kCommandType_FunctionNumParameters: { return executeFunctionNumParams(machine, id); }
     case JMP::kCommandType_FunctionParameter: { return executeFunctionParam(machine, id); }
     case JMP::kCommandType_FinishedConditionalOrLoop: { return executeFinishedConditionalOrLoop(machine, id); }
@@ -243,6 +244,28 @@ Report Command::executeFunctionReturn(Machine* machine, int32& next_cmd_id) {
   return report;
 }
 
+Report Command::executeFunctionEnd(Machine* machine, int32& next_cmd_id) {
+
+  // TODO: System to avoid using RETURN all the time
+  Report report = kReport_NoErrors;
+  // We will check if theres any fu
+  Function* function = machine->getCurrentFunction();
+  if (function == nullptr) {
+    report = kReport_ReturnCalledWithoutAnyActiveFunction;
+    PrintReport(report);
+    return report;
+  }
+
+  // if theres an active function we will come back to the origin command where it was called.
+  next_cmd_id = function->originID();
+  // if its the last active function, then we finish the execution.
+  if (machine->numActiveFunctions() == 1) {
+    report = kReport_LastActiveFunctionReturnCalled; // This will end the execution without errors.
+  }
+  machine->removeCurrentFunction();
+  return report;
+}
+
 Report Command::executeFunctionNumParams(Machine* machine, int32& next_cmd_id) {
 
   if (machine->numStackValues() < atoi(name_.c_str())) {
@@ -348,10 +371,9 @@ Report Command::executeVariableDefinition(Machine* machine, int32& next_cmd_id) 
     next_cmd_id++; // jump to the next command on the list
     return kReport_NoErrors;
   }
-
-  // TODO: System to allow variables from outside of the scope to be accesible.
-  // Maybe creating a global variable stack.
-  ReportWarning("Still not implemented global variable system, definition failed");
+  // TODO: Error checking to avoid repeated names.
+  // Adding a variable to the global variable stack.
+  machine->addGlobalVariable({ name_.c_str() });
   next_cmd_id++; // jump to the next command on the list
   return kReport_NoErrors;
 

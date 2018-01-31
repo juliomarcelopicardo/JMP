@@ -36,6 +36,7 @@ enum CommandType {
   kCommandType_FunctionDefinition,
   kCommandType_FunctionCall,
   kCommandType_FunctionReturn,
+  kCommandType_FunctionEnd,
   kCommandType_FunctionNumParameters,
   kCommandType_FunctionParameter,
   // Body state -> Conditional, loop iteration or function body ended.
@@ -188,6 +189,15 @@ class Command {
   * @return Report with possible errors, or NoErrors if succesful.
   */
   Report executeFunctionReturn(class Machine* machine, int32& next_command_to_execute);
+
+  /**
+  * @brief Executes the FunctionEnd command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeFunctionEnd(class Machine* machine, int32& next_command_to_execute);
 
   /**
   * @brief Executes the FunctionNumParams command from the list.
