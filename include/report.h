@@ -53,6 +53,9 @@ namespace JMP {
     kReport_ParamsNeedAFunctionToBeExecuted,
     kReport_EndOfConditionalOrLoopNotFound,
     kReport_CallingUndefinedFunction,
+    kReport_VariablePackKeywordShouldBeTheFirstToken,
+    kReport_VariablePackDefinitionIncorrect,
+    kReport_InvalidNameOfVariablePack,
   };
 
   void ReportMsg(std::string msg);
