@@ -1,5 +1,10 @@
 VAR paco = 1
-VAR pedro = paco
+
+VARPACK camera {
+  VAR x = 1
+  VAR y = camera.x
+  VAR z = 3
+}
 
 FUNC PrintExample(a,b,c) {
 	PRINT(a)
@@ -33,15 +38,19 @@ FUNC Example(first,second){
 }
 
 FUNC Example2() {
-  ExternalFunction(1, "text", 3.2)
+  ExternalFunction(camera.x, camera.y, camera.z)
 
 }
 
+VAR pedro = camera.x
+
 FUNC main() {
+Example2()
+  VAR perico = pedro
   VAR pepe = 0
   WHILE(4 < 5){
     PRINT("PAUL PARRY")
-    pepe = pepe + pedro
+    pepe = pepe + perico
     IF (pepe > 10) {
       RETURN
     }

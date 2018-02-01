@@ -18,6 +18,7 @@ void RegFunc(std::vector<JMP::Value>& params) {
 }
 
 JMP::int32 main() {
+
   OutputDebugString("\n Starting application... \n\n");
 
   JMP::Machine machine;
