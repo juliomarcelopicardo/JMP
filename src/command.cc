@@ -324,6 +324,12 @@ Report Command::executeFinishedConditionalOrLoop(Machine* machine, int32& next_c
 
 Report Command::executeConditionToEvaluate(Machine* machine, int32& next_cmd_id) {
   
+  if (!machine->getCurrentFunction()) {
+    Report report = kReport_ConditionOutsideOfAFunction;
+    PrintReport(report);
+    return report;
+  }
+
   // The condition is true, so we will enter in the loop or conditional.
   if (machine->getAndRemoveTheLastAddedStackValue().integer_ == CONDITION_RESULT_TRUE) {
     next_cmd_id++;
@@ -402,6 +408,11 @@ Report Command::executeVariablePackEnd(Machine* machine, int32& next_cmd_id) {
 }
 
 Report Command::executeLoopStartPoint(Machine* machine, int32& next_cmd_id) {
+  if (!machine->getCurrentFunction()) {
+    Report report = kReport_LoopOutsideOfAFunction;
+    PrintReport(report);
+    return report;
+  }
   next_cmd_id++; // Just go to the next step that would be the condition check.
   return kReport_NoErrors;
 }

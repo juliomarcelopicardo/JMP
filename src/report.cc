@@ -72,6 +72,12 @@ void PrintReport(Report& report, uint32 line_number) {
     case JMP::kReport_ReturnCalledWithoutAnyActiveFunction: {
       ReportError(": Return was called, but there isnt any active function..");
     } break;
+    case JMP::kReport_ConditionOutsideOfAFunction: {
+      ReportError(": Conditions can only be evaluated inside a function body..");
+    } break;
+    case JMP::kReport_LoopOutsideOfAFunction: {
+      ReportError(": Loops can only be executed inside a function body..");
+    } break;
   }
 }
 

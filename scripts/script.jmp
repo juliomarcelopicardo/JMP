@@ -51,9 +51,9 @@ FUNC main() {
     PRINT("PAUL PARRY")
     pepe = pepe + perico
     IF (pepe > 15) {
+      Example2()
       RETURN
     }
   }
-Example2()
 
 }
