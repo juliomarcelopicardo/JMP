@@ -131,6 +131,9 @@ Report Compiler::compileKeywordToken(Machine* machine,
   if (token.text_ == "VAR") {
     return compileVariableKeywordToken(machine, token_manager, token_index);
   }
+  if (token.text_ == "VARPACK") {
+    return compileVariablePackKeywordToken(machine, token_manager, token_index);
+  }
   
   return kReport_UnexpectedKeyword;
 }
@@ -576,7 +579,7 @@ Report Compiler::compileVariablePackKeywordToken(Machine* machine,
   token_manager.removeToken(token_manager.numTokens() - 1);
 
   // Tagging the start of the definition of a variable pack
-  addTag(kTag_Function);
+  addTag(kTag_VariablePack);
 
   return kReport_NoErrors;
 }
