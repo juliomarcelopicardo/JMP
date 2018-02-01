@@ -34,8 +34,10 @@ Machine::Machine() {
   variable_registry_length_ = 0;
   defined_function_list_.reserve(10);
   defined_function_list_length_ = 0;
-  //global_variable_list_.reserve(10);
-  global_variable_list_length_ = 0;
+  global_variable_pack_list_.resize(1);
+  global_variable_pack_list_[0].name = "";
+  global_variable_pack_list_length_ = 1;
+  current_global_variable_pack_ = 0;
   last_script_compiled_path_ = "";
 }
 
@@ -51,8 +53,9 @@ Machine::~Machine() {
   defined_function_list_length_ = 0;
   function_list_length_ = 0;
   last_script_compiled_path_.clear();
-  global_variable_list_length_ = 0;
-  global_variable_list_.clear();
+  global_variable_pack_list_length_ = 0;
+  current_global_variable_pack_ = 0;
+  global_variable_pack_list_.clear();
 }
 
 
@@ -201,8 +204,8 @@ void Machine::reload() {
   defined_function_list_.clear();
   defined_function_list_.reserve(defined_function_list_length_);
   defined_function_list_length_ = 0;
-  global_variable_list_.reserve(global_variable_list_length_);
-  global_variable_list_length_ = 0;
+  global_variable_pack_list_.reserve(global_variable_pack_list_length_);
+  addGlobalVariablePack("");
 
   /* 
     We wont delete the registrys, as functions or variables registered from c++
@@ -351,16 +354,28 @@ void Machine::unregisterVariable(const int32 id) {
   ReportWarning(warning);
 }
 
-Report Machine::addGlobalVariable(const Variable variable) {
-  global_variable_list_.push_back(variable);
-  global_variable_list_length_++;
+void Machine::addGlobalVariablePack(const char* name) {
+  global_variable_pack_list_.push_back({ name });
+  current_global_variable_pack_ = global_variable_pack_list_length_;
+  global_variable_pack_list_length_++;
+}
+
+Report Machine::addGlobalVariableToCurrentPack(const Variable variable) {
+  global_variable_pack_list_[current_global_variable_pack_].var.push_back(variable);
   return kReport_NoErrors;
 }
 
-Report Machine::addGlobalVariable(const char* name, const Value value) {
-  global_variable_list_.push_back({ name, value });
-  global_variable_list_length_++;
+Report Machine::addGlobalVariableToCurrentPack(const char* name, const Value value) {
+  global_variable_pack_list_[current_global_variable_pack_].var.push_back({ name, value });
   return kReport_NoErrors;
+}
+
+void Machine::restartCurrentGlobalVariablePackIndex() {
+  current_global_variable_pack_ = 0;
+}
+
+std::string Machine::getCurrentGlobalVariablePackName() {
+  return global_variable_pack_list_[current_global_variable_pack_].name;
 }
 
 Variable* Machine::getVariable(const std::string& variable_name) {
@@ -374,19 +389,47 @@ Variable* Machine::getVariable(const std::string& variable_name) {
     }
   }
 
-  // If not, then we will look for it in the global variable stack.
-  for (int32 i = 0; i < global_variable_list_length_; i++) {
-    if (global_variable_list_[i].name_ == variable_name) {
-      return &global_variable_list_[i];
-    }
-  }
-
   // If not found, we will look for it in the variable registry.
   for (int32 i = 0; i < variable_registry_length_; i++) {
     if (variable_registry_[i].name_ == variable_name) {
       return &variable_registry_[i];
     }
   }
+
+  // Looking for the variable in the global stack.
+  // 1st step will be to separate the name in case that is part of a variable pack.
+  // We will look for "."  --> example:  ->>>   camera.position
+  int32 length = variable_name.length();
+  int32 index = -1;
+  for (int32 i = 0; i < length; i++) {
+    if (variable_name[i] == '.') { index = i; break; }
+  }
+  if (index == -1) { // No "." found
+    // Look for in the default variable pack.
+    length = global_variable_pack_list_[0].var.size();
+    for (int32 i = 0; i < length; i++) {
+      if (global_variable_pack_list_[0].var[i].name_ == variable_name) {
+        return &global_variable_pack_list_[0].var[i];
+      }
+    }
+  }
+  else { // Separate "camera.position" ->>>> to "camera"(pack) and "position"(var)
+    std::string pack_name = variable_name.substr(0, index); // not including "."
+    std::string var_name = variable_name.substr(index + 1); // to ignore "."
+    index = 0;
+    // looking for the pack
+    for (int32 i = 0; i < global_variable_pack_list_length_; i++) {
+      if (global_variable_pack_list_[i].name == pack_name) {
+        length = global_variable_pack_list_[i].var.size();
+        for (int32 j = 0; j < length; j++) {
+          if (global_variable_pack_list_[i].var[j].name_ == var_name) {
+            return &global_variable_pack_list_[i].var[j];
+          }
+        }
+      }
+    }
+  }
+
 
   return nullptr;
 }

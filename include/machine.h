@@ -166,20 +166,40 @@ class Machine {
   void unregisterVariable(const int32 id);
 
   /**
-  * @brief Push back a global variable in the list.
+  * @brief Push back a new global variable pack and set it as current.
+  *
+  * @param name Name of the variable pack.
+  * @return Report with the result of the function.
+  */
+  void addGlobalVariablePack(const char* name);
+
+  /**
+  * @brief Push back a global variable in the current list.
   *
   * @param variable Variable to push back in the list
   * @return Report with the result of the function.
   */
-  Report addGlobalVariable(const Variable variable);
+  Report addGlobalVariableToCurrentPack(const Variable variable);
 
   /**
-  * @brief Push back a global type variable in the list.
+  * @brief Push back a global type variable in the current pack list.
   *
   * @param value Value of the variable.
   * @return Report with the result of the function.
   */
-  Report addGlobalVariable(const char* name, const Value value);
+  Report addGlobalVariableToCurrentPack(const char* name, const Value value);
+
+  /**
+  * @brief Current pack index will be 0, which is the pack for non-packaged global variables.
+  */
+  void restartCurrentGlobalVariablePackIndex();
+
+  /**
+  * @brief Gets the current global variable pack name.
+  *
+  * @return Name of the pack.
+  */
+  std::string getCurrentGlobalVariablePackName();
 
   /**
   * @brief Variable getter, will look for it in the function lists and in the variable registry.
@@ -188,6 +208,7 @@ class Machine {
   * @return Variable from the list, null if not found.
   */
   Variable* getVariable(const std::string& variable_name);
+
 
   /***********************  FUNCTION REGISTRY METHODS  **************************/
 
@@ -372,12 +393,18 @@ class Machine {
   /// Number of elements of the list.
   int32 variable_registry_length_;
 
-/************************** GLOBAL VARIABLE LIST ******************************/
+/***********************  GLOBAL VARIABLE PACK LIST ***************************/
 
-  /// List of global variables"
-  std::vector<Variable> global_variable_list_;
+  struct VariablePack {
+    std::string name;
+    std::vector<Variable> var;
+  };
+  /// List of global variables pack
+  std::vector<VariablePack> global_variable_pack_list_;
   /// Global variable list length.
-  int32 global_variable_list_length_;
+  int32 global_variable_pack_list_length_;
+  /// Current global variable pack
+  int32 current_global_variable_pack_;
 
 /************************* FUNCTION REGISTRY LIST *****************************/
 
