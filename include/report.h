@@ -55,6 +55,7 @@ namespace JMP {
     kReport_CallingUndefinedFunction,
     kReport_VariablePackKeywordShouldBeTheFirstToken,
     kReport_VariablePackDefinitionIncorrect,
+    kReport_VariablePackCantBeDefinedInsideAFunction,
     kReport_InvalidNameOfVariablePack,
   };
 
