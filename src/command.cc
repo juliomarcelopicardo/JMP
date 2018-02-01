@@ -49,7 +49,6 @@ Command & Command::operator=(const Command& copy) {
 
 Report Command::execute(Machine* machine, int32& id) {
 
-  // TODO: Functions to execute each type of command.
   switch (type_) {
     case JMP::kCommandType_PushToTheStack: { return executePushToTheStack(machine, id); }
     case JMP::kCommandType_Addition: { return executeAddition(machine, id); }
@@ -201,7 +200,6 @@ Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) {
     return kReport_NoErrors;
   }
 
-  // TODO, function register. to execute functions from C++
   RegisteredFunction* function = machine->getRegisteredFunction(name_);
   if (function) {
     // Get the num of params. (do this because of the order of them.
@@ -256,7 +254,6 @@ Report Command::executeFunctionReturn(Machine* machine, int32& next_cmd_id) {
 
 Report Command::executeFunctionEnd(Machine* machine, int32& next_cmd_id) {
 
-  // TODO: System to avoid using RETURN all the time
   Report report = kReport_NoErrors;
   // We will check if theres any fu
   Function* function = machine->getCurrentFunction();
@@ -383,10 +380,8 @@ Report Command::executeVariableDefinition(Machine* machine, int32& next_cmd_id) 
   }
   // TODO: Error checking to avoid repeated names.
   // Adding a variable to the global variable stack.
-  machine->addGlobalVariableToCurrentPack({ name_.c_str() });
   next_cmd_id++; // jump to the next command on the list
-  return kReport_NoErrors;
-
+  return machine->addGlobalVariableToCurrentPack({ name_.c_str() });
 }
 
 Report Command::executeVariablePackDefinition(Machine* machine, int32& next_cmd_id) {

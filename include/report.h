@@ -57,6 +57,7 @@ namespace JMP {
     kReport_VariablePackDefinitionIncorrect,
     kReport_VariablePackCantBeDefinedInsideAFunction,
     kReport_InvalidNameOfVariablePack,
+    kReport_VariableDefinedTwice,
   };
 
   void ReportMsg(std::string msg);

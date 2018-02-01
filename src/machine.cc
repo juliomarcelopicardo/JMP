@@ -361,11 +361,26 @@ void Machine::addGlobalVariablePack(const char* name) {
 }
 
 Report Machine::addGlobalVariableToCurrentPack(const Variable variable) {
+  int32 length = global_variable_pack_list_[current_global_variable_pack_].var.size();
+  for (int32 i = 0; i < length; i++) {
+    if (global_variable_pack_list_[current_global_variable_pack_].var[i].name_ == variable.name_) {
+      ReportError("Multiple definition of the variable: " + variable.name_);
+      return kReport_VariableDefinedTwice;
+    }
+  }
   global_variable_pack_list_[current_global_variable_pack_].var.push_back(variable);
   return kReport_NoErrors;
 }
 
 Report Machine::addGlobalVariableToCurrentPack(const char* name, const Value value) {
+  int32 length = global_variable_pack_list_[current_global_variable_pack_].var.size();
+  for (int32 i = 0; i < length; i++) {
+    if (global_variable_pack_list_[current_global_variable_pack_].var[i].name_ == name) {
+      std::string n = name;
+      ReportError("Multiple definition of the variable: " + n);
+      return kReport_VariableDefinedTwice;
+    }
+  }
   global_variable_pack_list_[current_global_variable_pack_].var.push_back({ name, value });
   return kReport_NoErrors;
 }
