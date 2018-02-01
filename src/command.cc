@@ -69,6 +69,8 @@ Report Command::execute(Machine* machine, int32& id) {
     case JMP::kCommandType_FinishedConditionalOrLoop: { return executeFinishedConditionalOrLoop(machine, id); }
     case JMP::kCommandType_ConditionToEvaluate: { return executeConditionToEvaluate(machine, id); }
     case JMP::kCommandType_VariableDefinition: { return executeVariableDefinition(machine, id); }
+    case JMP::kCommandType_VariablePackDefinition: { return executeVariablePackDefinition(machine, id); }
+    case JMP::kCommandType_VariablePackEnd: { return executeVariablePackEnd(machine, id); }
     case JMP::kCommandType_LoopStartPoint: { return executeLoopStartPoint(machine, id); }
   }
 
@@ -117,9 +119,17 @@ Report Command::executePower(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 Report Command::executeEqualAssignment(Machine* machine, int32& next_cmd_id) {
-  Variable* variable = machine->getVariable(name_);
+  // Check if the variable is being assigned inside a pack definition.
+  std::string pack_name = machine->getCurrentGlobalVariablePackName();
+  std::string var_name = name_;
+  // If its inside a VARPACK, then we will attach the pack name.
+  // Example, name_ = "x". If its inside "cam" varpack, the result will be "cam.x"
+  if (pack_name != "") {
+    var_name = pack_name + "." + name_;
+  }
+  Variable* variable = machine->getVariable(var_name);
   if (!variable) {
-    ReportError(" Unable to find variable name: " + name_);
+    ReportError(" Unable to find variable name: " + var_name);
     return kReport_ExpectingNameOfVariable;
   }
   // Assign the last value of the stack to the variable.
@@ -373,12 +383,28 @@ Report Command::executeVariableDefinition(Machine* machine, int32& next_cmd_id) 
   }
   // TODO: Error checking to avoid repeated names.
   // Adding a variable to the global variable stack.
-  machine->addGlobalVariable({ name_.c_str() });
+  machine->addGlobalVariableToCurrentPack({ name_.c_str() });
   next_cmd_id++; // jump to the next command on the list
   return kReport_NoErrors;
 
 }
 
+Report Command::executeVariablePackDefinition(Machine* machine, int32& next_cmd_id) {
+  if (machine->getCurrentFunction()) {
+    ReportError("Variable packs cannot be defined inside functions. Pack name: " + name_);
+    return kReport_VariablePackCantBeDefinedInsideAFunction;
+  }
+
+  machine->addGlobalVariablePack(name_.c_str());
+  next_cmd_id++; // Just go to the next step that would be the condition check.
+  return kReport_NoErrors;
+}
+
+Report Command::executeVariablePackEnd(Machine* machine, int32& next_cmd_id) {
+  machine->restartCurrentGlobalVariablePackIndex();
+  next_cmd_id++; // Just go to the next step that would be the condition check.
+  return kReport_NoErrors;
+}
 
 Report Command::executeLoopStartPoint(Machine* machine, int32& next_cmd_id) {
   next_cmd_id++; // Just go to the next step that would be the condition check.

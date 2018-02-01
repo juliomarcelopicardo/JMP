@@ -45,6 +45,9 @@ enum CommandType {
   kCommandType_ConditionToEvaluate,
   // Variable definition
   kCommandType_VariableDefinition,
+  // Variable pack
+  kCommandType_VariablePackDefinition,
+  kCommandType_VariablePackEnd,
   // Loop
   kCommandType_LoopStartPoint,
 };
@@ -244,6 +247,23 @@ class Command {
   */
   Report executeVariableDefinition(class Machine* machine, int32& next_command_to_execute);
 
+  /**
+  * @brief Executes the VariablePackDefinition command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeVariablePackDefinition(class Machine* machine, int32& next_command_to_execute);
+  
+  /**
+  * @brief Executes the VariablePackEnd command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeVariablePackEnd(class Machine* machine, int32& next_command_to_execute);
 
   /**
   * @brief Executes the LoopStartPoint command from the list.
