@@ -30,6 +30,7 @@ enum CommandType {
   // Separator -> Comparisons.
   kCommandType_GreaterThanComparison,
   kCommandType_LowerThanComparison,
+  kCommandType_EqualThanComparison,
   // Stack Actions
   kCommandType_PushToTheStack,
   // Function
@@ -146,7 +147,7 @@ class Command {
   * @param next_command_to_execute Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeGreaterThan(class Machine* machine, int32& next_command_to_execute);
+  Report executeGreaterThanComparison(class Machine* machine, int32& next_command_to_execute);
 
   /**
   * @brief Executes the LowerThan command from the list.
@@ -155,7 +156,16 @@ class Command {
   * @param next_command_to_execute Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeLowerThan(class Machine* machine, int32& next_command_to_execute);
+  Report executeLowerThanComparison(class Machine* machine, int32& next_command_to_execute);
+
+  /**
+  * @brief Executes the EqualThan command from the list.
+  *
+  * @param machine Machine where the command is allocated.
+  * @param next_command_to_execute Index of the next step of the execution list.
+  * @return Report with possible errors, or NoErrors if succesful.
+  */
+  Report executeEqualThanComparison(class Machine* machine, int32& next_command_to_execute);
 
   /**
   * @brief Executes the PushToTheStack command from the list.

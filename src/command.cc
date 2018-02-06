@@ -57,8 +57,9 @@ Report Command::execute(Machine* machine, int32& id) {
     case JMP::kCommandType_Division: { return executeDivision(machine, id); }
     case JMP::kCommandType_Power: { return executePower(machine, id); }
     case JMP::kCommandType_EqualAssigment: { return executeEqualAssignment(machine, id); }
-    case JMP::kCommandType_GreaterThanComparison: { return executeGreaterThan(machine, id); }
-    case JMP::kCommandType_LowerThanComparison: { return executeLowerThan(machine, id); }
+    case JMP::kCommandType_GreaterThanComparison: { return executeGreaterThanComparison(machine, id); }
+    case JMP::kCommandType_LowerThanComparison: { return executeLowerThanComparison(machine, id); }
+    case JMP::kCommandType_EqualThanComparison: { return executeEqualThanComparison(machine, id); }
     case JMP::kCommandType_FunctionDefinition: { return executeFunctionDefinition(machine, id); }
     case JMP::kCommandType_FunctionCall: { return executeFunctionCall(machine, id); }
     case JMP::kCommandType_FunctionReturn: { return executeFunctionReturn(machine, id); }
@@ -93,6 +94,7 @@ Report Command::executeSubstraction(Machine* machine, int32& next_cmd_id) {
   next_cmd_id++; // Jump to the next step.
   return kReport_NoErrors;
 }
+
 Report Command::executeMultiply(Machine* machine, int32& next_cmd_id) {
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
@@ -101,6 +103,7 @@ Report Command::executeMultiply(Machine* machine, int32& next_cmd_id) {
   next_cmd_id++; // Jump to the next step.
   return kReport_NoErrors;
 }
+
 Report Command::executeDivision(Machine* machine, int32& next_cmd_id) {
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
@@ -109,6 +112,7 @@ Report Command::executeDivision(Machine* machine, int32& next_cmd_id) {
   next_cmd_id++; // Jump to the next step.
   return kReport_NoErrors;
 }
+
 Report Command::executePower(Machine* machine, int32& next_cmd_id) {
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
@@ -117,6 +121,7 @@ Report Command::executePower(Machine* machine, int32& next_cmd_id) {
   next_cmd_id++; // Jump to the next step.
   return kReport_NoErrors;
 }
+
 Report Command::executeEqualAssignment(Machine* machine, int32& next_cmd_id) {
   // Check if the variable is being assigned inside a pack definition.
   std::string pack_name = machine->getCurrentGlobalVariablePackName();
@@ -136,7 +141,8 @@ Report Command::executeEqualAssignment(Machine* machine, int32& next_cmd_id) {
   next_cmd_id++; // Jump to the next step.
   return kReport_NoErrors;
 }
-Report Command::executeGreaterThan(Machine* machine, int32& next_cmd_id) {
+
+Report Command::executeGreaterThanComparison(Machine* machine, int32& next_cmd_id) {
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -144,7 +150,8 @@ Report Command::executeGreaterThan(Machine* machine, int32& next_cmd_id) {
   next_cmd_id++; // Jump to the next step.
   return kReport_NoErrors;
 }
-Report Command::executeLowerThan(Machine* machine, int32& next_cmd_id) {
+
+Report Command::executeLowerThanComparison(Machine* machine, int32& next_cmd_id) {
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -152,6 +159,16 @@ Report Command::executeLowerThan(Machine* machine, int32& next_cmd_id) {
   next_cmd_id++; // Jump to the next step.
   return kReport_NoErrors;
 }
+
+Report Command::executeEqualThanComparison(Machine* machine, int32& next_cmd_id) {
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first == second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
 Report Command::executePushToTheStack(Machine* machine, int32& next_cmd_id) {
   
   // We will check if its a quote.
