@@ -60,6 +60,7 @@ Report Command::execute(Machine* machine, int32& id) {
     case JMP::kCommandType_GreaterThanComparison: { return executeGreaterThanComparison(machine, id); }
     case JMP::kCommandType_LowerThanComparison: { return executeLowerThanComparison(machine, id); }
     case JMP::kCommandType_EqualThanComparison: { return executeEqualThanComparison(machine, id); }
+    case JMP::kCommandType_NotEqualThanComparison: { return executeNotEqualThanComparison(machine, id); }
     case JMP::kCommandType_FunctionDefinition: { return executeFunctionDefinition(machine, id); }
     case JMP::kCommandType_FunctionCall: { return executeFunctionCall(machine, id); }
     case JMP::kCommandType_FunctionReturn: { return executeFunctionReturn(machine, id); }
@@ -165,6 +166,15 @@ Report Command::executeEqualThanComparison(Machine* machine, int32& next_cmd_id)
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
   machine->addValueToTheStack(first == second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
+Report Command::executeNotEqualThanComparison(Machine* machine, int32& next_cmd_id) {
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first != second);
   next_cmd_id++; // Jump to the next step.
   return kReport_NoErrors;
 }
