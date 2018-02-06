@@ -98,6 +98,7 @@ Value operator/(const Value&, const Value&);
 Value operator^(const Value&, const Value&);
 Value operator>(const Value&, const Value&);
 Value operator<(const Value&, const Value&);
+Value operator==(const Value&, const Value&);
 
 }; /* JMP */
 
