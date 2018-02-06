@@ -50,17 +50,24 @@ FUNC main() {
   VAR pepe = 0
   WHILE(4 < 5){
     PRINT("PAUL PARRY")
-    pepe = pepe + perico
     IF (pepe > 15) {
       Example2()
       RETURN
     }
-    IF (pepe == 3) {
-      PRINT("Equal")
+    IF (pepe == 0) {
+      PRINT("EQUAL than 0")
     }
-    IF (pepe != 3) {
-      PRINT("NOT Equal")
+    IF (pepe != 0) {
+      PRINT("NOT EQUAL than 0")
     }
+    IF (pepe >= 0) {
+      PRINT("GREATER or EQUAL than 0")
+    }
+    IF (pepe <= 0) {
+      PRINT("LESSER or EQUAL than 0")
+    }
+    pepe = pepe + perico
+
   }
 
 }
