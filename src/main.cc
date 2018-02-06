@@ -7,6 +7,7 @@
 *                                <b7026027@my.shu.ac.uk>
 */
 
+#if 0 // ORIGINAL
 #include "jmp.h"
 #include <Windows.h>
 
@@ -32,17 +33,34 @@ JMP::int32 main() {
   //machine.runFunction("Example2()");
   machine.runFunction();
 
-
+  /*
   system("pause");
 
   machine.reload();
   machine.runFunction();
   machine.unregisterFunction("ExternalFunction");
   machine.unregisterVariable("variable");
+  */
 
 
   OutputDebugString("\n Ending application... \n\n");
   system("pause");
   return 0;
 }
+#else // SINGLE HEADER VERSION
+
+#include "jmp_single_header.h"
+#include <Windows.h>
+
+JMP_SINGLE_HEADER::int32 main() {
+
+  OutputDebugString("\n Starting application... \n\n");
+
+
+
+  OutputDebugString("\n Ending application... \n\n");
+  system("pause");
+  return 0;
+}
+#endif
 
