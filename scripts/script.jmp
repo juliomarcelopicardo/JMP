@@ -32,6 +32,7 @@ FUNC Example(first,second){
     PRINT(result + iterator)
     PRINT(" ")
 		iterator = iterator + 1
+    RETURN
 	}
   
 
@@ -53,6 +54,9 @@ FUNC main() {
     IF (pepe > 15) {
       Example2()
       RETURN
+    }
+    IF (pepe == 3) {
+      PRINT("EqualThanComparisonWorking")
     }
   }
 

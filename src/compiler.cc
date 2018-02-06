@@ -345,8 +345,11 @@ Report Compiler::compileComparisonOperationSeparatorToken(Machine* machine,
   if (operator_token.text_ == "<") {
     machine->addCommand(kCommandType_LowerThanComparison);
   }
-  else {
+  else if (operator_token.text_ == ">") {
     machine->addCommand(kCommandType_GreaterThanComparison);
+  }
+  else if (operator_token.text_ == "==") {
+    machine->addCommand(kCommandType_EqualThanComparison);
   }
 
   // Deleting the tokens from the list and adding a "RESULT" Temporary one.
@@ -639,6 +642,13 @@ void Compiler::generateNextToken() {
 
   // Separators
   if (isSeparator(sentence_[sentence_index_])) {
+    // Operator "==" checking
+    if (sentence_[sentence_index_ == '='] && 
+        sentence_index_ + 1 < sentence_length &&
+        sentence_[sentence_index_ + 1] == '=') {
+      current_token_.text_.push_back(sentence_[sentence_index_]);
+      sentence_index_++;
+    }
     current_token_.text_.push_back(sentence_[sentence_index_]);
     current_token_.type_ = kTokenType_Separator;
     sentence_index_++;
@@ -674,13 +684,14 @@ void Compiler::generateCurrentTokenInitialPriority() {
     case JMP::kTokenType_Separator: {
       std::string separator = current_token_.text_;
       if (separator == "}") { current_token_.priority_ = CLOSE_BRACKETS_PRIORITY; }
-      if (separator == "(") { current_token_.priority_ = OPEN_PARENTHESIS_PRIORITY; }
-      if (separator == "^") { current_token_.priority_ = POWER_OPERATION_PRIORITY; }
-      if (separator == "*" || separator == "/") { current_token_.priority_ = MULTIPLY_OPERATION_PRIORITY; }
-      if (separator == "+" || separator == "-") { current_token_.priority_ = ADDITION_OPERATION_PRIORITY; }
-      if (separator == ">" || separator == "<") { current_token_.priority_ = COMPARISON_PRIORITY; }
-      if (separator == "=") { current_token_.priority_ = EQUAL_PRIORITY; }
-      if (separator == ",") { current_token_.priority_ = COMMA_PRIORITY; }
+      else if (separator == "(") { current_token_.priority_ = OPEN_PARENTHESIS_PRIORITY; }
+      else if (separator == "^") { current_token_.priority_ = POWER_OPERATION_PRIORITY; }
+      else if (separator == "*" || separator == "/") { current_token_.priority_ = MULTIPLY_OPERATION_PRIORITY; }
+      else if (separator == "+" || separator == "-") { current_token_.priority_ = ADDITION_OPERATION_PRIORITY; }
+      else if (separator == ">" || separator == "<") { current_token_.priority_ = COMPARISON_PRIORITY; }
+      else if (separator == "==") { current_token_.priority_ = COMPARISON_PRIORITY; }
+      else if (separator == "=") { current_token_.priority_ = EQUAL_PRIORITY; }
+      else if (separator == ",") { current_token_.priority_ = COMMA_PRIORITY; }
     }break;
     default: { current_token_.priority_ = DEFAULT_PRIORITY; } break;
   }
