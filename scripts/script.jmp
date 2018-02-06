@@ -56,7 +56,10 @@ FUNC main() {
       RETURN
     }
     IF (pepe == 3) {
-      PRINT("EqualThanComparisonWorking")
+      PRINT("Equal")
+    }
+    IF (pepe != 3) {
+      PRINT("NOT Equal")
     }
   }
 

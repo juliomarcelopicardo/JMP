@@ -60,6 +60,7 @@ namespace JMP {
     kReport_VariableDefinedTwice,
     kReport_ConditionOutsideOfAFunction,
     kReport_LoopOutsideOfAFunction,
+    kReport_UnexpectedComparisonToken,
   };
 
   void ReportMsg(std::string msg);

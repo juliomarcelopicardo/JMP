@@ -351,6 +351,13 @@ Report Compiler::compileComparisonOperationSeparatorToken(Machine* machine,
   else if (operator_token.text_ == "==") {
     machine->addCommand(kCommandType_EqualThanComparison);
   }
+  else if (operator_token.text_ == "!=") {
+    machine->addCommand(kCommandType_NotEqualThanComparison);
+  }
+  else {
+    ReportError("Unexpected comparison token: " + operator_token.text_);
+    return kReport_UnexpectedComparisonToken;
+  }
 
   // Deleting the tokens from the list and adding a "RESULT" Temporary one.
   token_manager.transferContentBetweenIDsInclusive(token_index - 1, token_index + 1);
@@ -642,8 +649,8 @@ void Compiler::generateNextToken() {
 
   // Separators
   if (isSeparator(sentence_[sentence_index_])) {
-    // Operator "==" checking
-    if (sentence_[sentence_index_ == '='] && 
+    // Operator "==" or "!=" checking
+    if ((sentence_[sentence_index_ == '='] || sentence_[sentence_index_ == '!']) &&
         sentence_index_ + 1 < sentence_length &&
         sentence_[sentence_index_ + 1] == '=') {
       current_token_.text_.push_back(sentence_[sentence_index_]);
@@ -689,7 +696,7 @@ void Compiler::generateCurrentTokenInitialPriority() {
       else if (separator == "*" || separator == "/") { current_token_.priority_ = MULTIPLY_OPERATION_PRIORITY; }
       else if (separator == "+" || separator == "-") { current_token_.priority_ = ADDITION_OPERATION_PRIORITY; }
       else if (separator == ">" || separator == "<") { current_token_.priority_ = COMPARISON_PRIORITY; }
-      else if (separator == "==") { current_token_.priority_ = COMPARISON_PRIORITY; }
+      else if (separator == "==" || separator == "!=") { current_token_.priority_ = COMPARISON_PRIORITY; }
       else if (separator == "=") { current_token_.priority_ = EQUAL_PRIORITY; }
       else if (separator == ",") { current_token_.priority_ = COMMA_PRIORITY; }
     }break;
