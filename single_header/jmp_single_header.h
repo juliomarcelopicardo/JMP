@@ -151,61 +151,61 @@ void ReportWarning(std::string warning) {
 
 void PrintReport(Report& report, uint32 line_number) {
   switch (report) {
-  case kReport_EmptyLine: {
-    ReportWarning("Line " + std::to_string(line_number) + ": Nothing to compile..");
-    report = kReport_NoErrors;
-  } break;
-  case kReport_NoTokensToCompile: {
-    ReportError("Line " + std::to_string(line_number) + ": Can't compile, no compilable tokens available..");
-  } break;
-  case kReport_NoMatchingCloseParenthesis: {
-    ReportError("Line " + std::to_string(line_number) + ": No matching close parenthesis found..");
-  } break;
-  case kReport_NoTagsToDelete: {
-    ReportError(": No matching tag to remove was found, more conditional, functions or loops closed than created..");
-  } break;
-  case kReport_UnexpectedKeyword: {
-    ReportError(": Unexpected or unkwown keyword used..");
-  } break;
-  case kReport_ExpectingOpenBrackets: {
-    ReportError(": \"{\" separator expected at the end of the line..");
-  } break;
-  case kReport_ExpectingNameOfVariable: {
-    ReportError(": Expecting name of variable after the \"var\" keyword..");
-  } break;
-  case kReport_ReturnShouldBeTheFirstToken: {
-    ReportError(": Expecting \"return\" to be the first word of the line..");
-  } break;
-  case kReport_LoopKeywordShouldBeTheFirstToken: {
-    ReportError(": Expecting loop keyword to be the first of the line..");
-  } break;
-  case kReport_FunctionKeywordShouldBeTheFirstToken: {
-    ReportError(": Expecting function keyword \"func\" to be the first of the line..");
-  } break;
-  case kReport_FunctionDefinitionIncorrect: {
-    ReportError(": Function definition incorrect, expecting at least \"func name() {\"..");
-  } break;
-  case kReport_EqualNeedTokensBeforeAndAfter: {
-    ReportError(": Expecting tokens before and after the \"=\" token..");
-  } break;
-  case kReport_UnexpectedFunctionParameters: {
-    ReportError(": Unexpected function parameters, only strings allowed..");
-  } break;
-  case kReport_ExceededNumParamsAllowedPerFunction: {
-    ReportError(": Too many parameters, the maximum allowed are 30..");
-  } break;
-  case kReport_InvalidNameOfFunction: {
-    ReportError(": Invalid function name..");
-  } break;
-  case kReport_ReturnCalledWithoutAnyActiveFunction: {
-    ReportError(": Return was called, but there isnt any active function..");
-  } break;
-  case kReport_ConditionOutsideOfAFunction: {
-    ReportError(": Conditions can only be evaluated inside a function body..");
-  } break;
-  case kReport_LoopOutsideOfAFunction: {
-    ReportError(": Loops can only be executed inside a function body..");
-  } break;
+    case kReport_EmptyLine: {
+      ReportWarning("Line " + std::to_string(line_number) + ": Nothing to compile..");
+      report = kReport_NoErrors;
+    } break;
+    case kReport_NoTokensToCompile: {
+      ReportError("Line " + std::to_string(line_number) + ": Can't compile, no compilable tokens available..");
+    } break;
+    case kReport_NoMatchingCloseParenthesis: {
+      ReportError("Line " + std::to_string(line_number) + ": No matching close parenthesis found..");
+    } break;
+    case kReport_NoTagsToDelete: {
+      ReportError(": No matching tag to remove was found, more conditional, functions or loops closed than created..");
+    } break;
+    case kReport_UnexpectedKeyword: {
+      ReportError(": Unexpected or unkwown keyword used..");
+    } break;
+    case kReport_ExpectingOpenBrackets: {
+      ReportError(": \"{\" separator expected at the end of the line..");
+    } break;
+    case kReport_ExpectingNameOfVariable: {
+      ReportError(": Expecting name of variable after the \"var\" keyword..");
+    } break;
+    case kReport_ReturnShouldBeTheFirstToken: {
+      ReportError(": Expecting \"return\" to be the first word of the line..");
+    } break;
+    case kReport_LoopKeywordShouldBeTheFirstToken: {
+      ReportError(": Expecting loop keyword to be the first of the line..");
+    } break;
+    case kReport_FunctionKeywordShouldBeTheFirstToken: {
+      ReportError(": Expecting function keyword \"func\" to be the first of the line..");
+    } break;
+    case kReport_FunctionDefinitionIncorrect: {
+      ReportError(": Function definition incorrect, expecting at least \"func name() {\"..");
+    } break;
+    case kReport_EqualNeedTokensBeforeAndAfter: {
+      ReportError(": Expecting tokens before and after the \"=\" token..");
+    } break;
+    case kReport_UnexpectedFunctionParameters: {
+      ReportError(": Unexpected function parameters, only strings allowed..");
+    } break;
+    case kReport_ExceededNumParamsAllowedPerFunction: {
+      ReportError(": Too many parameters, the maximum allowed are 30..");
+    } break;
+    case kReport_InvalidNameOfFunction: {
+      ReportError(": Invalid function name..");
+    } break;
+    case kReport_ReturnCalledWithoutAnyActiveFunction: {
+      ReportError(": Return was called, but there isnt any active function..");
+    } break;
+    case kReport_ConditionOutsideOfAFunction: {
+      ReportError(": Conditions can only be evaluated inside a function body..");
+    } break;
+    case kReport_LoopOutsideOfAFunction: {
+      ReportError(": Loops can only be executed inside a function body..");
+    } break;
   }
 }
 
@@ -224,7 +224,88 @@ void PrintReport(Report& report, uint32 line_number) {
 /*******************************************************************************
 ***                                 VALUE                                    ***
 *******************************************************************************/
+class Value {
 
+ public:
+  
+/******************************   ATTRIBUTES   ********************************/
+  /// Type of value.
+  ValueType type_;
+  /// String variable value.
+  std::string text_;
+  /// Float variable value.
+  float32 float_;
+  /// Integer variable value.
+  int32 integer_;
+
+/*******************************   METHODS   **********************************/
+  Value() {
+    type_ = kValueType_None;
+    text_ = "";
+    float_ = INITIALIZATION_VALUE;
+    integer_ = INITIALIZATION_VALUE;
+  }
+
+  Value(const bool condition_result) {
+
+    type_ = kValueType_Integer;
+    text_ = "BOOLEAN";
+    float_ = INITIALIZATION_VALUE;
+    if (condition_result) {
+      integer_ = CONDITION_RESULT_TRUE;
+    }
+    else {
+      integer_ = 0;
+    }
+  }
+
+  Value(const int32 integer_value) {
+    type_ = kValueType_Integer;
+    text_ = "";
+    float_ = INITIALIZATION_VALUE;
+    integer_ = integer_value;
+  }
+
+  Value(const float32 float_value) {
+    type_ = kValueType_Float;
+    text_ = "";
+    float_ = float_value;
+    integer_ = INITIALIZATION_VALUE;
+  }
+
+  Value(const char* text_value) {
+    type_ = kValueType_Text;
+    text_ = text_value;
+    float_ = INITIALIZATION_VALUE;
+    integer_ = INITIALIZATION_VALUE;
+  }
+
+  ~Value() {}
+
+  Value(const Value& copy) {
+    type_ = copy.type_;
+    text_ = copy.text_;
+    float_ = copy.float_;
+    integer_ = copy.integer_;
+  }
+
+  Value& operator=(const Value& copy) {
+    type_ = copy.type_;
+    text_ = copy.text_;
+    float_ = copy.float_;
+    integer_ = copy.integer_;
+    return *this;
+  }
+
+  void print() {
+    switch (type_) {
+    case kValueType_Float: { printf("%f\n", float_); }  break;
+    case kValueType_Integer: { printf("%d\n", integer_); } break;
+    case kValueType_Text: { printf("%s\n", text_.c_str()); } break;
+    }
+  }
+
+}; /* Value */
 #pragma endregion
 
 }; /* JMP_SINGLE_FILE */
