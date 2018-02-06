@@ -59,6 +59,8 @@ Report Command::execute(Machine* machine, int32& id) {
     case JMP::kCommandType_EqualAssigment: { return executeEqualAssignment(machine, id); }
     case JMP::kCommandType_GreaterThanComparison: { return executeGreaterThanComparison(machine, id); }
     case JMP::kCommandType_LowerThanComparison: { return executeLowerThanComparison(machine, id); }
+    case JMP::kCommandType_GreaterOrEqualThanComparison: { return executeGreaterOrEqualThanComparison(machine, id); }
+    case JMP::kCommandType_LowerOrEqualThanComparison: { return executeLowerOrEqualThanComparison(machine, id); }
     case JMP::kCommandType_EqualThanComparison: { return executeEqualThanComparison(machine, id); }
     case JMP::kCommandType_NotEqualThanComparison: { return executeNotEqualThanComparison(machine, id); }
     case JMP::kCommandType_FunctionDefinition: { return executeFunctionDefinition(machine, id); }
@@ -157,6 +159,24 @@ Report Command::executeLowerThanComparison(Machine* machine, int32& next_cmd_id)
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
   machine->addValueToTheStack(first < second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
+Report Command::executeGreaterOrEqualThanComparison(Machine* machine, int32& next_cmd_id) {
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first >= second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
+Report Command::executeLowerOrEqualThanComparison(Machine* machine, int32& next_cmd_id) {
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first <= second);
   next_cmd_id++; // Jump to the next step.
   return kReport_NoErrors;
 }
