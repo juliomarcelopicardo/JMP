@@ -348,6 +348,12 @@ Report Compiler::compileComparisonOperationSeparatorToken(Machine* machine,
   else if (operator_token.text_ == ">") {
     machine->addCommand(kCommandType_GreaterThanComparison);
   }
+  else if (operator_token.text_ == "<=") {
+    machine->addCommand(kCommandType_LowerOrEqualThanComparison);
+  }
+  else if (operator_token.text_ == ">=") {
+    machine->addCommand(kCommandType_GreaterOrEqualThanComparison);
+  }
   else if (operator_token.text_ == "==") {
     machine->addCommand(kCommandType_EqualThanComparison);
   }
@@ -649,12 +655,16 @@ void Compiler::generateNextToken() {
 
   // Separators
   if (isSeparator(sentence_[sentence_index_])) {
-    // Operator "==" or "!=" checking
-    if ((sentence_[sentence_index_ == '='] || sentence_[sentence_index_ == '!']) &&
-        sentence_index_ + 1 < sentence_length &&
-        sentence_[sentence_index_ + 1] == '=') {
-      current_token_.text_.push_back(sentence_[sentence_index_]);
-      sentence_index_++;
+    // Operators "==", "!=", "<=", ">=" checking
+    if (sentence_[sentence_index_] == '=' ||
+        sentence_[sentence_index_] == '!' ||
+        sentence_[sentence_index_] == '<' ||
+        sentence_[sentence_index_] == '>') {
+
+      if (sentence_index_ + 1 < sentence_length && sentence_[sentence_index_ + 1] == '=') {
+        current_token_.text_.push_back(sentence_[sentence_index_]);
+        sentence_index_++;
+      }
     }
     current_token_.text_.push_back(sentence_[sentence_index_]);
     current_token_.type_ = kTokenType_Separator;
@@ -696,6 +706,7 @@ void Compiler::generateCurrentTokenInitialPriority() {
       else if (separator == "*" || separator == "/") { current_token_.priority_ = MULTIPLY_OPERATION_PRIORITY; }
       else if (separator == "+" || separator == "-") { current_token_.priority_ = ADDITION_OPERATION_PRIORITY; }
       else if (separator == ">" || separator == "<") { current_token_.priority_ = COMPARISON_PRIORITY; }
+      else if (separator == ">=" || separator == "<=") { current_token_.priority_ = COMPARISON_PRIORITY; }
       else if (separator == "==" || separator == "!=") { current_token_.priority_ = COMPARISON_PRIORITY; }
       else if (separator == "=") { current_token_.priority_ = EQUAL_PRIORITY; }
       else if (separator == ",") { current_token_.priority_ = COMMA_PRIORITY; }
