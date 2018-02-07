@@ -15,6 +15,7 @@
 
 #include "types.h"
 #include <string>
+#include <vector>
 #include <math.h>
 #include <Windows.h>
 
@@ -325,7 +326,7 @@ class Value {
 ***                            VALUE OPERATORS                               ***
 *******************************************************************************/
 
-#pragma region VALUE_OPERATORS
+#pragma region VALUE_CLASS_OPERATORS
 
 Value operator+(const Value& a, const Value& b) {
   // integer + integer = integer 
@@ -1016,7 +1017,61 @@ class Variable {
 #pragma endregion
 
 
+/*******************************************************************************
+***                         REGISTERED_FUNCTION                              ***
+*******************************************************************************/
 
+#pragma region REGISTERED_FUNCTION_CLASS 
+
+class RegisteredFunction {
+
+ public:
+
+/******************************   ATTRIBUTES   ********************************/
+
+  /// Name of the function
+  std::string name_;
+  /// Pointer to the function defined in C++
+  void(*function_pointer_)(std::vector<Value>&);
+  /// Parameters of the function when its called from the script.
+  std::vector<Value> params_;
+
+/*******************************   METHODS   **********************************/
+
+  RegisteredFunction() {
+    name_ = "";
+    function_pointer_ = nullptr;
+    params_.reserve(5);
+  }
+
+  RegisteredFunction(const char* name,
+    void(*ptr)(std::vector<Value>&)) {
+    name_ = name;
+    function_pointer_ = ptr;
+  }
+
+  ~RegisteredFunction() {
+    params_.clear();
+    function_pointer_ = nullptr;
+  }
+
+  RegisteredFunction(const RegisteredFunction& copy) {
+    name_ = copy.name_;
+    function_pointer_ = copy.function_pointer_;
+    params_ = copy.params_;
+  }
+
+  RegisteredFunction& operator=(const RegisteredFunction& copy) {
+    name_ = copy.name_;
+    function_pointer_ = copy.function_pointer_;
+    params_ = copy.params_;
+    return *this;
+  }
+
+
+}; /* RegisteredFunction */
+
+#pragma endregion
 
 
 
