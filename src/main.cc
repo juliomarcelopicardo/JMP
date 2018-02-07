@@ -52,16 +52,36 @@ JMP::int32 main() {
 #include "jmp_single_header.h"
 #include <Windows.h>
 
+void RegFunc(std::vector<JMP_SINGLE_HEADER::Value>& params) {
+
+  for (JMP_SINGLE_HEADER::uint32 i = 0; i < params.size(); i++) {
+    params[i].print();
+  }
+}
+
 JMP_SINGLE_HEADER::int32 main() {
 
   OutputDebugString("\n Starting application... \n\n");
 
-  JMP_SINGLE_HEADER::Value value("text");
-  JMP_SINGLE_HEADER::Variable variable("textico");
-  variable.setValue({ 1 });
-  variable.value_.print();
-  value.print();
-  JMP_SINGLE_HEADER::ReportError("BLA");
+  JMP_SINGLE_HEADER::Machine machine;
+
+  JMP_SINGLE_HEADER::float32 variable = 3.02f;
+  machine.processFile("../scripts/script.jmp");
+  machine.registerVariable("variable", JMP_SINGLE_HEADER::kValueType_Float, &variable);
+  machine.registerFunction("ExternalFunction", &RegFunc);
+  //machine.runFunction("PrintExample(40, \"texto\", 40.34)");
+  //machine.runFunction("Example(11111,22222)");
+  //machine.runFunction("Example2()");
+  machine.runFunction();
+
+  /*
+  system("pause");
+
+  machine.reload();
+  machine.runFunction();
+  machine.unregisterFunction("ExternalFunction");
+  machine.unregisterVariable("variable");
+  */
 
   OutputDebugString("\n Ending application... \n\n");
   system("pause");
