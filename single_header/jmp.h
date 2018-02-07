@@ -13,7 +13,7 @@
 #ifndef __JMP_SINGLE_HEADER_H__
 #define __JMP_SINGLE_HEADER_H__ 1
 
-#include "types.h"
+#include <stdint.h>
 #include <string>
 #include <fstream>
 #include <vector>
@@ -3689,7 +3689,6 @@ Report Compiler::compileVariablePackKeywordToken(Machine* machine,
 
 // Declaration of the static stack
 Machine::Stack Machine::stack_;
-
 
 
 }; /* JMP */
