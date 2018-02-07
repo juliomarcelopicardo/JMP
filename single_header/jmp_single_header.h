@@ -35,6 +35,20 @@ namespace JMP_SINGLE_HEADER {
 #define INITIALIZATION_VALUE -99999
 #define CONDITION_RESULT_TRUE 30 // Random number
 
+// Priorities
+#define KEYWORD_PRIORITY 500
+#define CLOSE_BRACKETS_PRIORITY 200
+#define OPEN_PARENTHESIS_PRIORITY 100
+#define POWER_OPERATION_PRIORITY 99
+#define MULTIPLY_OPERATION_PRIORITY 98
+#define ADDITION_OPERATION_PRIORITY 97
+#define COMPARISON_PRIORITY 96
+#define EQUAL_PRIORITY 95
+#define FUNCTION_NAME_PRIORITY 10
+#define DEFAULT_PRIORITY 0
+#define COMMA_PRIORITY -10
+#define MAX_PARAMETERS_PER_FUNCTION 30
+
 #pragma endregion
 
 /*******************************************************************************
@@ -89,6 +103,24 @@ namespace JMP_SINGLE_HEADER {
     kValueType_Float,
     kValueType_Integer,
     kValueType_Text,
+  };
+
+  /// Token type.
+  enum TokenType {
+    kTokenType_None = 0,
+    kTokenType_Keyword,
+    kTokenType_Separator,
+    kTokenType_Number,
+    kTokenType_Variable,
+  };
+
+  /// Compiler tags to know if we are inside a function body, a loop body... 
+  enum Tag {
+    kTag_None = 0,
+    kTag_Loop,
+    kTag_Conditional,
+    kTag_Function,
+    kTag_VariablePack,
   };
 
   /// Reports. Can be errors, warnings or simple status.
@@ -793,7 +825,6 @@ Value operator!=(const Value& a, const Value& b) {
 
 #pragma endregion
 
-
 /*******************************************************************************
 ***                               VARIABLE                                   ***
 *******************************************************************************/
@@ -1016,7 +1047,6 @@ class Variable {
 
 #pragma endregion
 
-
 /*******************************************************************************
 ***                         REGISTERED_FUNCTION                              ***
 *******************************************************************************/
@@ -1073,7 +1103,57 @@ class RegisteredFunction {
 
 #pragma endregion
 
+/*******************************************************************************
+***                                TOKEN                                     ***
+*******************************************************************************/
 
+#pragma region TOKEN_CLASS 
+
+class Token {
+
+ public:
+
+/******************************   ATTRIBUTES   ********************************/
+
+  /// Token characters.
+  std::string text_;
+  /// Token type.
+  TokenType type_;
+  /// Token priority
+  int32 priority_;
+
+/*******************************   METHODS   **********************************/
+
+  Token() {
+    type_ = kTokenType_None;
+    text_ = "";
+    priority_ = DEFAULT_PRIORITY;
+  }
+
+  Token(const char* text, const TokenType type, const int32 priority) {
+    type_ = type;
+    text_ = text;
+    priority_ = priority;
+  }
+
+  ~Token() {}
+
+  Token(const Token& copy) {
+    type_ = copy.type_;
+    text_ = copy.text_;
+    priority_ = copy.priority_;
+  }
+
+  Token& operator=(const Token& copy) {
+    type_ = copy.type_;
+    text_ = copy.text_;
+    priority_ = copy.priority_;
+    return *this;
+  }
+
+}; /* Token */
+
+#pragma endregion
 
 
 
