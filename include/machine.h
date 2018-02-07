@@ -1,6 +1,6 @@
 /** Copyright Julio Marcelo Picardo 2017-18, all rights reserved.
 *
-*  @project JMP - A Scripting Language for Game Engines.
+*  @project JMP_PROJECT - A Scripting Language for Game Engines.
 *  @brief Final Project: BSc (Honours) Computer Science for Games.
 *  @supervisor Dr. Paul Parry <p.w.parry@shu.ac.uk>
 *  @author Julio Marcelo Picardo <juliomarcelopicardo@gmail.com>
@@ -18,7 +18,7 @@
 #include "registered_function.h"
 #include "token_manager.h"
 
-namespace JMP {
+namespace JMP_PROJECT {
 
 /// Core of the language, this machine will be used to process .jpm script files.
 class Machine {
@@ -465,6 +465,6 @@ class Machine {
   std::string last_script_compiled_path_;
 
 }; /* Machine */
-}; /* JMP */
+}; /* JMP_PROJECT */
 
 #endif /* __JMP_MACHINE_H__ */

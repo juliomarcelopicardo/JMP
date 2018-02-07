@@ -1,6 +1,6 @@
 /** Copyright Julio Marcelo Picardo 2017-18, all rights reserved.
 *
-*  @project JMP - A Scripting Language for Game Engines.
+*  @project JMP_PROJECT - A Scripting Language for Game Engines.
 *  @brief Final Project: BSc (Honours) Computer Science for Games.
 *  @supervisor Dr. Paul Parry <p.w.parry@shu.ac.uk>
 *  @author Julio Marcelo Picardo <juliomarcelopicardo@gmail.com>
@@ -14,7 +14,7 @@
 #include "token.h"
 #include <vector>
 
-namespace JMP {
+namespace JMP_PROJECT {
 
 
 /// Class used to save and manage the tokens.
@@ -183,6 +183,6 @@ class TokenManager {
   int32 token_list_length_;
 
 }; /* TokenManager */
-}; /* JMP */
+}; /* JMP_PROJECT */
 
 #endif /* __JMP_TOKENMANAGER_H__ */

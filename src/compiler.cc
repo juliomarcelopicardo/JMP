@@ -1,6 +1,6 @@
 /** Copyright Julio Marcelo Picardo 2017-18, all rights reserved.
 *
-*  @project JMP - A Scripting Language for Game Engines.
+*  @project JMP_PROJECT - A Scripting Language for Game Engines.
 *  @brief Final Project: BSc (Honours) Computer Science for Games.
 *  @supervisor Dr. Paul Parry <p.w.parry@shu.ac.uk>
 *  @author Julio Marcelo Picardo <juliomarcelopicardo@gmail.com>
@@ -9,7 +9,7 @@
 
 #include "compiler.h"
 
-namespace JMP {
+namespace JMP_PROJECT {
 
 /*******************************************************************************
 ***                       CONSTRUCTOR & DESTRUCTOR                           ***
@@ -241,11 +241,11 @@ Report Compiler::compileCloseBracketsSeparatorToken(Machine* machine,
   // Will untag the end of a loop, conditional or function.
   Tag tag = getAndRemoveLastTag();
   switch (tag) {
-    case JMP::kTag_None:{ } break;
-    case JMP::kTag_Loop: { machine->addCommand(kCommandType_FinishedConditionalOrLoop, "loop"); } break;
-    case JMP::kTag_Conditional: { machine->addCommand(kCommandType_FinishedConditionalOrLoop, "conditional"); } break;
-    case JMP::kTag_Function: { machine->addCommand(kCommandType_FunctionEnd, "endfunc"); } break;
-    case JMP::kTag_VariablePack: { machine->addCommand(kCommandType_VariablePackEnd, "endvarpack"); } break;
+    case JMP_PROJECT::kTag_None:{ } break;
+    case JMP_PROJECT::kTag_Loop: { machine->addCommand(kCommandType_FinishedConditionalOrLoop, "loop"); } break;
+    case JMP_PROJECT::kTag_Conditional: { machine->addCommand(kCommandType_FinishedConditionalOrLoop, "conditional"); } break;
+    case JMP_PROJECT::kTag_Function: { machine->addCommand(kCommandType_FunctionEnd, "endfunc"); } break;
+    case JMP_PROJECT::kTag_VariablePack: { machine->addCommand(kCommandType_VariablePackEnd, "endvarpack"); } break;
   
   } 
   return kReport_NoErrors;
@@ -697,8 +697,8 @@ void Compiler::generateNextToken() {
 
 void Compiler::generateCurrentTokenInitialPriority() {
   switch (current_token_.type_) {
-    case JMP::kTokenType_Keyword: { current_token_.priority_ = KEYWORD_PRIORITY; } break;
-    case JMP::kTokenType_Separator: {
+    case JMP_PROJECT::kTokenType_Keyword: { current_token_.priority_ = KEYWORD_PRIORITY; } break;
+    case JMP_PROJECT::kTokenType_Separator: {
       std::string separator = current_token_.text_;
       if (separator == "}") { current_token_.priority_ = CLOSE_BRACKETS_PRIORITY; }
       else if (separator == "(") { current_token_.priority_ = OPEN_PARENTHESIS_PRIORITY; }
@@ -826,4 +826,4 @@ const Tag Compiler::getAndRemoveLastTag() {
 
 
 
-}; /* JMP */
+}; /* JMP_PROJECT */

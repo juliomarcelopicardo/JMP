@@ -28,7 +28,6 @@ solution "JMP_Solution"
 
   includedirs {
     path.join(PROJ_DIR, "include/"),
-	path.join(PROJ_DIR, "single_header/"),
   }
 
   files {

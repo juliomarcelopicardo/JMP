@@ -1,6 +1,6 @@
 /** Copyright Julio Marcelo Picardo 2017-18, all rights reserved.
 *
-*  @project JMP - A Scripting Language for Game Engines.
+*  @project JMP_PROJECT - A Scripting Language for Game Engines.
 *  @brief Final Project: BSc (Honours) Computer Science for Games.
 *  @supervisor Dr. Paul Parry <p.w.parry@shu.ac.uk>
 *  @author Julio Marcelo Picardo <juliomarcelopicardo@gmail.com>
@@ -15,7 +15,7 @@
 #include <string>
 #include "report.h"
 
-namespace JMP {
+namespace JMP_PROJECT {
 
 /// Class used to manage the variables that will be added to the registger.
 /// Depending on if the variable is a external registered one (created in C++) or
@@ -104,6 +104,6 @@ class Variable {
 
 
 }; /* Variable */
-}; /* JMP */
+}; /* JMP_PROJECT */
 
 #endif /* __JMP_VARIABLE_H__ */

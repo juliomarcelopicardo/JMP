@@ -1,6 +1,6 @@
 /** Copyright Julio Marcelo Picardo 2017-18, all rights reserved.
 *
-*  @project JMP - A Scripting Language for Game Engines.
+*  @project JMP_PROJECT - A Scripting Language for Game Engines.
 *  @brief Final Project: BSc (Honours) Computer Science for Games.
 *  @supervisor Dr. Paul Parry <p.w.parry@shu.ac.uk>
 *  @author Julio Marcelo Picardo <juliomarcelopicardo@gmail.com>
@@ -13,7 +13,7 @@
 #include "types.h"
 #include <string>
 
-namespace JMP {
+namespace JMP_PROJECT {
 
 #define INITIALIZATION_VALUE -99999
 #define CONDITION_RESULT_TRUE 30 // Random number
@@ -103,6 +103,6 @@ Value operator<=(const Value&, const Value&);
 Value operator==(const Value&, const Value&);
 Value operator!=(const Value&, const Value&);
 
-}; /* JMP */
+}; /* JMP_PROJECT */
 
 #endif /* __JMP_VALUE_H__ */

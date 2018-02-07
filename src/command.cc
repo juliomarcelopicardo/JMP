@@ -1,6 +1,6 @@
 /** Copyright Julio Marcelo Picardo 2017-18, all rights reserved.
 *
-*  @project JMP - A Scripting Language for Game Engines.
+*  @project JMP_PROJECT - A Scripting Language for Game Engines.
 *  @brief Final Project: BSc (Honours) Computer Science for Games.
 *  @supervisor Dr. Paul Parry <p.w.parry@shu.ac.uk>
 *  @author Julio Marcelo Picardo <juliomarcelopicardo@gmail.com>
@@ -13,7 +13,7 @@
 #include <Windows.h>
 #include <string>
 
-namespace JMP {
+namespace JMP_PROJECT {
 
 /*******************************************************************************
 ***                       CONSTRUCTOR & DESTRUCTOR                           ***
@@ -50,31 +50,31 @@ Command & Command::operator=(const Command& copy) {
 Report Command::execute(Machine* machine, int32& id) {
 
   switch (type_) {
-    case JMP::kCommandType_PushToTheStack: { return executePushToTheStack(machine, id); }
-    case JMP::kCommandType_Addition: { return executeAddition(machine, id); }
-    case JMP::kCommandType_Substraction: { return executeSubstraction(machine, id); }
-    case JMP::kCommandType_Multiply: { return executeMultiply(machine, id); }
-    case JMP::kCommandType_Division: { return executeDivision(machine, id); }
-    case JMP::kCommandType_Power: { return executePower(machine, id); }
-    case JMP::kCommandType_EqualAssigment: { return executeEqualAssignment(machine, id); }
-    case JMP::kCommandType_GreaterThanComparison: { return executeGreaterThanComparison(machine, id); }
-    case JMP::kCommandType_LowerThanComparison: { return executeLowerThanComparison(machine, id); }
-    case JMP::kCommandType_GreaterOrEqualThanComparison: { return executeGreaterOrEqualThanComparison(machine, id); }
-    case JMP::kCommandType_LowerOrEqualThanComparison: { return executeLowerOrEqualThanComparison(machine, id); }
-    case JMP::kCommandType_EqualThanComparison: { return executeEqualThanComparison(machine, id); }
-    case JMP::kCommandType_NotEqualThanComparison: { return executeNotEqualThanComparison(machine, id); }
-    case JMP::kCommandType_FunctionDefinition: { return executeFunctionDefinition(machine, id); }
-    case JMP::kCommandType_FunctionCall: { return executeFunctionCall(machine, id); }
-    case JMP::kCommandType_FunctionReturn: { return executeFunctionReturn(machine, id); }
-    case JMP::kCommandType_FunctionEnd: { return executeFunctionEnd(machine, id); }
-    case JMP::kCommandType_FunctionNumParameters: { return executeFunctionNumParams(machine, id); }
-    case JMP::kCommandType_FunctionParameter: { return executeFunctionParam(machine, id); }
-    case JMP::kCommandType_FinishedConditionalOrLoop: { return executeFinishedConditionalOrLoop(machine, id); }
-    case JMP::kCommandType_ConditionToEvaluate: { return executeConditionToEvaluate(machine, id); }
-    case JMP::kCommandType_VariableDefinition: { return executeVariableDefinition(machine, id); }
-    case JMP::kCommandType_VariablePackDefinition: { return executeVariablePackDefinition(machine, id); }
-    case JMP::kCommandType_VariablePackEnd: { return executeVariablePackEnd(machine, id); }
-    case JMP::kCommandType_LoopStartPoint: { return executeLoopStartPoint(machine, id); }
+    case JMP_PROJECT::kCommandType_PushToTheStack: { return executePushToTheStack(machine, id); }
+    case JMP_PROJECT::kCommandType_Addition: { return executeAddition(machine, id); }
+    case JMP_PROJECT::kCommandType_Substraction: { return executeSubstraction(machine, id); }
+    case JMP_PROJECT::kCommandType_Multiply: { return executeMultiply(machine, id); }
+    case JMP_PROJECT::kCommandType_Division: { return executeDivision(machine, id); }
+    case JMP_PROJECT::kCommandType_Power: { return executePower(machine, id); }
+    case JMP_PROJECT::kCommandType_EqualAssigment: { return executeEqualAssignment(machine, id); }
+    case JMP_PROJECT::kCommandType_GreaterThanComparison: { return executeGreaterThanComparison(machine, id); }
+    case JMP_PROJECT::kCommandType_LowerThanComparison: { return executeLowerThanComparison(machine, id); }
+    case JMP_PROJECT::kCommandType_GreaterOrEqualThanComparison: { return executeGreaterOrEqualThanComparison(machine, id); }
+    case JMP_PROJECT::kCommandType_LowerOrEqualThanComparison: { return executeLowerOrEqualThanComparison(machine, id); }
+    case JMP_PROJECT::kCommandType_EqualThanComparison: { return executeEqualThanComparison(machine, id); }
+    case JMP_PROJECT::kCommandType_NotEqualThanComparison: { return executeNotEqualThanComparison(machine, id); }
+    case JMP_PROJECT::kCommandType_FunctionDefinition: { return executeFunctionDefinition(machine, id); }
+    case JMP_PROJECT::kCommandType_FunctionCall: { return executeFunctionCall(machine, id); }
+    case JMP_PROJECT::kCommandType_FunctionReturn: { return executeFunctionReturn(machine, id); }
+    case JMP_PROJECT::kCommandType_FunctionEnd: { return executeFunctionEnd(machine, id); }
+    case JMP_PROJECT::kCommandType_FunctionNumParameters: { return executeFunctionNumParams(machine, id); }
+    case JMP_PROJECT::kCommandType_FunctionParameter: { return executeFunctionParam(machine, id); }
+    case JMP_PROJECT::kCommandType_FinishedConditionalOrLoop: { return executeFinishedConditionalOrLoop(machine, id); }
+    case JMP_PROJECT::kCommandType_ConditionToEvaluate: { return executeConditionToEvaluate(machine, id); }
+    case JMP_PROJECT::kCommandType_VariableDefinition: { return executeVariableDefinition(machine, id); }
+    case JMP_PROJECT::kCommandType_VariablePackDefinition: { return executeVariablePackDefinition(machine, id); }
+    case JMP_PROJECT::kCommandType_VariablePackEnd: { return executeVariablePackEnd(machine, id); }
+    case JMP_PROJECT::kCommandType_LoopStartPoint: { return executeLoopStartPoint(machine, id); }
   }
 
   return kReport_InvalidCommandType;
@@ -203,7 +203,7 @@ Report Command::executePushToTheStack(Machine* machine, int32& next_cmd_id) {
   
   // We will check if its a quote.
   switch (getNameDataType()) {
-    case JMP::kValueType_None: { 
+    case JMP_PROJECT::kValueType_None: { 
       // this means that its a name of possible variable, so we will check it.
       Variable* variable = machine->getVariable(name_);
       if (!variable) {
@@ -212,13 +212,13 @@ Report Command::executePushToTheStack(Machine* machine, int32& next_cmd_id) {
       }
       machine->addValueToTheStack(variable->getValue());
     } break;
-    case JMP::kValueType_Float: { 
+    case JMP_PROJECT::kValueType_Float: { 
       machine->addValueToTheStack((float32)atof(name_.c_str()));
     } break;
-    case JMP::kValueType_Integer: { 
+    case JMP_PROJECT::kValueType_Integer: { 
       machine->addValueToTheStack((int32)atoi(name_.c_str()));
     } break;
-    case JMP::kValueType_Text: { 
+    case JMP_PROJECT::kValueType_Text: { 
       std::string temp = name_;
       // remove quotes.
       temp.erase(0, 1);
@@ -504,4 +504,4 @@ const bool Command::isDigit(const char8& character) {
 
 
 
-}; /* JMP */
+}; /* JMP_PROJECT */

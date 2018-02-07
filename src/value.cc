@@ -1,6 +1,6 @@
 /** Copyright Julio Marcelo Picardo 2017-18, all rights reserved.
 *
-*  @project JMP - A Scripting Language for Game Engines.
+*  @project JMP_PROJECT - A Scripting Language for Game Engines.
 *  @brief Final Project: BSc (Honours) Computer Science for Games.
 *  @supervisor Dr. Paul Parry <p.w.parry@shu.ac.uk>
 *  @author Julio Marcelo Picardo <juliomarcelopicardo@gmail.com>
@@ -11,7 +11,7 @@
 #include "report.h"
 #include <math.h>
 
-namespace JMP {
+namespace JMP_PROJECT {
 
 
 /*******************************************************************************
@@ -78,9 +78,9 @@ Value& Value::operator=(const Value& copy) {
 
 void Value::print() {
   switch (type_) {
-    case JMP::kValueType_Float: { printf("%f\n", float_); }  break;
-    case JMP::kValueType_Integer: { printf("%d\n", integer_); } break;
-    case JMP::kValueType_Text: { printf("%s\n", text_.c_str()); } break;
+    case JMP_PROJECT::kValueType_Float: { printf("%f\n", float_); }  break;
+    case JMP_PROJECT::kValueType_Integer: { printf("%d\n", integer_); } break;
+    case JMP_PROJECT::kValueType_Text: { printf("%s\n", text_.c_str()); } break;
   }
 }
 
@@ -554,4 +554,4 @@ Value operator!=(const Value& a, const Value& b) {
   return Value();
 }
 
-}; /* JMP */
+}; /* JMP_PROJECT */
