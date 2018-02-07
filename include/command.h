@@ -56,7 +56,7 @@ enum CommandType {
   kCommandType_LoopStartPoint,
 };
 
-/// Class used to save and manage the compiling commands.
+/// Class used to save and manage the compiling commands or instructions.
 class Command {
 
  public: 

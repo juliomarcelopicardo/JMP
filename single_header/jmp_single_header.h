@@ -62,29 +62,29 @@ namespace JMP_SINGLE_HEADER {
 
 #pragma region TYPES
 
-  /// char
-  typedef char char8;
-  typedef char16_t char16;
-  typedef char32_t char32;
+/// char
+typedef char char8;
+typedef char16_t char16;
+typedef char32_t char32;
 
-  /// unsigned char
-  typedef unsigned char uchar8;
+/// unsigned char
+typedef unsigned char uchar8;
 
-  /// integer
-  typedef int8_t int8;
-  typedef int16_t int16;
-  typedef int32_t int32;
-  typedef int64_t int64;
+/// integer
+typedef int8_t int8;
+typedef int16_t int16;
+typedef int32_t int32;
+typedef int64_t int64;
 
-  /// unsigned integer
-  typedef uint8_t uint8;
-  typedef uint16_t uint16;
-  typedef uint32_t uint32;
-  typedef uint64_t uint64;
+/// unsigned integer
+typedef uint8_t uint8;
+typedef uint16_t uint16;
+typedef uint32_t uint32;
+typedef uint64_t uint64;
 
-  /// precision
-  typedef float float32;
-  typedef double float64;
+/// precision
+typedef float float32;
+typedef double float64;
 
 #pragma endregion
 
@@ -98,75 +98,116 @@ namespace JMP_SINGLE_HEADER {
 
 #pragma region ENUMS
 
-  /// Value type.
-  enum ValueType {
-    kValueType_None = 0,
-    kValueType_Float,
-    kValueType_Integer,
-    kValueType_Text,
-  };
+/// Value type.
+enum ValueType {
+  kValueType_None = 0,
+  kValueType_Float,
+  kValueType_Integer,
+  kValueType_Text,
+};
 
-  /// Token type.
-  enum TokenType {
-    kTokenType_None = 0,
-    kTokenType_Keyword,
-    kTokenType_Separator,
-    kTokenType_Number,
-    kTokenType_Variable,
-  };
+/// Token type.
+enum TokenType {
+  kTokenType_None = 0,
+  kTokenType_Keyword,
+  kTokenType_Separator,
+  kTokenType_Number,
+  kTokenType_Variable,
+};
 
-  /// Compiler tags to know if we are inside a function body, a loop body... 
-  enum Tag {
-    kTag_None = 0,
-    kTag_Loop,
-    kTag_Conditional,
-    kTag_Function,
-    kTag_VariablePack,
-  };
+/// Compiler tags to know if we are inside a function body, a loop body... 
+enum Tag {
+  kTag_None = 0,
+  kTag_Loop,
+  kTag_Conditional,
+  kTag_Function,
+  kTag_VariablePack,
+};
 
-  /// Reports. Can be errors, warnings or simple status.
-  enum Report {
-    kReport_NoErrors = 0,
-    kReport_InvalidFileExtension,
-    kReport_InvalidFilename,
-    kReport_FilenameTooShort,
-    kReport_NullPointer,
-    kReport_EmptyContainer,
-    kReport_ListIndexOutOfRange,
-    kReport_EmptyLine,
-    kReport_NoTokensToCompile,
-    kReport_NoMatchingCloseParenthesis,
-    kReport_NoTagsToDelete,
-    kReport_UnexpectedKeyword,
-    kReport_KeywordFunctionalityNotProgrammedYet,
-    kReport_ExpectingOpenBrackets,
-    kReport_ExpectingNameOfVariable,
-    kReport_ReturnShouldBeTheFirstToken,
-    kReport_LoopKeywordShouldBeTheFirstToken,
-    kReport_FunctionKeywordShouldBeTheFirstToken,
-    kReport_FunctionDefinitionIncorrect,
-    kReport_EqualNeedTokensBeforeAndAfter,
-    kReport_UnexpectedFunctionParameters,
-    kReport_InvalidNameOfFunction,
-    kReport_ExceededNumParamsAllowedPerFunction,
-    kReport_FunctionDefinedMoreThanOnce,
-    kReport_InvalidCommandType,
-    kReport_LastActiveFunctionReturnCalled,
-    kReport_InvalidValueType,
-    kReport_ReturnCalledWithoutAnyActiveFunction,
-    kReport_NotEnoughFunctionParamsInTheStack,
-    kReport_ParamsNeedAFunctionToBeExecuted,
-    kReport_EndOfConditionalOrLoopNotFound,
-    kReport_CallingUndefinedFunction,
-    kReport_VariablePackKeywordShouldBeTheFirstToken,
-    kReport_VariablePackDefinitionIncorrect,
-    kReport_VariablePackCantBeDefinedInsideAFunction,
-    kReport_InvalidNameOfVariablePack,
-    kReport_VariableDefinedTwice,
-    kReport_ConditionOutsideOfAFunction,
-    kReport_LoopOutsideOfAFunction,
-    kReport_UnexpectedComparisonToken,
-  };
+/// Reports. Can be errors, warnings or simple status.
+enum Report {
+  kReport_NoErrors = 0,
+  kReport_InvalidFileExtension,
+  kReport_InvalidFilename,
+  kReport_FilenameTooShort,
+  kReport_NullPointer,
+  kReport_EmptyContainer,
+  kReport_ListIndexOutOfRange,
+  kReport_EmptyLine,
+  kReport_NoTokensToCompile,
+  kReport_NoMatchingCloseParenthesis,
+  kReport_NoTagsToDelete,
+  kReport_UnexpectedKeyword,
+  kReport_KeywordFunctionalityNotProgrammedYet,
+  kReport_ExpectingOpenBrackets,
+  kReport_ExpectingNameOfVariable,
+  kReport_ReturnShouldBeTheFirstToken,
+  kReport_LoopKeywordShouldBeTheFirstToken,
+  kReport_FunctionKeywordShouldBeTheFirstToken,
+  kReport_FunctionDefinitionIncorrect,
+  kReport_EqualNeedTokensBeforeAndAfter,
+  kReport_UnexpectedFunctionParameters,
+  kReport_InvalidNameOfFunction,
+  kReport_ExceededNumParamsAllowedPerFunction,
+  kReport_FunctionDefinedMoreThanOnce,
+  kReport_InvalidCommandType,
+  kReport_LastActiveFunctionReturnCalled,
+  kReport_InvalidValueType,
+  kReport_ReturnCalledWithoutAnyActiveFunction,
+  kReport_NotEnoughFunctionParamsInTheStack,
+  kReport_ParamsNeedAFunctionToBeExecuted,
+  kReport_EndOfConditionalOrLoopNotFound,
+  kReport_CallingUndefinedFunction,
+  kReport_VariablePackKeywordShouldBeTheFirstToken,
+  kReport_VariablePackDefinitionIncorrect,
+  kReport_VariablePackCantBeDefinedInsideAFunction,
+  kReport_InvalidNameOfVariablePack,
+  kReport_VariableDefinedTwice,
+  kReport_ConditionOutsideOfAFunction,
+  kReport_LoopOutsideOfAFunction,
+  kReport_UnexpectedComparisonToken,
+};
+
+/// Command type.
+enum CommandType {
+  kCommandType_None = 0,
+  // Separators -> mathematical operations
+  kCommandType_Addition,
+  kCommandType_Substraction,
+  kCommandType_Multiply,
+  kCommandType_Division,
+  kCommandType_Power,
+  // Separator -> "=" Assignment.
+  kCommandType_EqualAssigment,
+  // Separator -> Comparisons.
+  kCommandType_GreaterThanComparison,
+  kCommandType_LowerThanComparison,
+  kCommandType_GreaterOrEqualThanComparison,
+  kCommandType_LowerOrEqualThanComparison,
+  kCommandType_EqualThanComparison,
+  kCommandType_NotEqualThanComparison,
+  // Stack Actions
+  kCommandType_PushToTheStack,
+  // Function
+  kCommandType_FunctionDefinition,
+  kCommandType_FunctionCall,
+  kCommandType_FunctionReturn,
+  kCommandType_FunctionEnd,
+  kCommandType_FunctionNumParameters,
+  kCommandType_FunctionParameter,
+  // Body state -> Conditional, loop iteration or function body ended.
+  kCommandType_FinishedConditionalOrLoop,
+  // Condition Evaluation, can be the condition of a loop or an if.
+  kCommandType_ConditionToEvaluate,
+  // Variable definition
+  kCommandType_VariableDefinition,
+  // Variable pack
+  kCommandType_VariablePackDefinition,
+  kCommandType_VariablePackEnd,
+  // Loop
+  kCommandType_LoopStartPoint,
+};
+
 #pragma endregion
 
 /*******************************************************************************
@@ -1357,7 +1398,7 @@ class TokenManager {
 #pragma endregion
 
 /*******************************************************************************
-***                               FUNCTION                                   ***
+***                              FUNCTION                                    ***
 *******************************************************************************/
 
 #pragma region FUNCTION_CLASS 
@@ -1454,7 +1495,113 @@ class Function {
 
 #pragma endregion
 
+/*******************************************************************************
+***                               COMMAND                                    ***
+*******************************************************************************/
 
+#pragma region COMMAND_CLASS 
+
+/// Class used to save and manage the compiling commands or instructions.
+class Command {
+
+ public:
+
+/******************************   ATTRIBUTES   ********************************/
+
+  /// Command type.
+  CommandType type_;
+  /// Name of the command.
+  std::string name_;
+
+/*******************************   METHODS   **********************************/
+
+  Command::Command() {
+    type_ = kCommandType_None;
+    name_ = "";
+  }
+
+  Command::Command(const CommandType type, const char* name) {
+    type_ = type;
+    name_ = name;
+  }
+
+  Command::~Command() {}
+
+  Command::Command(const Command& copy) {
+    type_ = copy.type_;
+    name_ = copy.name_;
+  }
+
+  Command & Command::operator=(const Command& copy) {
+    type_ = copy.type_;
+    name_ = copy.name_;
+    return *this;
+  }
+
+  ValueType Command::getNameDataType() {
+    int32 name_length = name_.size();
+    if (name_length == 0) { return kValueType_None; }
+    if (name_[0] == '"' && name_[name_length - 1] == '"') { return kValueType_Text; }
+    if (name_[0] == '-' || isDigit(name_[0])) { // Check type of number
+      int32 num_dots = 0;
+      for (int32 i = 1; i < name_length; i++) {
+        if (!isDigit(name_[i])) {
+          if (name_[i] == '.' && num_dots == 0) {
+            num_dots++;
+          }
+          else {
+            ReportWarning(" Incorrect name of command.");
+            return kValueType_None;
+          }
+        }
+      }
+      if (num_dots == 1) { return kValueType_Float; }
+      else { return kValueType_Integer; }
+    }
+    return kValueType_None;
+  }
+
+  const bool Command::isDigit(const char8& character) {
+    switch (character) {
+    case '0': case '1': case '2': case '3': case '4':
+    case '5': case '6': case '7': case '8': case '9':
+      return true;
+    }
+    return false;
+  }
+
+/****************************  METHODS PROTOTYPES  ****************************/
+
+  Report execute(class Machine* machine, int32& next_command_to_execute);
+  Report executeAddition(class Machine* machine, int32& next_command_to_execute);
+  Report executeSubstraction(class Machine* machine, int32& next_command_to_execute);
+  Report executeMultiply(class Machine* machine, int32& next_command_to_execute);
+  Report executeDivision(class Machine* machine, int32& next_command_to_execute);
+  Report executePower(class Machine* machine, int32& next_command_to_execute);
+  Report executeEqualAssignment(class Machine* machine, int32& next_command_to_execute);
+  Report executeGreaterThanComparison(class Machine* machine, int32& next_command_to_execute);
+  Report executeLowerThanComparison(class Machine* machine, int32& next_command_to_execute);
+  Report executeGreaterOrEqualThanComparison(class Machine* machine, int32& next_command_to_execute);
+  Report executeLowerOrEqualThanComparison(class Machine* machine, int32& next_command_to_execute);
+  Report executeEqualThanComparison(class Machine* machine, int32& next_command_to_execute);
+  Report executeNotEqualThanComparison(class Machine* machine, int32& next_command_to_execute);
+  Report executePushToTheStack(class Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionDefinition(class Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionCall(class Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionReturn(class Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionEnd(class Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionNumParams(class Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionParam(class Machine* machine, int32& next_command_to_execute);
+  Report executeFinishedConditionalOrLoop(class Machine* machine, int32& next_command_to_execute);
+  Report executeConditionToEvaluate(class Machine* machine, int32& next_command_to_execute);
+  Report executeVariableDefinition(class Machine* machine, int32& next_command_to_execute);
+  Report executeVariablePackDefinition(class Machine* machine, int32& next_command_to_execute);
+  Report executeVariablePackEnd(class Machine* machine, int32& next_command_to_execute);
+  Report executeLoopStartPoint(class Machine* machine, int32& next_command_to_execute);
+
+}; /* Command */
+
+#pragma endregion
 
 
 
