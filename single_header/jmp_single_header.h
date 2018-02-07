@@ -15,6 +15,7 @@
 
 #include "types.h"
 #include <string>
+#include <fstream>
 #include <vector>
 #include <math.h>
 #include <Windows.h>
@@ -1882,6 +1883,713 @@ public:
 
 #pragma endregion
 
+/*******************************************************************************
+***                              MACHINE                                     ***
+*******************************************************************************/
+
+#pragma region MACHINE_CLASS 
+
+/// Core of the language, this machine will be used to process .jpm script files.
+class Machine {
+
+public:
+
+/******************************   ATTRIBUTES   ********************************/
+
+  /// Stack of inmediate values. Need to be static as will be shared between machines.
+  struct Stack {
+    Stack() { length = 0; value.reserve(30); }
+    /// Values list
+    std::vector<Value> value;
+    /// Number of elements of the stack.
+    int32 length;
+  };
+
+  /// Stack of inmediate values.Need to be static as will be shared between machines.
+  static Stack stack_;
+
+private:
+
+/******************************   ATTRIBUTES   ********************************/
+
+/// List of all the compiling commands.
+  std::vector<Command> cmd_list_;
+  /// Number of elements of the list.
+  int32 cmd_list_length_;
+
+  /// List of all the variable registered from C++.
+  std::vector<Variable> variable_registry_;
+  /// Number of elements of the list.
+  int32 variable_registry_length_;
+
+  struct VariablePack {
+    std::string name;
+    std::vector<Variable> var;
+  };
+  /// List of global variables pack
+  std::vector<VariablePack> global_variable_pack_list_;
+  /// Global variable list length.
+  int32 global_variable_pack_list_length_;
+  /// Current global variable pack
+  int32 current_global_variable_pack_;
+
+  /// List of all the functions registered from C++.
+  std::vector<RegisteredFunction> function_registry_;
+  /// Number of elements of the list.
+  int32 function_registry_length_;
+  
+  /** Everytime we declare a function in the script, we will add here its command
+  As we will need its position in the command list to execute it. */
+  struct DefinedFunction {
+    std::string name;
+    int32 command_index;
+  };
+
+  /// List of functions defined in the script using the syntax "func name(params)"
+  std::vector<DefinedFunction> defined_function_list_;
+  /// Defined function list length -> number of elements.
+  int32 defined_function_list_length_;
+
+  /// List of functions used in the execution.
+  std::vector<Function> function_list_;
+  /// Number of functions.
+  int32 function_list_length_;
+
+  /// Last script compiled file path.
+  std::string last_script_compiled_path_;
+
+
+
+public:
+
+/*******************************   METHODS   **********************************/
+
+  Machine::Machine() {
+    cmd_list_.reserve(50);
+    cmd_list_length_ = 0;
+    function_list_.reserve(10);
+    function_list_length_ = 0;
+    function_registry_.reserve(5);
+    function_registry_length_ = 0;
+    variable_registry_.reserve(5);
+    variable_registry_length_ = 0;
+    defined_function_list_.reserve(10);
+    defined_function_list_length_ = 0;
+    global_variable_pack_list_.resize(1);
+    global_variable_pack_list_[0].name = "";
+    global_variable_pack_list_length_ = 1;
+    current_global_variable_pack_ = 0;
+    last_script_compiled_path_ = "";
+  }
+
+  Machine::~Machine() {
+    cmd_list_.clear();
+    variable_registry_.clear();
+    function_registry_.clear();
+    defined_function_list_.clear();
+    function_list_.clear();
+    cmd_list_length_ = 0;
+    variable_registry_length_ = 0;
+    function_registry_length_ = 0;
+    defined_function_list_length_ = 0;
+    function_list_length_ = 0;
+    last_script_compiled_path_.clear();
+    global_variable_pack_list_length_ = 0;
+    current_global_variable_pack_ = 0;
+    global_variable_pack_list_.clear();
+  }
+
+  Report Machine::processFile(std::string script_filename) {
+
+    // To force .jmp extensions.
+    if (checkExtension(script_filename) != kReport_NoErrors) {
+      return kReport_InvalidFileExtension;
+    }
+
+    std::ifstream script; // ifstream because we just want to read the file.
+    script.open(script_filename); // Default read mode is read only "in".
+
+    if (!script) {
+      ReportError("\"" + script_filename + "\" - Can't open file");
+      return kReport_InvalidFilename;
+    }
+
+    Compiler compiler;
+    uint32 line_num = 1;
+    Report report = kReport_NoErrors;
+
+    // Reading the whole file, allocating it using lines of code.
+    while (!script.eof() && report == kReport_NoErrors) {
+      std::string code_line;
+      std::getline(script, code_line);
+
+      // To prevent errors I will remove all the tabs. Changing them to blank spaces
+      uint32 string_length = code_line.length();
+      for (uint32 i = 0; i < string_length; i++) {
+        if (code_line[i] == '\t') { code_line[i] = ' '; }
+      }
+
+      /*
+      PROCESS THE LINES - COMPILING THEM.
+      */
+      report = compiler.compile(this, code_line, line_num);
+      line_num++;
+    }
+
+
+    // If the file has been loaded properly, then we will save its path for possible reloadings.
+    if (report == kReport_NoErrors) {
+      last_script_compiled_path_ = script_filename;
+    }
+
+    report = runScriptToSaveGlobalVariables();
+
+    script.clear();
+    script.close();
+
+    return report;
+  }
+
+
+
+  Report Machine::checkExtension(std::string filename) {
+
+    // We will take the last 4 characters to check the extension.
+    uint32 index = filename.length() - 4;
+    std::string pepe = filename.substr(index);
+    if (index > 1 && filename.substr(index) == ".jmp") {
+      return kReport_NoErrors;
+    }
+
+    // Name too short.
+    if (index < 1) {
+      ReportError("\"" + filename + "\" - Filename too short");
+      return kReport_FilenameTooShort;
+    }
+
+    // Invalid extension.
+    ReportError("\"" + filename + "\" - Extension must be .jmp");
+    return kReport_InvalidFileExtension;
+  }
+
+  Report Machine::runFunction(std::string function_call_sentence) {
+
+    // Create a machine and a parser to compile the code received by parameter.
+    Machine other_machine;
+    Compiler other_compiler;
+    Report report;
+    report = other_compiler.compile(&other_machine, function_call_sentence, -1); // -1 as theres no line number
+    if (report != kReport_NoErrors) { return report; }
+
+    // Once compiled we will concatenate both machines command lists.
+    // The result will be, this_machine = this_machine + other_machine;
+    int32 this_machine_initial_num_commands = numCommands();
+    pushBackOtherMachineCommandList(&other_machine);
+    int32 num_commands_added = other_machine.numCommands();
+
+    // Now we will execute the complete command list
+    int32 index = this_machine_initial_num_commands;
+    while (index < cmd_list_length_) {
+      // possible results of the execution "NoError", "return is called" or "Error"
+      report = cmd_list_[index].execute(this, index);
+      if (report != kReport_NoErrors) { break; }
+    }
+
+    if (report == kReport_LastActiveFunctionReturnCalled) { report = kReport_NoErrors; }
+
+    // Delete the commands added from the other machine.
+    for (int32 i = 0; i < num_commands_added; i++) {
+      removeCommand(this_machine_initial_num_commands);
+    }
+
+    return report;
+  }
+
+  Report Machine::runScriptToSaveGlobalVariables() {
+    Report report = kReport_NoErrors;
+    Command cmd;
+    int32 index = 0;
+    while (index < cmd_list_length_) {
+      // possible results of the execution "NoError", "return is called" or "Error"
+      cmd = cmd_list_[index];
+      if (cmd.type_ == kCommandType_FunctionDefinition) { // To avoid functions
+        while (index < cmd_list_length_ && cmd_list_[index].type_ != kCommandType_FunctionEnd) {
+          index++;
+        }
+        index++;
+      }
+      else {
+        report = cmd.execute(this, index);
+        if (report != kReport_NoErrors) { break; }
+      }
+    }
+
+    return report;
+  }
+
+  void Machine::reload() {
+
+    // We will clean all the buffers used. We will reserve the same size it needed before.
+    cmd_list_.clear();
+    cmd_list_.reserve(cmd_list_length_);
+    cmd_list_length_ = 0;
+    function_list_.clear();
+    function_list_.reserve(function_list_length_);
+    function_list_length_ = 0;
+    defined_function_list_.clear();
+    defined_function_list_.reserve(defined_function_list_length_);
+    defined_function_list_length_ = 0;
+    global_variable_pack_list_.reserve(global_variable_pack_list_length_);
+    addGlobalVariablePack("");
+
+    /*
+    We wont delete the registrys, as functions or variables registered from c++
+    doesnt depend on the file, is the user the one who should manage what to
+    register and unregister in each moment.
+    */
+    /*
+    function_registry_.clear();
+    function_registry_.reserve(function_registry_length_);
+    function_registry_length_ = 0;
+    variable_registry_.clear();
+    variable_registry_.reserve(variable_registry_length_);
+    variable_registry_length_ = 0;
+    */
+
+    // Then we proccess the file again.
+    processFile(last_script_compiled_path_);
+  }
+
+  void Machine::addCommand(const CommandType type) {
+    Command cmd = { type, "" };
+    cmd_list_.push_back(cmd);
+    cmd_list_length_++;
+  }
+
+  void Machine::addCommand(const CommandType type, const char* name) {
+    Command cmd = { type, name };
+    if (cmd.name_ != "RESULT") { // Temporal tokens waiting for result no added.
+      cmd_list_.push_back(cmd);
+      cmd_list_length_++;
+      if (cmd.type_ == kCommandType_FunctionDefinition) {
+        addDefinedFunction(name, cmd_list_length_ - 1);
+      }
+    }
+  }
+
+  void Machine::addCommand(const CommandType type, const std::string name) {
+    Command cmd = { type, name.c_str() };
+    if (cmd.name_ != "RESULT") {
+      cmd_list_.push_back(cmd);
+      cmd_list_length_++;
+      if (cmd.type_ == kCommandType_FunctionDefinition) {
+        addDefinedFunction(name.c_str(), cmd_list_length_ - 1);
+      }
+    }
+  }
+
+  void Machine::addCommand(const Command& command) {
+    if (command.name_ != "RESULT") {
+      cmd_list_.push_back(command);
+      cmd_list_length_++;
+      if (command.type_ == kCommandType_FunctionDefinition) {
+        addDefinedFunction(command.name_.c_str(), cmd_list_length_ - 1);
+      }
+    }
+  }
+
+  void Machine::clearCommandList() {
+    cmd_list_.clear();
+    cmd_list_length_ = 0;
+  }
+
+  void Machine::removeCommand(int32 id) {
+    cmd_list_.erase(cmd_list_.begin() + id);
+    cmd_list_length_--;
+  }
+
+  Command Machine::getCommand(const int32 list_index) {
+    if (list_index >= cmd_list_length_ || list_index < 0) {
+      ReportError("Command list index \"" + std::to_string(list_index) + "\" is out of range.");
+      return Command();
+    }
+    return cmd_list_[list_index];
+  }
+
+  const int32 Machine::numCommands() {
+    return cmd_list_length_;
+  }
+
+  void Machine::pushBackOtherMachineCommandList(Machine* other_machine) {
+    for (int32 i = 0; i < other_machine->numCommands(); i++) {
+      addCommand(other_machine->getCommand(i));
+    }
+  }
+
+
+
+  Report Machine::registerVariable(const char *name,
+    ValueType type,
+    void* ptr_to_var) {
+
+    // Error checkings
+    if (!name || !ptr_to_var) {
+      return kReport_NullPointer;
+    }
+
+    // If the variable already exists, we will edit the existing one.
+    for (int32 i = 0; i < variable_registry_length_; i++) {
+      if (name == variable_registry_[i].name_) {
+        char warning[64];
+        sprintf_s(warning, 64, "\"%s\": Variable already registered", name);
+        ReportWarning(warning);
+        variable_registry_[i] = { name, type, ptr_to_var };
+        return kReport_NoErrors;
+      }
+    }
+
+    // if the variable is not registered yet, we will add a new one to the registry.
+    variable_registry_.push_back({ name, type, ptr_to_var });
+    variable_registry_length_++;
+
+    return kReport_NoErrors;
+  }
+
+  void Machine::unregisterVariable(const char* name) {
+
+    for (int32 i = 0; i < variable_registry_length_; i++) {
+      if (name == variable_registry_[i].name_) {
+        variable_registry_.erase(variable_registry_.begin() + i);
+        variable_registry_length_--;
+        return;
+      }
+    }
+    char warning[64];
+    sprintf_s(warning, 64, "\"%s\": Can't be found in the registry. Unregister failed", name);
+    ReportWarning(warning);
+  }
+
+  void Machine::unregisterVariable(const int32 id) {
+    if (id >= 0 && id < variable_registry_length_) {
+      variable_registry_.erase(variable_registry_.begin() + id);
+      variable_registry_length_--;
+      return;
+    }
+
+    char warning[64];
+    sprintf_s(warning, 64, "Invalid variable registry id. Unregister failed");
+    ReportWarning(warning);
+  }
+
+  void Machine::addGlobalVariablePack(const char* name) {
+    global_variable_pack_list_.push_back({ name });
+    current_global_variable_pack_ = global_variable_pack_list_length_;
+    global_variable_pack_list_length_++;
+  }
+
+  Report Machine::addGlobalVariableToCurrentPack(const Variable variable) {
+    int32 length = global_variable_pack_list_[current_global_variable_pack_].var.size();
+    for (int32 i = 0; i < length; i++) {
+      if (global_variable_pack_list_[current_global_variable_pack_].var[i].name_ == variable.name_) {
+        ReportError("Multiple definition of the variable: " + variable.name_);
+        return kReport_VariableDefinedTwice;
+      }
+    }
+    global_variable_pack_list_[current_global_variable_pack_].var.push_back(variable);
+    return kReport_NoErrors;
+  }
+
+  Report Machine::addGlobalVariableToCurrentPack(const char* name, const Value value) {
+    int32 length = global_variable_pack_list_[current_global_variable_pack_].var.size();
+    for (int32 i = 0; i < length; i++) {
+      if (global_variable_pack_list_[current_global_variable_pack_].var[i].name_ == name) {
+        std::string n = name;
+        ReportError("Multiple definition of the variable: " + n);
+        return kReport_VariableDefinedTwice;
+      }
+    }
+    global_variable_pack_list_[current_global_variable_pack_].var.push_back({ name, value });
+    return kReport_NoErrors;
+  }
+
+  void Machine::restartCurrentGlobalVariablePackIndex() {
+    current_global_variable_pack_ = 0;
+  }
+
+  std::string Machine::getCurrentGlobalVariablePackName() {
+    return global_variable_pack_list_[current_global_variable_pack_].name;
+  }
+
+  Variable* Machine::getVariable(const std::string& variable_name) {
+
+    // 1st step will be to look for the variable into the current function scope.
+    Function* function = getCurrentFunction();
+    if (function) {
+      Variable* variable = function->getVariable(variable_name);
+      if (variable) {
+        return variable;
+      }
+    }
+
+    // If not found, we will look for it in the variable registry.
+    for (int32 i = 0; i < variable_registry_length_; i++) {
+      if (variable_registry_[i].name_ == variable_name) {
+        return &variable_registry_[i];
+      }
+    }
+
+    // Looking for the variable in the global stack.
+    // 1st step will be to separate the name in case that is part of a variable pack.
+    // We will look for "."  --> example:  ->>>   camera.position
+    int32 length = variable_name.length();
+    int32 index = -1;
+    for (int32 i = 0; i < length; i++) {
+      if (variable_name[i] == '.') { index = i; break; }
+    }
+    if (index == -1) { // No "." found
+                       // Look for in the default variable pack.
+      length = global_variable_pack_list_[0].var.size();
+      for (int32 i = 0; i < length; i++) {
+        if (global_variable_pack_list_[0].var[i].name_ == variable_name) {
+          return &global_variable_pack_list_[0].var[i];
+        }
+      }
+    }
+    else { // Separate "camera.position" ->>>> to "camera"(pack) and "position"(var)
+      std::string pack_name = variable_name.substr(0, index); // not including "."
+      std::string var_name = variable_name.substr(index + 1); // to ignore "."
+      index = 0;
+      // looking for the pack
+      for (int32 i = 0; i < global_variable_pack_list_length_; i++) {
+        if (global_variable_pack_list_[i].name == pack_name) {
+          length = global_variable_pack_list_[i].var.size();
+          for (int32 j = 0; j < length; j++) {
+            if (global_variable_pack_list_[i].var[j].name_ == var_name) {
+              return &global_variable_pack_list_[i].var[j];
+            }
+          }
+        }
+      }
+    }
+
+
+    return nullptr;
+  }
+
+
+
+  Report Machine::registerFunction(const char* name,
+    void(*function_ptr)(std::vector<Value>&)) {
+
+    // Error checkings
+    if (!name || !function_ptr) {
+      return kReport_NullPointer;
+    }
+
+    // If the function already exists, we will edit the existing one.
+    for (int32 i = 0; i < function_registry_length_; i++) {
+      if (name == function_registry_[i].name_) {
+        char warning[64];
+        sprintf_s(warning, 64, "\"%s\": Function already registered", name);
+        ReportWarning(warning);
+        function_registry_[i].name_ = name;
+        function_registry_[i].function_pointer_ = function_ptr;
+        return kReport_NoErrors;
+      }
+    }
+
+    // if the variable is not registered yet, we will add a new one to the registry.
+    function_registry_.push_back({ name, function_ptr });
+    function_registry_length_++;
+
+    return kReport_NoErrors;
+  }
+
+  void Machine::unregisterFunction(const char* name) {
+
+    for (int32 i = 0; i < function_registry_length_; i++) {
+      if (name == function_registry_[i].name_) {
+        function_registry_.erase(function_registry_.begin() + i);
+        function_registry_length_--;
+        return;
+      }
+    }
+    char warning[64];
+    sprintf_s(warning, 64, "\"%s\": Can't be found in the registry. Unregister failed", name);
+    ReportWarning(warning);
+  }
+
+  void Machine::unregisterFunction(const int32 id) {
+    if (id >= 0 && id < function_registry_length_) {
+      function_registry_.erase(function_registry_.begin() + id);
+      function_registry_length_--;
+      return;
+    }
+
+    char warning[64];
+    sprintf_s(warning, 64, "Invalid variable registry id. Unregister failed");
+    ReportWarning(warning);
+  }
+
+  RegisteredFunction* Machine::getRegisteredFunction(const std::string& function_name) {
+
+    // If not found, we will look for it in the function registry.
+    for (int32 i = 0; i < function_registry_length_; i++) {
+      if (function_registry_[i].name_ == function_name) {
+        return &function_registry_[i];
+      }
+    }
+
+    return nullptr;
+  }
+
+  /*******************************************************************************
+  ***                      DEFINED FUNCTION LIST METHODS                       ***
+  *******************************************************************************/
+
+  Report Machine::addDefinedFunction(const char* name, const int32 command_index) {
+    // Error checkings
+    if (!name) {
+      return kReport_NullPointer;
+    }
+
+    // If the variable already exists, we will edit the existing one.
+    for (int32 i = 0; i < defined_function_list_length_; i++) {
+      if (name == defined_function_list_[i].name) {
+        char error[64];
+        sprintf_s(error, 64, "\"%s\": Function already defined", name);
+        ReportError(error);
+        return kReport_FunctionDefinedMoreThanOnce;
+      }
+    }
+
+    // if the variable is not registered yet, we will add a new one to the registry.
+    defined_function_list_.push_back({ name, command_index });
+    defined_function_list_length_++;
+
+    return kReport_NoErrors;
+  }
+
+  int32 Machine::getDefinedFunctionID(const char* name) {
+    std::string function_name = name;
+    for (int32 i = 0; i < defined_function_list_length_; i++) {
+      if (defined_function_list_[i].name == function_name) {
+        return defined_function_list_[i].command_index;
+      }
+    }
+
+    ReportError("Function not defined, so theres no ID for function name: " + function_name);
+    return INVALID_FUNCTION_ID;
+  }
+
+  void Machine::removeDefinedFunction(const char* name) {
+    for (int32 i = 0; i < defined_function_list_length_; i++) {
+      if (name == defined_function_list_[i].name) {
+        defined_function_list_.erase(defined_function_list_.begin() + i);
+        defined_function_list_length_--;
+        return;
+      }
+    }
+    char warning[64];
+    sprintf_s(warning, 64, "\"%s\": Is not a defined function. Remove Defined Function failed", name);
+    ReportWarning(warning);
+  }
+
+  void Machine::removeDefinedFunction(const int32 id) {
+    if (id >= 0 && id < defined_function_list_length_) {
+      defined_function_list_.erase(defined_function_list_.begin() + id);
+      defined_function_list_length_--;
+      return;
+    }
+
+    char warning[64];
+    sprintf_s(warning, 64, "Invalid function id. Remove Defined Function failed");
+    ReportWarning(warning);
+  }
+
+
+  /*******************************************************************************
+  ***                     EXECUTION FUNCTION LIST METHODS                      ***
+  *******************************************************************************/
+
+  void Machine::addFunction(const int32 origin_id) {
+    function_list_.push_back({ origin_id });
+    function_list_length_++;
+  }
+
+  Function* Machine::getCurrentFunction() {
+    if (function_list_length_ == 0) {
+      return nullptr;
+    }
+    return &function_list_[function_list_length_ - 1];
+  }
+
+  void Machine::removeFunction(const int32 id) {
+    if (id >= 0 && id < function_list_length_) {
+      function_list_.erase(function_list_.begin() + id);
+      function_list_length_--;
+    }
+    else {
+      ReportWarning(" Can't remove function from the execution function list.");
+    }
+  }
+
+  void Machine::removeCurrentFunction() {
+    removeFunction(function_list_length_ - 1);
+  }
+
+  const int32 Machine::numActiveFunctions() {
+    return function_list_length_;
+  }
+
+  void Machine::addValueToTheStack(const Value value) {
+    stack_.value.push_back(value);
+    stack_.length++;
+  }
+
+  Value Machine::getAndRemoveTheLastAddedStackValue() {
+    Value value;
+    if (stack_.length <= 0) {
+      ReportWarning(" Trying to extract a value from an empty stack.");
+      return value;
+    }
+    value = stack_.value[stack_.length - 1];
+    stack_.value.erase(stack_.value.begin() + stack_.length - 1);
+    stack_.length--;
+    return value;
+  }
+
+  int32 Machine::numStackValues() {
+    return stack_.length;
+  }
+
+private:
+
+/*******************************   METHODS   **********************************/
+
+  /// Default copy constructor.
+  Machine(const Machine& copy);
+  /// Assignment operator.
+  Machine& operator=(const Machine& copy);
+
+}; /* Machine */
+
+#pragma endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Declaration of the static stack
+Machine::Stack Machine::stack_;
 
 
 
