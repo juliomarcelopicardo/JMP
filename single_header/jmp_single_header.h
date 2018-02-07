@@ -1159,6 +1159,204 @@ class Token {
 #pragma endregion
 
 /*******************************************************************************
+***                            TOKEN_MANAGER                                 ***
+*******************************************************************************/
+
+#pragma region TOKEN_MANAGER_CLASS 
+
+/// Class used to save and manage the tokens.
+class TokenManager {
+
+ private:
+
+/******************************   ATTRIBUTES   ********************************/
+
+  /// List of all the tokens.
+  std::vector<Token> token_list_;
+  /// Number of elements of the list.
+  int32 token_list_length_;
+
+/*******************************   METHODS   **********************************/
+
+  /// Default copy constructor.
+  TokenManager(const TokenManager& copy);
+  /// Assignment operator.
+  TokenManager& operator=(const TokenManager& copy);
+
+ public:
+
+/*******************************   METHODS   **********************************/
+
+  TokenManager() {
+    token_list_length_ = 0;
+    token_list_.reserve(10);
+  }
+
+  ~TokenManager() {
+    token_list_.clear();
+  }
+
+  void addToken(const char * text, const TokenType type, int32 priority) {
+    token_list_.push_back({ text, type, priority });
+    token_list_length_++;
+
+    // To determine if there's a function name behind the token.
+    if (token_list_length_ >= 2) {
+      if (token_list_[token_list_length_ - 1].text_ == "(" &&
+        token_list_[token_list_length_ - 2].type_ == kTokenType_Variable) {
+        token_list_[token_list_length_ - 2].priority_ = FUNCTION_NAME_PRIORITY;
+      }
+    }
+  }
+
+  void addToken(const Token& token) {
+    token_list_.push_back(token);
+    token_list_length_++;
+
+    // To determine if there's a function name behind the token.
+    if (token_list_length_ >= 2) {
+      if (token_list_[token_list_length_ - 1].text_ == "(" &&
+        token_list_[token_list_length_ - 2].type_ == kTokenType_Variable) {
+        token_list_[token_list_length_ - 2].priority_ = FUNCTION_NAME_PRIORITY;
+      }
+    }
+  }
+
+  void clear() {
+    token_list_.clear();
+    token_list_length_ = 0;
+  }
+
+  void removeToken(int32 id) {
+    token_list_.erase(token_list_.begin() + id);
+    token_list_length_--;
+  }
+
+  void transferParenthesisContent(int32 open_parenthesis_id,
+    int32 close_parenthesis_id,
+    TokenManager* transfer_output) {
+    // Copying the content into the output.
+    int32 num_tokens_transfered = 0;
+    for (int32 i = open_parenthesis_id + 1; i < close_parenthesis_id; i++) {
+      transfer_output->addToken(token_list_[i]);
+      num_tokens_transfered++;
+    }
+
+    // Changing the open parenthesis token to text "RESULT", None type, priority 0.
+    token_list_[open_parenthesis_id] = { "RESULT", kTokenType_None, 0 };
+
+    // Deleting the rest of the tokens. including the ")" one.
+    for (int32 i = 0; i < num_tokens_transfered + 1; i++) {
+      removeToken(open_parenthesis_id + 1);
+    }
+  }
+
+  void transferContentBetweenIDsInclusive(int32 initial_id,
+    int32 final_id,
+    TokenManager* transfer_output) {
+    // Copying the content into the output.
+    int32 num_tokens_transfered = 0;
+    for (int32 i = initial_id; i <= final_id; i++) {
+      if (transfer_output) { transfer_output->addToken(token_list_[i]); }
+      num_tokens_transfered++;
+    }
+
+    // Changing the open parenthesis token to text "RESULT", None type, priority 0.
+    token_list_[initial_id] = { "RESULT", kTokenType_None, 0 };
+
+    // Deleting the rest of the tokens. including the ")" one.
+    for (int32 i = 0; i < num_tokens_transfered - 1; i++) {
+      removeToken(initial_id + 1);
+    }
+  }
+
+  Token getToken(const int32 list_index) {
+    if (list_index >= token_list_length_ || list_index < 0) {
+      ReportError("Token list index \"" + std::to_string(list_index) + "\" is out of range.");
+      return{ "", kTokenType_None, 0 };
+    }
+    return token_list_[list_index];
+  }
+
+  int32 getHighestPriorityTokenIndex() {
+
+    int32 maximum_priority = -1;
+    int32 index = -1;
+
+    for (int32 i = 0; i < token_list_length_; i++) {
+      if (token_list_[i].priority_ > maximum_priority) {
+        maximum_priority = token_list_[i].priority_;
+        index = i;
+      }
+    }
+
+    return index;
+  }
+
+
+
+  int32 getNextCloseParenthesisIndex(int32 open_parenthesis_index) {
+
+    for (int32 i = open_parenthesis_index; i < token_list_length_; ++i) {
+      if (token_list_[i].text_ == ")") {
+        return i;
+      }
+    }
+
+    return -1; // No maatching close parenthesis found.
+  }
+
+  const uint32 numTokens() {
+    return token_list_length_;
+  }
+
+  const bool areAnyCommaTokenInList() {
+    for (int32 i = 0; i < token_list_length_; i++) {
+      if (token_list_[i].text_ == ",") {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void printToken(int32 id) {
+
+    OutputDebugString(" Type: ");
+    switch (token_list_[id].type_) {
+    case kTokenType_None: { OutputDebugString("None \t\t"); }break;
+    case kTokenType_Keyword: { OutputDebugString("Keyword \t\t"); }break;
+    case kTokenType_Number: { OutputDebugString("Number \t\t"); }break;
+    case kTokenType_Separator: { OutputDebugString("Separator \t"); }break;
+    case kTokenType_Variable: { OutputDebugString("Variable \t"); }break;
+    default: { OutputDebugString("None \t\t"); }break;
+    }
+
+    char priority[32] = "";
+    if (token_list_[id].priority_ == 0) {
+      sprintf_s(priority, 32, "Priority: %d\t\t", token_list_[id].priority_);
+    }
+    else {
+      sprintf_s(priority, 32, "Priority: %d\t", token_list_[id].priority_);
+    }
+    OutputDebugString(priority);
+
+    OutputDebugString("Token: \"");
+    OutputDebugString(token_list_[id].text_.c_str());
+    OutputDebugString("\"\n");
+
+  }
+
+  void printTokenList() {
+    for (int32 i = 0; i < token_list_length_; i++) {
+      printToken(i);
+    }
+  }
+
+}; /* TokenManager */
+
+#pragma endregion
+
+/*******************************************************************************
 ***                               FUNCTION                                   ***
 *******************************************************************************/
 
