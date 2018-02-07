@@ -36,7 +36,6 @@ namespace JMP_SINGLE_HEADER {
 
 #pragma endregion
 
-
 /*******************************************************************************
 /*******************************************************************************
 ***                                                                          ***
@@ -44,6 +43,7 @@ namespace JMP_SINGLE_HEADER {
 ***                                                                          ***
 /*******************************************************************************
 *******************************************************************************/
+
 #pragma region TYPES
 
   /// char
@@ -72,7 +72,6 @@ namespace JMP_SINGLE_HEADER {
 
 #pragma endregion
 
-
 /*******************************************************************************
 /*******************************************************************************
 ***                                                                          ***
@@ -80,6 +79,7 @@ namespace JMP_SINGLE_HEADER {
 ***                                                                          ***
 /*******************************************************************************
 *******************************************************************************/
+
 #pragma region ENUMS
 
   /// Value type.
@@ -134,6 +134,14 @@ namespace JMP_SINGLE_HEADER {
     kReport_UnexpectedComparisonToken,
   };
 #pragma endregion
+
+/*******************************************************************************
+/*******************************************************************************
+***                                                                          ***
+***                                REPORTS                                   ***
+***                                                                          ***
+/*******************************************************************************
+*******************************************************************************/
 
 #pragma region REPORTS
 
@@ -220,10 +228,13 @@ void PrintReport(Report& report, uint32 line_number) {
 /*******************************************************************************
 *******************************************************************************/
 
-#pragma region VALUE_CLASS 
 /*******************************************************************************
 ***                                 VALUE                                    ***
 *******************************************************************************/
+
+#pragma region VALUE_CLASS 
+
+/// Class used to manage the different values used in the variables and the stack
 class Value {
 
  public:
@@ -306,8 +317,715 @@ class Value {
   }
 
 }; /* Value */
+
+
 #pragma endregion
 
-}; /* JMP_SINGLE_FILE */
+/*******************************************************************************
+***                            VALUE OPERATORS                               ***
+*******************************************************************************/
+
+#pragma region VALUE_OPERATORS
+
+Value operator+(const Value& a, const Value& b) {
+  // integer + integer = integer 
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
+    return{ a.integer_ + b.integer_ };
+  }
+
+  // float + float = float 
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
+    return{ a.float_ + b.float_ };
+  }
+
+  // text + text = text 
+  if (a.type_ == kValueType_Text && b.type_ == kValueType_Text) {
+    return{ (a.text_ + b.text_).c_str() };
+  }
+
+  // integer + float = float
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Float) {
+    return{ (float32)a.integer_ + b.float_ };
+  }
+
+  // float + integer = float
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Integer) {
+    return{ a.float_ + (float32)b.integer_ };
+  }
+
+  // integer + text = text
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Text) {
+    return{ (std::to_string(a.integer_) + b.text_).c_str() };
+  }
+
+  // float + text = text
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Text) {
+    return{ (std::to_string(a.float_) + b.text_).c_str() };
+  }
+
+  // text + integer = text
+  if (b.type_ == kValueType_Integer && a.type_ == kValueType_Text) {
+    return{ (a.text_ + std::to_string(b.integer_)).c_str() };
+  }
+
+  // text + float = text
+  if (b.type_ == kValueType_Float && a.type_ == kValueType_Text) {
+    return{ (a.text_ + std::to_string(b.float_)).c_str() };
+  }
+
+  ReportWarning("Value Addition Operation Failed.");
+  return Value();
+}
+
+
+Value operator-(const Value& a, const Value& b) {
+  // integer - integer = integer 
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
+    return{ a.integer_ - b.integer_ };
+  }
+
+  // float - float = float 
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
+    return{ a.float_ - b.float_ };
+  }
+
+  // integer - float = float
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Float) {
+    return{ (float32)a.integer_ - b.float_ };
+  }
+
+  // float - integer = float
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Integer) {
+    return{ a.float_ - (float32)b.integer_ };
+  }
+
+  ReportWarning("Value Substraction Operation Failed.");
+  return Value();
+}
+
+Value operator*(const Value& a, const Value& b) {
+  // integer * integer = integer 
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
+    return{ a.integer_ * b.integer_ };
+  }
+
+  // float * float = float 
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
+    return{ a.float_ * b.float_ };
+  }
+
+  // integer * float = float
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Float) {
+    return{ (float32)a.integer_ * b.float_ };
+  }
+
+  // float * integer = float
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Integer) {
+    return{ a.float_ * (float32)b.integer_ };
+  }
+
+  ReportWarning("Value Multiply Operation Failed.");
+  return Value();
+}
+
+Value operator/(const Value& a, const Value& b) {
+  // integer / integer = integer 
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
+    if (b.integer_ == 0) {
+      ReportWarning("Division by 0 avoided"); return Value();
+    }
+    return{ a.integer_ / b.integer_ };
+  }
+
+  // float / float = float 
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
+    if (b.float_ == 0.0f) {
+      ReportWarning("Division by 0 avoided"); return Value();
+    }
+    return{ a.float_ / b.float_ };
+  }
+
+  // integer / float = float
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Float) {
+    if (b.float_ == 0.0f) {
+      ReportWarning("Division by 0 avoided"); return Value();
+    }
+    return{ (float32)a.integer_ / b.float_ };
+  }
+
+  // float / integer = float
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Integer) {
+    if (b.integer_ == 0) {
+      ReportWarning("Division by 0 avoided"); return Value();
+    }
+    return{ a.float_ / (float32)b.integer_ };
+  }
+
+  ReportWarning("Value Division Operation Failed.");
+  return Value();
+}
+
+Value operator^(const Value& a, const Value& b) {
+  // integer ^ integer = integer 
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
+    return{ (int32)pow(a.integer_, b.integer_) };
+  }
+
+  // float ^ float = float 
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
+    return{ powf(a.float_, b.float_) };
+  }
+
+  // integer ^ float = float
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Float) {
+    return{ (float32)pow(a.integer_, b.float_) };
+  }
+
+  // float ^ integer = float
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Integer) {
+    return{ pow(a.float_, b.integer_) };
+  }
+
+  ReportWarning("Value Power Operation Failed.");
+  return Value();
+}
+
+Value operator>(const Value& a, const Value& b) {
+  // integer > integer = bool 
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
+    return{ a.integer_ > b.integer_ };
+  }
+
+  // float > float = bool 
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
+    return{ a.float_ > b.float_ };
+  }
+
+  // text > text = bool 
+  if (a.type_ == kValueType_Text && b.type_ == kValueType_Text) {
+    return{ a.text_ > b.text_ };
+  }
+
+  // integer > float = bool
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Float) {
+    return{ a.integer_ > b.float_ };
+  }
+
+  // float > integer = bool
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Integer) {
+    return{ a.float_ > b.integer_ };
+  }
+
+  // integer > text = bool
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Text) {
+    return{ std::to_string(a.integer_) > b.text_ };
+  }
+
+  // float > text = bool
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Text) {
+    return{ std::to_string(a.float_) > b.text_ };
+  }
+
+  // text > integer = bool
+  if (b.type_ == kValueType_Integer && a.type_ == kValueType_Text) {
+    return{ a.text_ > std::to_string(b.integer_) };
+  }
+
+  // text > float = bool
+  if (b.type_ == kValueType_Float && a.type_ == kValueType_Text) {
+    return{ a.text_ > std::to_string(b.float_) };
+  }
+
+  ReportWarning("Value Greater Than Comparison Operation Failed.");
+  return Value();
+}
+
+Value operator<(const Value& a, const Value& b) {
+  // integer < integer = bool 
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
+    return{ a.integer_ < b.integer_ };
+  }
+
+  // float < float = bool 
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
+    return{ a.float_ < b.float_ };
+  }
+
+  // text < text = bool 
+  if (a.type_ == kValueType_Text && b.type_ == kValueType_Text) {
+    return{ a.text_ < b.text_ };
+  }
+
+  // integer < float = bool
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Float) {
+    return{ a.integer_ < b.float_ };
+  }
+
+  // float < integer = bool
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Integer) {
+    return{ a.float_ < b.integer_ };
+  }
+
+  // integer < text = bool
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Text) {
+    return{ std::to_string(a.integer_) < b.text_ };
+  }
+
+  // float < text = bool
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Text) {
+    return{ std::to_string(a.float_) < b.text_ };
+  }
+
+  // text < integer = bool
+  if (b.type_ == kValueType_Integer && a.type_ == kValueType_Text) {
+    return{ a.text_ < std::to_string(b.integer_) };
+  }
+
+  // text < float = bool
+  if (b.type_ == kValueType_Float && a.type_ == kValueType_Text) {
+    return{ a.text_ < std::to_string(b.float_) };
+  }
+
+  ReportWarning("Value Lesser Than Comparison Operation Failed.");
+  return Value();
+}
+
+Value operator>=(const Value& a, const Value& b) {
+  // integer >= integer = bool 
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
+    return{ a.integer_ >= b.integer_ };
+  }
+
+  // float >= float = bool 
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
+    return{ a.float_ >= b.float_ };
+  }
+
+  // text >= text = bool 
+  if (a.type_ == kValueType_Text && b.type_ == kValueType_Text) {
+    return{ a.text_ >= b.text_ };
+  }
+
+  // integer >= float = bool
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Float) {
+    return{ a.integer_ >= b.float_ };
+  }
+
+  // float >= integer = bool
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Integer) {
+    return{ a.float_ >= b.integer_ };
+  }
+
+  // integer >= text = bool
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Text) {
+    return{ std::to_string(a.integer_) >= b.text_ };
+  }
+
+  // float >= text = bool
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Text) {
+    return{ std::to_string(a.float_) >= b.text_ };
+  }
+
+  // text >= integer = bool
+  if (b.type_ == kValueType_Integer && a.type_ == kValueType_Text) {
+    return{ a.text_ >= std::to_string(b.integer_) };
+  }
+
+  // text >= float = bool
+  if (b.type_ == kValueType_Float && a.type_ == kValueType_Text) {
+    return{ a.text_ >= std::to_string(b.float_) };
+  }
+
+  ReportWarning("Value GreaterOrEqual Than Comparison Operation Failed.");
+  return Value();
+}
+
+Value operator<=(const Value& a, const Value& b) {
+  // integer <= integer = bool 
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
+    return{ a.integer_ <= b.integer_ };
+  }
+
+  // float <= float = bool 
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
+    return{ a.float_ <= b.float_ };
+  }
+
+  // text <= text = bool 
+  if (a.type_ == kValueType_Text && b.type_ == kValueType_Text) {
+    return{ a.text_ <= b.text_ };
+  }
+
+  // integer <= float = bool
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Float) {
+    return{ a.integer_ <= b.float_ };
+  }
+
+  // float <= integer = bool
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Integer) {
+    return{ a.float_ <= b.integer_ };
+  }
+
+  // integer <= text = bool
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Text) {
+    return{ std::to_string(a.integer_) <= b.text_ };
+  }
+
+  // float <= text = bool
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Text) {
+    return{ std::to_string(a.float_) <= b.text_ };
+  }
+
+  // text <= integer = bool
+  if (b.type_ == kValueType_Integer && a.type_ == kValueType_Text) {
+    return{ a.text_ <= std::to_string(b.integer_) };
+  }
+
+  // text <= float = bool
+  if (b.type_ == kValueType_Float && a.type_ == kValueType_Text) {
+    return{ a.text_ <= std::to_string(b.float_) };
+  }
+
+  ReportWarning("Value LesserOrEqual Than Comparison Operation Failed.");
+  return Value();
+}
+
+Value operator==(const Value& a, const Value& b) {
+  // integer == integer = bool 
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
+    return{ a.integer_ == b.integer_ };
+  }
+
+  // float == float = bool 
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
+    return{ a.float_ == b.float_ };
+  }
+
+  // text == text = bool 
+  if (a.type_ == kValueType_Text && b.type_ == kValueType_Text) {
+    return{ a.text_ == b.text_ };
+  }
+
+  // integer == float = bool
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Float) {
+    return{ a.integer_ == b.float_ };
+  }
+
+  // float == integer = bool
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Integer) {
+    return{ a.float_ == b.integer_ };
+  }
+
+  // integer == text = bool
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Text) {
+    return{ std::to_string(a.integer_) == b.text_ };
+  }
+
+  // float == text = bool
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Text) {
+    return{ std::to_string(a.float_) == b.text_ };
+  }
+
+  // text == integer = bool
+  if (b.type_ == kValueType_Integer && a.type_ == kValueType_Text) {
+    return{ a.text_ == std::to_string(b.integer_) };
+  }
+
+  // text == float = bool
+  if (b.type_ == kValueType_Float && a.type_ == kValueType_Text) {
+    return{ a.text_ == std::to_string(b.float_) };
+  }
+
+  ReportWarning("Value Equal Than Comparison Operation Failed.");
+  return Value();
+}
+
+Value operator!=(const Value& a, const Value& b) {
+  // integer != integer = bool 
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Integer) {
+    return{ a.integer_ != b.integer_ };
+  }
+
+  // float != float = bool 
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Float) {
+    return{ a.float_ != b.float_ };
+  }
+
+  // text != text = bool 
+  if (a.type_ == kValueType_Text && b.type_ == kValueType_Text) {
+    return{ a.text_ != b.text_ };
+  }
+
+  // integer != float = bool
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Float) {
+    return{ a.integer_ != b.float_ };
+  }
+
+  // float != integer = bool
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Integer) {
+    return{ a.float_ != b.integer_ };
+  }
+
+  // integer != text = bool
+  if (a.type_ == kValueType_Integer && b.type_ == kValueType_Text) {
+    return{ std::to_string(a.integer_) != b.text_ };
+  }
+
+  // float != text = bool
+  if (a.type_ == kValueType_Float && b.type_ == kValueType_Text) {
+    return{ std::to_string(a.float_) != b.text_ };
+  }
+
+  // text != integer = bool
+  if (b.type_ == kValueType_Integer && a.type_ == kValueType_Text) {
+    return{ a.text_ != std::to_string(b.integer_) };
+  }
+
+  // text != float = bool
+  if (b.type_ == kValueType_Float && a.type_ == kValueType_Text) {
+    return{ a.text_ != std::to_string(b.float_) };
+  }
+
+  ReportWarning("Value Not Equal Than Comparison Operation Failed.");
+  return Value();
+}
+
+#pragma endregion
+
+
+/*******************************************************************************
+***                               VARIABLE                                   ***
+*******************************************************************************/
+
+#pragma region VARIABLE_CLASS 
+
+   /// Class used to manage the variables that will be added to the registger.
+   /// Depending on if the variable is a external registered one (created in C++) or
+   /// if its one defined in the script, the attributes used will be different.
+class Variable {
+
+ public:
+
+/******************************   ATTRIBUTES   ********************************/
+
+  /// Will define if the variable is a external one or a script native one.
+  bool is_registered_;
+  /// Name of the variable.
+  std::string name_;
+  /// Pointer to the original variable defined in c++
+  void* pointer_to_the_original_;
+  /// Value of the variable
+  Value value_;
+
+/*******************************   METHODS   **********************************/
+
+  Variable() {
+    is_registered_ = false;
+    name_ = "";
+    pointer_to_the_original_ = nullptr;
+  }
+
+  Variable(const char* name) {
+    is_registered_ = false;
+    name_ = name;
+    pointer_to_the_original_ = nullptr;
+  }
+
+  Variable(const char* name, int32 integer_value) {
+    is_registered_ = false;
+    name_ = name;
+    pointer_to_the_original_ = nullptr;
+    value_ = { integer_value };
+  }
+
+  Variable(const char* name, float32 float_value) {
+    is_registered_ = false;
+    name_ = name;
+    pointer_to_the_original_ = nullptr;
+    value_ = { float_value };
+  }
+
+  Variable(const char* name, const char* text_value) {
+    is_registered_ = false;
+    name_ = name;
+    pointer_to_the_original_ = nullptr;
+    value_ = { text_value };
+  }
+
+  Variable(const char* name, Value value) {
+    is_registered_ = false;
+    name_ = name;
+    pointer_to_the_original_ = nullptr;
+    value_ = value;
+  }
+
+  Variable(const char* name, ValueType type, void* ptr_to_the_original) {
+    is_registered_ = true;
+    name_ = name;
+    pointer_to_the_original_ = ptr_to_the_original;
+    value_.type_ = type;
+  }
+
+  ~Variable() {}
+
+  Variable(const Variable& copy) {
+    is_registered_ = copy.is_registered_;
+    name_ = copy.name_;
+    pointer_to_the_original_ = copy.pointer_to_the_original_;
+    value_ = copy.value_;
+  }
+
+  Variable & operator=(const Variable& copy) {
+    is_registered_ = copy.is_registered_;
+    name_ = copy.name_;
+    pointer_to_the_original_ = copy.pointer_to_the_original_;
+    value_ = copy.value_;
+    return *this;
+  }
+
+  Report setValue(const Value value) {
+
+    if (is_registered_) {
+
+      // Original value is a TEXT.
+      if (value_.type_ == kValueType_Text && value.type_ == kValueType_Text) {
+        std::string* ptr = static_cast<std::string*>(pointer_to_the_original_);
+        *ptr = value.text_;
+        return kReport_NoErrors;
+      }
+
+      if (value_.type_ == kValueType_Text && value.type_ == kValueType_Float) {
+        std::string* ptr = static_cast<std::string*>(pointer_to_the_original_);
+        *ptr = std::to_string(value.float_);
+        return kReport_NoErrors;
+      }
+
+      if (value_.type_ == kValueType_Text && value.type_ == kValueType_Integer) {
+        std::string* ptr = static_cast<std::string*>(pointer_to_the_original_);
+        *ptr = std::to_string(value.integer_);
+        return kReport_NoErrors;
+      }
+
+      // Original value is an INTEGER.
+      if (value_.type_ == kValueType_Integer && value.type_ == kValueType_Integer) {
+        int32* ptr = static_cast<int32*>(pointer_to_the_original_);
+        *ptr = value.integer_;
+        return kReport_NoErrors;
+      }
+
+      if (value_.type_ == kValueType_Integer && value.type_ == kValueType_Float) {
+        int32* ptr = static_cast<int32*>(pointer_to_the_original_);
+        *ptr = (int32)value.float_;
+        return kReport_NoErrors;
+      }
+
+      // Original value is a FLOAT.
+      if (value_.type_ == kValueType_Float && value.type_ == kValueType_Float) {
+        float32* ptr = static_cast<float32*>(pointer_to_the_original_);
+        *ptr = value.float_;
+        return kReport_NoErrors;
+      }
+
+      if (value_.type_ == kValueType_Float && value.type_ == kValueType_Integer) {
+        float32* ptr = static_cast<float32*>(pointer_to_the_original_);
+        *ptr = (float32)value.integer_;
+        return kReport_NoErrors;
+      }
+
+      ReportError(" Cant set variable value, types not match. " + name_);
+      return kReport_InvalidValueType;
+    }
+
+    // if its not a registered variable.
+
+    // Original value is a TEXT.
+    if (value_.type_ == kValueType_Text && value.type_ == kValueType_Text) {
+      value_.text_ = value.text_;
+      return kReport_NoErrors;
+    }
+
+    if (value_.type_ == kValueType_Text && value.type_ == kValueType_Float) {
+      value_.text_ = std::to_string(value.float_);
+      return kReport_NoErrors;
+    }
+
+    if (value_.type_ == kValueType_Text && value.type_ == kValueType_Integer) {
+      value_.text_ = std::to_string(value.integer_);
+      return kReport_NoErrors;
+    }
+
+    // Original value is an INTEGER.
+    if (value_.type_ == kValueType_Integer && value.type_ == kValueType_Integer) {
+      value_.integer_ = value.integer_;
+      return kReport_NoErrors;
+    }
+
+    if (value_.type_ == kValueType_Integer && value.type_ == kValueType_Float) {
+      value_.integer_ = (int32)value.float_;
+      return kReport_NoErrors;
+    }
+
+    // Original value is a FLOAT.
+    if (value_.type_ == kValueType_Float && value.type_ == kValueType_Float) {
+      value_.float_ = value.float_;
+      return kReport_NoErrors;
+    }
+
+    if (value_.type_ == kValueType_Float && value.type_ == kValueType_Integer) {
+      value_.float_ = (float32)value.integer_;
+      return kReport_NoErrors;
+    }
+
+    // If the variable doesnt have a type, then we assign the external value type.
+    if (value_.type_ == kValueType_None) {
+      value_ = value;
+      return kReport_NoErrors;
+    }
+
+    ReportError(" Cant set variable value, types not match. " + name_);
+    return kReport_InvalidValueType;
+  }
+
+  const Value getValue() {
+    if (!is_registered_) {
+      return value_;
+    }
+
+    if (value_.type_ == kValueType_Text) {
+      std::string* ptr = static_cast<std::string*>(pointer_to_the_original_);
+      return{ ptr->c_str() };
+    }
+
+    if (value_.type_ == kValueType_Float) {
+      float32* ptr = static_cast<float32*>(pointer_to_the_original_);
+      return{ *ptr };
+    }
+
+    if (value_.type_ == kValueType_Integer) {
+      int32* ptr = static_cast<int32*>(pointer_to_the_original_);
+      return{ *ptr };
+    }
+
+    ReportError("Error getting the value of the variable which name is : " + name_);
+    return Value();
+  }
+
+
+}; /* Variable */
+
+#pragma endregion
+
+
+
+
+
+
+
+
+
+
+
+
+}; /* JMP_SINGLE_HEADER */
 
 #endif /* __JMP_SINGLE_HEADER_H__ */
