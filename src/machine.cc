@@ -716,13 +716,51 @@ float32 Machine::getFloat(const char* variable_name, const char* variable_pack_n
   }
 
   if (var->value_.type_ != kValueType_Float) {
-    ReportError("Varible name: " + std::string(variable_name) + " is not an float");
+    ReportError("Varible name: " + std::string(variable_name) + " is not a float");
     return -99999.0f;
   }
 
   return var->getValue().float_;
 }
 
+
+std::string Machine::getString(const char* variable_name, const char* variable_pack_name) {
+  VariablePack* varpack = nullptr;
+  Variable* var = nullptr;
+  int32 length = 0;
+  int32 i = 0;
+  for (i = 0; i < global_variable_pack_list_length_; i++) {
+    if (global_variable_pack_list_[i].name == variable_pack_name) {
+      varpack = &global_variable_pack_list_[i];
+      break;
+    }
+  }
+
+  if (!varpack) {
+    ReportError("Unable to find variable pack name: " + std::string(variable_pack_name));
+    return "ERROR";
+  }
+
+  length = varpack->var.size();
+  for (i = 0; i < length; i++) {
+    if (varpack->var[i].name_ == variable_name) {
+      var = &varpack->var[i];
+      break;
+    }
+  }
+
+  if (!var) {
+    ReportError("Unable to find variable name: " + std::string(variable_name));
+    return "ERROR";
+  }
+
+  if (var->value_.type_ != kValueType_Text) {
+    ReportError("Varible name: " + std::string(variable_name) + " is not a string");
+    return "ERROR";
+  }
+
+  return var->getValue().text_;
+}
 
 
 
