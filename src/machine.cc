@@ -643,6 +643,48 @@ int32 Machine::numStackValues() {
   return stack_.length;
 }
 
+/*******************************************************************************
+***                           VARIABLE GETTERS                               ***
+*******************************************************************************/
+
+int32 Machine::getInteger(const char* variable_name, const char* variable_pack_name) {
+  VariablePack* varpack = nullptr;
+  Variable* var = nullptr;
+  int32 length = 0;
+  int32 i = 0;
+  for (i = 0; i < global_variable_pack_list_length_; i++) {
+    if (global_variable_pack_list_[i].name == variable_pack_name) {
+      varpack = &global_variable_pack_list_[i];
+      break;
+    }
+  }
+
+  if (!varpack) {
+    ReportError("Unable to find variable pack name: " + std::string(variable_pack_name));
+    return -99999;
+  }
+
+  length = varpack->var.size();
+  for (i = 0; i < length; i++) {
+    if (varpack->var[i].name_ == variable_name) {
+      var = &varpack->var[i];
+      break;
+    }
+  }
+
+  if (!var) {
+    ReportError("Unable to find variable name: " + std::string(variable_name));
+    return -99999;
+  }
+
+  if (var->value_.type_ != kValueType_Integer) {
+    ReportError("Varible name: " + std::string(variable_name) + " is not an integer");
+    return -99999;
+  }
+
+  return var->getValue().integer_;
+}
+
 
 
 

@@ -319,9 +319,7 @@ class Machine {
   */
   const int32 numActiveFunctions();
 
-/*******************************************************************************
-***                           PUBLIC ATTRIBUTES                              ***
-*******************************************************************************/
+/***************************** STACK OF VALUES ********************************/
 
   /**
   * @brief Push back a value into the stack.
@@ -343,6 +341,36 @@ class Machine {
   * @return number of values.
   */
   int32 numStackValues();
+
+/**************************** VARIABLE GETTERS ********************************/
+
+  /**
+  * @brief Global variable getter. Will extract an integer value from a variable.
+  *
+  * @param variable_name Name of the variable in the script.
+  * @param variable_pack_name Name of the variable pack defined in the script.
+  * @return The integer value of this variable.
+  */
+  int32 getInteger(const char* variable_name, const char* variable_pack_name = "");
+
+  /**
+  * @brief Global variable getter. Will extract an float value from a variable.
+  *
+  * @param variable_name Name of the variable in the script.
+  * @param variable_pack_name Name of the variable pack defined in the script.
+  * @return The float value of this variable.
+  */
+  float32 getFloat(const char* variable_name, const char* variable_pack_name = "");
+
+  /**
+  * @brief Global variable getter. Will extract an string value from a variable.
+  *
+  * @param variable_name Name of the variable in the script.
+  * @param variable_pack_name Name of the variable pack defined in the script.
+  * @return The string value of this variable.
+  */
+  std::string getString(const char* variable_name, const char* variable_pack_name = "");
+
 
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***
