@@ -7,7 +7,7 @@
 *                                <b7026027@my.shu.ac.uk>
 */
 
-#if 0 // ORIGINAL
+#if 1 // ORIGINAL
 #include "jmp.h"
 #include <Windows.h>
 
@@ -26,6 +26,7 @@ JMP::int32 main() {
 
   JMP::float32 variable = 3.02f;
   machine.processFile("../scripts/script.jmp");
+  std::string pedro = machine.getString("w", "camera");
   machine.registerVariable("variable", JMP::kValueType_Float, &variable);
   machine.registerFunction("ExternalFunction", &RegFunc);
   //machine.runFunction("PrintExample(40, \"texto\", 40.34)");

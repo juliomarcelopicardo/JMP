@@ -3,7 +3,8 @@ VAR paco = 1
 VARPACK camera {
   VAR x = 1
   VAR y = camera.x
-  VAR z = 3
+  VAR z = 3.00
+  VAR w = "hola caracola"
 }
 
 FUNC PrintExample(a,b,c) {
