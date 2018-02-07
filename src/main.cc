@@ -56,7 +56,12 @@ JMP_SINGLE_HEADER::int32 main() {
 
   OutputDebugString("\n Starting application... \n\n");
 
-
+  JMP_SINGLE_HEADER::Value value("text");
+  JMP_SINGLE_HEADER::Variable variable("textico");
+  variable.setValue({ 1 });
+  variable.value_.print();
+  value.print();
+  JMP_SINGLE_HEADER::ReportError("BLA");
 
   OutputDebugString("\n Ending application... \n\n");
   system("pause");

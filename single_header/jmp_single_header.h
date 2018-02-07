@@ -34,6 +34,7 @@ namespace JMP_SINGLE_HEADER {
 
 #define INITIALIZATION_VALUE -99999
 #define CONDITION_RESULT_TRUE 30 // Random number
+#define INVALID_FUNCTION_ID -9999
 
 // Priorities
 #define KEYWORD_PRIORITY 500
@@ -831,9 +832,9 @@ Value operator!=(const Value& a, const Value& b) {
 
 #pragma region VARIABLE_CLASS 
 
-   /// Class used to manage the variables that will be added to the registger.
-   /// Depending on if the variable is a external registered one (created in C++) or
-   /// if its one defined in the script, the attributes used will be different.
+/// Class used to manage the variables that will be added to the registger.
+/// Depending on if the variable is a external registered one (created in C++) or
+/// if its one defined in the script, the attributes used will be different.
 class Variable {
 
  public:
@@ -1053,6 +1054,7 @@ class Variable {
 
 #pragma region REGISTERED_FUNCTION_CLASS 
 
+/// Class used to manage the different functions registered from c++
 class RegisteredFunction {
 
  public:
@@ -1109,6 +1111,7 @@ class RegisteredFunction {
 
 #pragma region TOKEN_CLASS 
 
+/// Class used to manage the different tokens or keys of the scripts.
 class Token {
 
  public:
@@ -1155,7 +1158,103 @@ class Token {
 
 #pragma endregion
 
+/*******************************************************************************
+***                               FUNCTION                                   ***
+*******************************************************************************/
 
+#pragma region FUNCTION_CLASS 
+
+/// Now we create a list of functions, that will be used to jump between different
+/// function calls, getting it's variabes and being able to go back to the step
+/// id where the function was called */
+class Function {
+
+ private:
+
+/******************************   ATTRIBUTES   ********************************/
+  /// List of variables allocated in the function scope.
+  std::vector<Variable> variable_list_;
+  /// Origin command id, where the function is called.
+  int32 origin_id_;
+  /// Variable list length
+  int32 variable_list_length_;
+
+ public:
+
+/*******************************   METHODS   **********************************/
+
+  Function() {
+    variable_list_.reserve(10);
+    origin_id_ = INVALID_FUNCTION_ID;
+    variable_list_length_ = 0;
+  }
+
+  Function(const int32 origin_id) {
+    variable_list_.reserve(10);
+    origin_id_ = origin_id;
+    variable_list_length_ = 0;
+  }
+
+  ~Function() {
+    variable_list_.clear();
+    variable_list_length_ = 0;
+  }
+
+  Function(const Function& copy) {
+    variable_list_ = copy.variable_list_;
+    origin_id_ = copy.origin_id_;
+    variable_list_length_ = copy.variable_list_length_;
+  }
+
+  Function& operator=(const Function& copy) {
+    variable_list_ = copy.variable_list_;
+    origin_id_ = copy.origin_id_;
+    variable_list_length_ = copy.variable_list_length_;
+    return *this;
+  }
+
+  Report addVariable(const Variable variable) {
+    variable_list_.push_back(variable);
+    variable_list_length_++;
+    return kReport_NoErrors;
+  }
+
+  Report addVariable(const char* name, const Value value) {
+    variable_list_.push_back({ name, value });
+    variable_list_length_++;
+    return kReport_NoErrors;
+  }
+
+  const int32 getVariableID(const std::string& variable_name) {
+    for (int32 i = 0; i < variable_list_length_; i++) {
+      if (variable_list_[i].name_ == variable_name) {
+        return i;
+      }
+    }
+    //ReportWarning(" Couldnt get variable from function. Variable name: " + variable_name);
+    return INVALID_FUNCTION_ID;
+  }
+
+  Variable* getVariable(const std::string& variable_name) {
+    int32 id = getVariableID(variable_name);
+    if (id != INVALID_FUNCTION_ID) {
+      return &variable_list_[id];
+    }
+    return nullptr;
+  }
+
+  const int32 numVariables() {
+    return variable_list_length_;
+  }
+
+  const int32 originID() {
+    return origin_id_;
+  }
+
+
+}; /* Function */
+
+#pragma endregion
 
 
 

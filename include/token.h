@@ -25,7 +25,7 @@ enum TokenType {
 };
 
 
-/// Class used to manage the different values used in the variables and the stack
+/// Class used to manage the different tokens or keys of the scripts.
 class Token {
 
  public: 
