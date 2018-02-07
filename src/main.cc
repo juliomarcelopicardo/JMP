@@ -7,7 +7,7 @@
 *                                <b7026027@my.shu.ac.uk>
 */
 
-#if 1 // ORIGINAL
+#if 0 // ORIGINAL
 #include "jmp.h"
 #include <Windows.h>
 
@@ -68,6 +68,9 @@ JMP_SINGLE_HEADER::int32 main() {
 
   JMP_SINGLE_HEADER::float32 variable = 3.02f;
   machine.processFile("../scripts/script.jmp");
+  std::string textico = machine.getString("w", "camera");
+  JMP_SINGLE_HEADER::int32 integer = machine.getInteger("x", "camera");
+  JMP_SINGLE_HEADER::float32 floaat = machine.getFloat("z", "camera");
   machine.registerVariable("variable", JMP_SINGLE_HEADER::kValueType_Float, &variable);
   machine.registerFunction("ExternalFunction", &RegFunc);
   //machine.runFunction("PrintExample(40, \"texto\", 40.34)");
@@ -83,6 +86,7 @@ JMP_SINGLE_HEADER::int32 main() {
   machine.unregisterFunction("ExternalFunction");
   machine.unregisterVariable("variable");
   */
+
 
   OutputDebugString("\n Ending application... \n\n");
   system("pause");
