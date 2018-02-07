@@ -1240,7 +1240,10 @@ class TokenManager {
     token_list_.clear();
   }
 
-  void addToken(const char * text, const TokenType type, int32 priority) {
+  void addToken(const char * text, 
+                const TokenType type = kTokenType_None, 
+                int32 priority = DEFAULT_PRIORITY) {
+
     token_list_.push_back({ text, type, priority });
     token_list_length_++;
 
@@ -1296,8 +1299,8 @@ class TokenManager {
   }
 
   void transferContentBetweenIDsInclusive(int32 initial_id,
-    int32 final_id,
-    TokenManager* transfer_output) {
+                                          int32 final_id,
+                                          TokenManager* transfer_output = nullptr) {
     // Copying the content into the output.
     int32 num_tokens_transfered = 0;
     for (int32 i = initial_id; i <= final_id; i++) {
@@ -2072,7 +2075,7 @@ public:
     return kReport_InvalidFileExtension;
   }
 
-  Report Machine::runFunction(std::string function_call_sentence) {
+  Report Machine::runFunction(std::string function_call_sentence = "main()") {
 
     // Create a machine and a parser to compile the code received by parameter.
     Machine other_machine;
@@ -2576,28 +2579,1009 @@ private:
 
 #pragma endregion
 
+/*******************************************************************************
+***                          COMMAND METHODS                                 ***
+*******************************************************************************/
+
+#pragma region COMMAND_CLASS_METHODS 
+
+Report Command::execute(Machine* machine, int32& id) {
+
+  switch (type_) {
+  case kCommandType_PushToTheStack: { return executePushToTheStack(machine, id); }
+  case kCommandType_Addition: { return executeAddition(machine, id); }
+  case kCommandType_Substraction: { return executeSubstraction(machine, id); }
+  case kCommandType_Multiply: { return executeMultiply(machine, id); }
+  case kCommandType_Division: { return executeDivision(machine, id); }
+  case kCommandType_Power: { return executePower(machine, id); }
+  case kCommandType_EqualAssigment: { return executeEqualAssignment(machine, id); }
+  case kCommandType_GreaterThanComparison: { return executeGreaterThanComparison(machine, id); }
+  case kCommandType_LowerThanComparison: { return executeLowerThanComparison(machine, id); }
+  case kCommandType_GreaterOrEqualThanComparison: { return executeGreaterOrEqualThanComparison(machine, id); }
+  case kCommandType_LowerOrEqualThanComparison: { return executeLowerOrEqualThanComparison(machine, id); }
+  case kCommandType_EqualThanComparison: { return executeEqualThanComparison(machine, id); }
+  case kCommandType_NotEqualThanComparison: { return executeNotEqualThanComparison(machine, id); }
+  case kCommandType_FunctionDefinition: { return executeFunctionDefinition(machine, id); }
+  case kCommandType_FunctionCall: { return executeFunctionCall(machine, id); }
+  case kCommandType_FunctionReturn: { return executeFunctionReturn(machine, id); }
+  case kCommandType_FunctionEnd: { return executeFunctionEnd(machine, id); }
+  case kCommandType_FunctionNumParameters: { return executeFunctionNumParams(machine, id); }
+  case kCommandType_FunctionParameter: { return executeFunctionParam(machine, id); }
+  case kCommandType_FinishedConditionalOrLoop: { return executeFinishedConditionalOrLoop(machine, id); }
+  case kCommandType_ConditionToEvaluate: { return executeConditionToEvaluate(machine, id); }
+  case kCommandType_VariableDefinition: { return executeVariableDefinition(machine, id); }
+  case kCommandType_VariablePackDefinition: { return executeVariablePackDefinition(machine, id); }
+  case kCommandType_VariablePackEnd: { return executeVariablePackEnd(machine, id); }
+  case kCommandType_LoopStartPoint: { return executeLoopStartPoint(machine, id); }
+  }
+
+  return kReport_InvalidCommandType;
+}
+
+Report Command::executeAddition(Machine* machine, int32& next_cmd_id) {
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first + second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
+Report Command::executeSubstraction(Machine* machine, int32& next_cmd_id) {
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first - second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
+Report Command::executeMultiply(Machine* machine, int32& next_cmd_id) {
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first * second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
+Report Command::executeDivision(Machine* machine, int32& next_cmd_id) {
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first / second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
+Report Command::executePower(Machine* machine, int32& next_cmd_id) {
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first ^ second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
+Report Command::executeEqualAssignment(Machine* machine, int32& next_cmd_id) {
+  // Check if the variable is being assigned inside a pack definition.
+  std::string pack_name = machine->getCurrentGlobalVariablePackName();
+  std::string var_name = name_;
+  // If its inside a VARPACK, then we will attach the pack name.
+  // Example, name_ = "x". If its inside "cam" varpack, the result will be "cam.x"
+  if (pack_name != "") {
+    var_name = pack_name + "." + name_;
+  }
+  Variable* variable = machine->getVariable(var_name);
+  if (!variable) {
+    ReportError(" Unable to find variable name: " + var_name);
+    return kReport_ExpectingNameOfVariable;
+  }
+  // Assign the last value of the stack to the variable.
+  variable->setValue(machine->getAndRemoveTheLastAddedStackValue());
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
+Report Command::executeGreaterThanComparison(Machine* machine, int32& next_cmd_id) {
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first > second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
+Report Command::executeLowerThanComparison(Machine* machine, int32& next_cmd_id) {
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first < second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
+Report Command::executeGreaterOrEqualThanComparison(Machine* machine, int32& next_cmd_id) {
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first >= second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
+Report Command::executeLowerOrEqualThanComparison(Machine* machine, int32& next_cmd_id) {
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first <= second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
+Report Command::executeEqualThanComparison(Machine* machine, int32& next_cmd_id) {
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first == second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
+Report Command::executeNotEqualThanComparison(Machine* machine, int32& next_cmd_id) {
+  // Take the last members pushed in the stack
+  Value second = machine->getAndRemoveTheLastAddedStackValue();
+  Value first = machine->getAndRemoveTheLastAddedStackValue();
+  machine->addValueToTheStack(first != second);
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
+Report Command::executePushToTheStack(Machine* machine, int32& next_cmd_id) {
+
+  // We will check if its a quote.
+  switch (getNameDataType()) {
+  case kValueType_None: {
+    // this means that its a name of possible variable, so we will check it.
+    Variable* variable = machine->getVariable(name_);
+    if (!variable) {
+      ReportError(" Expecting name of variable, cannot find variable name: " + name_);
+      return kReport_ExpectingNameOfVariable;
+    }
+    machine->addValueToTheStack(variable->getValue());
+  } break;
+  case kValueType_Float: {
+    machine->addValueToTheStack((float32)atof(name_.c_str()));
+  } break;
+  case kValueType_Integer: {
+    machine->addValueToTheStack((int32)atoi(name_.c_str()));
+  } break;
+  case kValueType_Text: {
+    std::string temp = name_;
+    // remove quotes.
+    temp.erase(0, 1);
+    temp.erase(temp.size() - 1, 1);
+    machine->addValueToTheStack({ temp.c_str() });
+  } break;
+  }
+
+  next_cmd_id++; // Jump to the next step.
+  return kReport_NoErrors;
+}
+
+
+Report Command::executeFunctionDefinition(Machine* machine, int32& next_cmd_id) {
+  next_cmd_id++; // Jump to the next command
+  machine->addFunction(next_cmd_id);
+  return kReport_NoErrors;
+}
+
+Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) {
+
+  // First step will be checking if the function is called PRINT.
+  if (name_ == "PRINT") {
+    machine->getAndRemoveTheLastAddedStackValue().print();
+    next_cmd_id++; // Jump to the next command
+    return kReport_NoErrors;
+  }
+
+  RegisteredFunction* function = machine->getRegisteredFunction(name_);
+  if (function) {
+    // Get the num of params. (do this because of the order of them.
+    int32 num_params = 0;
+    for (int32 i = next_cmd_id - 1; machine->getCommand(i).type_ == kCommandType_PushToTheStack; i--) {
+      num_params++;
+    }
+    // Save the values in the registered function params list.
+    function->params_.resize(num_params);
+    for (int32 j = num_params - 1; j >= 0; j--) {
+      function->params_[j] = machine->getAndRemoveTheLastAddedStackValue();
+    }
+    // Then executes the function.
+    function->function_pointer_(function->params_);
+    next_cmd_id++;
+    return kReport_NoErrors;
+  }
+
+  // Look for the function in the defined function list to know where its body starts.
+  int32 function_start_command_id = machine->getDefinedFunctionID(name_.c_str());
+  if (function_start_command_id != INVALID_FUNCTION_ID) {
+    // Then we will push a new function and we will assign the next command to 
+    // be the returning point.
+    machine->addFunction(next_cmd_id + 1); // To continue the execution after finishing it.
+    next_cmd_id = function_start_command_id + 1; // To avoid the step of function definition.
+    return kReport_NoErrors;
+  }
+
+  return kReport_CallingUndefinedFunction;
+}
+
+Report Command::executeFunctionReturn(Machine* machine, int32& next_cmd_id) {
+
+  Report report = kReport_NoErrors;
+  // We will check if theres any fu
+  Function* function = machine->getCurrentFunction();
+  if (function == nullptr) {
+    report = kReport_ReturnCalledWithoutAnyActiveFunction;
+    PrintReport(report);
+    return report;
+  }
+
+  // if theres an active function we will come back to the origin command where it was called.
+  next_cmd_id = function->originID();
+  // if its the last active function, then we finish the execution.
+  if (machine->numActiveFunctions() == 1) {
+    report = kReport_LastActiveFunctionReturnCalled; // This will end the execution without errors.
+  }
+  machine->removeCurrentFunction();
+  return report;
+}
+
+Report Command::executeFunctionEnd(Machine* machine, int32& next_cmd_id) {
+
+  Report report = kReport_NoErrors;
+  // We will check if theres any fu
+  Function* function = machine->getCurrentFunction();
+  if (function == nullptr) {
+    report = kReport_ReturnCalledWithoutAnyActiveFunction;
+    PrintReport(report);
+    return report;
+  }
+
+  // if theres an active function we will come back to the origin command where it was called.
+  next_cmd_id = function->originID();
+  // if its the last active function, then we finish the execution.
+  if (machine->numActiveFunctions() == 1) {
+    report = kReport_LastActiveFunctionReturnCalled; // This will end the execution without errors.
+  }
+  machine->removeCurrentFunction();
+  return report;
+}
+
+Report Command::executeFunctionNumParams(Machine* machine, int32& next_cmd_id) {
+
+  if (machine->numStackValues() < atoi(name_.c_str())) {
+    ReportError("Function couldn't take enough params from the stack");
+    return kReport_NotEnoughFunctionParamsInTheStack;
+  }
+  next_cmd_id++; // Jump to the next command
+  return kReport_NoErrors;
+}
+
+Report Command::executeFunctionParam(Machine* machine, int32& next_cmd_id) {
+
+  Function* function = machine->getCurrentFunction();
+  if (function) {
+    // Adds a variable to the current function scope.
+    function->addVariable(name_.c_str(), machine->getAndRemoveTheLastAddedStackValue());
+    next_cmd_id++; // Jump to the next command
+    return kReport_NoErrors;
+  }
+
+  ReportError(" Params need a function to be executed. Theres no active function");
+  return kReport_ParamsNeedAFunctionToBeExecuted;
+}
 
 
 
+Report Command::executeFinishedConditionalOrLoop(Machine* machine, int32& next_cmd_id) {
+
+  if (name_ == "conditional") {
+    next_cmd_id++; // jump to the next command on the list
+    return kReport_NoErrors;
+  }
+  if (name_ == "loop") {
+    // if its the end of a loop, we will step back again to check the loop condition.
+    for (int32 i = next_cmd_id; i >= 0; i--) {
+      if (machine->getCommand(i).type_ == kCommandType_LoopStartPoint) {
+        next_cmd_id = i; // Next step will be the init of the loop.
+        return kReport_NoErrors;
+      }
+    }
+  }
+
+  // if theres any error, we will jump to the next instruction.
+  next_cmd_id++;
+  ReportWarning("Unable to execute finished conditional or loop command");
+  return kReport_NoErrors;
+}
+
+
+Report Command::executeConditionToEvaluate(Machine* machine, int32& next_cmd_id) {
+
+  if (!machine->getCurrentFunction()) {
+    Report report = kReport_ConditionOutsideOfAFunction;
+    PrintReport(report);
+    return report;
+  }
+
+  // The condition is true, so we will enter in the loop or conditional.
+  if (machine->getAndRemoveTheLastAddedStackValue().integer_ == CONDITION_RESULT_TRUE) {
+    next_cmd_id++;
+    return kReport_NoErrors;
+  }
+
+  // If not we will jump to the end of this conditional or loop.
+  // To avoid the problem with nested loops and conditionals we will do the next:
+  /*
+  <<<< exit counter (EC) starts with value 0 >>>>
+
+  LOOP (condition) { EC++        >>>> 1
+  if (condition2) { EC++       >>>> 2
+  loop(condition3) { EC++    >>>> 3
+  } EC--                     >>>> 2
+  } EC--                       >>>> 1
+  } EC--                         >>>> 0 -> end of LOOP body or condition.
+  NEXT COMMMAND
+  Then we assign the next_cmd id to this next command.
+  */
+
+  int32 exit_counter = 0;
+  Command cmd;
+  for (int32 i = next_cmd_id; i < machine->numCommands(); i++) {
+    cmd = machine->getCommand(i);
+    if (cmd.type_ == kCommandType_ConditionToEvaluate) {
+      exit_counter++;
+    }
+    else if (cmd.type_ == kCommandType_FinishedConditionalOrLoop) {
+      exit_counter--;
+    }
+
+    // Then we check if we are at the end of the main conditionl or loop body.
+    if (exit_counter == 0) {
+      next_cmd_id = i + 1; // Next command after "}"
+      return kReport_NoErrors;
+    }
+  }
+
+
+  ReportError("Cant find the end of the conditional or loop");
+  return kReport_EndOfConditionalOrLoopNotFound;
+}
+
+
+Report Command::executeVariableDefinition(Machine* machine, int32& next_cmd_id) {
+
+  Function* function = machine->getCurrentFunction();
+  // Allocate the variable in the current function scope list.
+  if (function) {
+    function->addVariable({ name_.c_str() });
+    next_cmd_id++; // jump to the next command on the list
+    return kReport_NoErrors;
+  }
+  // TODO: Error checking to avoid repeated names.
+  // Adding a variable to the global variable stack.
+  next_cmd_id++; // jump to the next command on the list
+  return machine->addGlobalVariableToCurrentPack({ name_.c_str() });
+}
+
+Report Command::executeVariablePackDefinition(Machine* machine, int32& next_cmd_id) {
+  if (machine->getCurrentFunction()) {
+    ReportError("Variable packs cannot be defined inside functions. Pack name: " + name_);
+    return kReport_VariablePackCantBeDefinedInsideAFunction;
+  }
+
+  machine->addGlobalVariablePack(name_.c_str());
+  next_cmd_id++; // Just go to the next step that would be the condition check.
+  return kReport_NoErrors;
+}
+
+Report Command::executeVariablePackEnd(Machine* machine, int32& next_cmd_id) {
+  machine->restartCurrentGlobalVariablePackIndex();
+  next_cmd_id++; // Just go to the next step that would be the condition check.
+  return kReport_NoErrors;
+}
+
+Report Command::executeLoopStartPoint(Machine* machine, int32& next_cmd_id) {
+  if (!machine->getCurrentFunction()) {
+    Report report = kReport_LoopOutsideOfAFunction;
+    PrintReport(report);
+    return report;
+  }
+  next_cmd_id++; // Just go to the next step that would be the condition check.
+  return kReport_NoErrors;
+}
+
+#pragma endregion
+
+/*******************************************************************************
+***                          COMPILER METHODS                                ***
+*******************************************************************************/
+
+#pragma region COMPILER_CLASS_METHODS
+
+Report Compiler::compile(Machine* machine,
+  std::string sentence,
+  uint32 line_number) {
+
+  // Error checkings.
+  if (!machine) {
+    ReportError("Machine Null Pointer, can't compile.");
+    return kReport_NullPointer;
+  }
+
+  // Allocates all the tokens in the manager.
+  TokenManager token_manager;
+  generateTokens(sentence, token_manager);
+  token_manager.printTokenList();
+
+  // Compile all these tokens.
+  Report report = compileTokens(machine, token_manager);
+
+  PrintReport(report, line_number);
+  return report;
+}
+
+
+/*******************************************************************************
+***                        TOKEN COMPILER METHODS                            ***
+*******************************************************************************/
+
+Report Compiler::compileTokens(Machine* machine, TokenManager& token_manager) {
+
+  // Error checkings.
+  if (!machine) {
+    ReportError("Machine Null Pointer, can't compile.");
+    return kReport_NullPointer;
+  }
+
+  if (token_manager.numTokens() == 0) { return kReport_EmptyLine; }
+
+  // Once we checked the basic errors, lets start with the highest priority token.
+  int32 id = token_manager.getHighestPriorityTokenIndex();
+  Token token = token_manager.getToken(id);
+
+  if (token.type_ == kTokenType_Keyword) {
+    return compileKeywordToken(machine, token_manager, id);
+  }
+
+  // If theres any } or ( we will compile this separator first.
+  if (token.priority_ == CLOSE_BRACKETS_PRIORITY) { // "}"
+    return compileCloseBracketsSeparatorToken(machine, token_manager, id);
+  }
+  if (token.text_ == "(") { // We dont use priority becasue it changes to solve parenthethical grouping problems. 
+    compileOpenParenthesisSeparatorToken(machine, token_manager, id);
+  }
+
+  // If theres any comma we will compile the content at both sides of it and will
+  // step to the next line of code.
+  if (checkIfAndCompileCommasContent(machine, token_manager)) {
+    return kReport_NoErrors;
+  }
+
+  // Once checked that there arent commas, then we will compile the other separators.
+  if (token.type_ == kTokenType_Separator && token.text_ != "(") {
+    compileSeparatorToken(machine, token_manager, id);
+  }
+
+  if (token.priority_ == DEFAULT_PRIORITY) {
+    // Pushing variables, numbers and other stuff non compilable.
+    machine->addCommand(kCommandType_PushToTheStack, token.text_);
+    token_manager.transferContentBetweenIDsInclusive(id, id);
+  }
+
+  // Compiling recursively what is not compiled yet.
+  if (token_manager.numTokens() > 1) {
+    return compileTokens(machine, token_manager);
+  }
+
+  return kReport_NoErrors;
+}
+
+Report Compiler::compileKeywordToken(Machine* machine,
+  TokenManager& token_manager,
+  int32& token_index) {
+  Token token = token_manager.getToken(token_index);
+
+  if (token.text_ == "IF" || token.text_ == "ELSE") {
+    return compileConditionalKeywordToken(machine, token_manager, token_index);
+  }
+  if (token.text_ == "RETURN") {
+    return compileReturnKeywordToken(machine, token_manager, token_index);
+  }
+  if (token.text_ == "FUNC") {
+    return compileFunctionKeywordToken(machine, token_manager, token_index);
+  }
+  if (token.text_ == "DO" || token.text_ == "WHILE" || token.text_ == "FOR") {
+    return compileLoopKeywordToken(machine, token_manager, token_index);
+  }
+  if (token.text_ == "VAR") {
+    return compileVariableKeywordToken(machine, token_manager, token_index);
+  }
+  if (token.text_ == "VARPACK") {
+    return compileVariablePackKeywordToken(machine, token_manager, token_index);
+  }
+
+  return kReport_UnexpectedKeyword;
+}
 
 
 
+Report Compiler::compileSeparatorToken(Machine* machine,
+  TokenManager& token_manager,
+  int32& token_index) {
+
+  Token token = token_manager.getToken(token_index);
+
+  switch (token.priority_) {
+  case ADDITION_OPERATION_PRIORITY: {
+    return compileAdditionOperationSeparatorToken(machine, token_manager, token_index);
+  } break;
+  case MULTIPLY_OPERATION_PRIORITY: {
+    return compileMultiplyOperationSeparatorToken(machine, token_manager, token_index);
+  } break;
+  case POWER_OPERATION_PRIORITY: {
+    return compilePowerOperationSeparatorToken(machine, token_manager, token_index);
+  } break;
+  case COMPARISON_PRIORITY: {
+    return compileComparisonOperationSeparatorToken(machine, token_manager, token_index);
+  } break;
+  case EQUAL_PRIORITY: {
+    return compileEqualSeparatorToken(machine, token_manager, token_index);
+  } break;
+  }
+
+  return kReport_NoErrors;
+}
+
+const bool Compiler::checkIfAndCompileCommasContent(Machine * machine,
+  TokenManager & token_manager) {
+
+  if (token_manager.areAnyCommaTokenInList()) {
+    int32 num_tokens = token_manager.numTokens();
+    // Compile tokens with comas recursively.
+    for (int32 i = 0; i < num_tokens; i++) {
+      if (token_manager.getToken(i).text_ == ",") {
+        TokenManager temp;
+        // In case that we find any comma, we will take the previous content to compile it.
+        // Example:   a b c d, e f     -> then we will transfer a b c d
+        token_manager.transferContentBetweenIDsInclusive(0, i - 1, &temp);
+        // Then we will delete the , and the RESULT token.
+        token_manager.removeToken(1);
+        token_manager.removeToken(0);
+        // Once compiled, the previous content, we will compile the following one 
+        compileTokens(machine, temp);
+        compileTokens(machine, token_manager);
+        // We will finish then the loop and we will end the compile of this line.
+        return true;
+      }
+    }
+    return true;
+  }
+  return false;
+}
+
+/*******************************************************************************
+***                   SEPARATORS TOKEN COMPILER METHODS                      ***
+*******************************************************************************/
+
+Report Compiler::compileOpenParenthesisSeparatorToken(Machine* machine,
+  TokenManager& token_manager,
+  int32& token_index) {
+
+  Report report = kReport_NoErrors;
+
+  // First step will be to find its correspondant closing parenthesis.
+  int32 close_parenthesis_id = token_manager.getNextCloseParenthesisIndex(token_index);
+  if (close_parenthesis_id == -1) {
+    return kReport_NoMatchingCloseParenthesis;
+  }
+
+  // We will extract the content inside the parenthesis in a new token manager, 
+  // And paste it in a new token manager.
+  TokenManager parenthesis_content;
+  token_manager.transferParenthesisContent(token_index, close_parenthesis_id, &parenthesis_content);
+
+  // Compile the content of the parenthesis.
+  report = compileTokens(machine, parenthesis_content);
+
+  // In case that its a function, then call it.
+  token_index--;
+  if (token_index >= 0) { // means that theres something behind the parenthesis.
+    Token token = token_manager.getToken(token_index);
+    if (token.type_ != kTokenType_Keyword &&
+      token.type_ != kTokenType_Separator &&
+      token.priority_ != 0) {
+      machine->addCommand(kCommandType_FunctionCall, token.text_);
+      token_manager.removeToken(token_index);
+    }
+  }
 
 
+  return report;
+}
+
+Report Compiler::compileCloseBracketsSeparatorToken(Machine* machine,
+  TokenManager& token_manager,
+  int32& token_index) {
+
+  // Will untag the end of a loop, conditional or function.
+  Tag tag = getAndRemoveLastTag();
+  switch (tag) {
+  case kTag_None: { } break;
+  case kTag_Loop: { machine->addCommand(kCommandType_FinishedConditionalOrLoop, "loop"); } break;
+  case kTag_Conditional: { machine->addCommand(kCommandType_FinishedConditionalOrLoop, "conditional"); } break;
+  case kTag_Function: { machine->addCommand(kCommandType_FunctionEnd, "endfunc"); } break;
+  case kTag_VariablePack: { machine->addCommand(kCommandType_VariablePackEnd, "endvarpack"); } break;
+
+  }
+  return kReport_NoErrors;
+}
+
+Report Compiler::compileAdditionOperationSeparatorToken(Machine* machine,
+  TokenManager& token_manager,
+  int32& token_index) {
+  Token operator_token = token_manager.getToken(token_index);
+  Token right_operand = token_manager.getToken(token_index + 1);
+  Token left_operand = token_manager.getToken(token_index - 1);
+
+  // Push the operands to the stack
+  machine->addCommand(kCommandType_PushToTheStack, left_operand.text_);
+  machine->addCommand(kCommandType_PushToTheStack, right_operand.text_);
+
+  // Then the next command will set the action to be applied to the previous operands.
+  if (operator_token.text_ == "-") {
+    machine->addCommand(kCommandType_Substraction);
+  }
+  else {
+    machine->addCommand(kCommandType_Addition);
+  }
+
+  // Deleting the tokens from the list and adding a "RESULT" Temporary one.
+  token_manager.transferContentBetweenIDsInclusive(token_index - 1, token_index + 1);
+  // After deleting from the list the three elements, we step back two positions.
+  token_index -= 2;
+
+  return kReport_NoErrors;
+}
+
+Report Compiler::compileMultiplyOperationSeparatorToken(Machine* machine,
+  TokenManager& token_manager,
+  int32& token_index) {
+
+  Token operator_token = token_manager.getToken(token_index);
+  Token right_operand = token_manager.getToken(token_index + 1);
+  Token left_operand = token_manager.getToken(token_index - 1);
+
+  // Push the operands to the stack
+  machine->addCommand(kCommandType_PushToTheStack, left_operand.text_);
+  machine->addCommand(kCommandType_PushToTheStack, right_operand.text_);
+
+  // Then the next command will set the action to be applied to the previous operands.
+  if (operator_token.text_ == "/") {
+    machine->addCommand(kCommandType_Division);
+  }
+  else {
+    machine->addCommand(kCommandType_Multiply);
+  }
+
+  // Deleting the tokens from the list and adding a "RESULT" Temporary one.
+  token_manager.transferContentBetweenIDsInclusive(token_index - 1, token_index + 1);
+  // After deleting from the list the three elements, we step back two positions.
+  token_index -= 2;
+
+  return kReport_NoErrors;
+}
+
+Report Compiler::compilePowerOperationSeparatorToken(Machine* machine,
+  TokenManager& token_manager,
+  int32& token_index) {
+
+  Token operator_token = token_manager.getToken(token_index);
+  Token right_operand = token_manager.getToken(token_index + 1);
+  Token left_operand = token_manager.getToken(token_index - 1);
+
+  // Push the operands to the stack
+  machine->addCommand(kCommandType_PushToTheStack, left_operand.text_);
+  machine->addCommand(kCommandType_PushToTheStack, right_operand.text_);
+
+  // Then the next command will set the action to be applied to the previous operands
+  machine->addCommand(kCommandType_Power);
+
+  // Deleting the tokens from the list and adding a "RESULT" Temporary one.
+  token_manager.transferContentBetweenIDsInclusive(token_index - 1, token_index + 1);
+  // After deleting from the list the three elements, we step back two positions.
+  token_index -= 2;
+
+  return kReport_NoErrors;
+}
+
+Report Compiler::compileComparisonOperationSeparatorToken(Machine* machine,
+  TokenManager& token_manager,
+  int32& token_index) {
+
+  Token operator_token = token_manager.getToken(token_index);
+  Token right_operand = token_manager.getToken(token_index + 1);
+  Token left_operand = token_manager.getToken(token_index - 1);
+
+  // Push the operands to the stack
+  machine->addCommand(kCommandType_PushToTheStack, left_operand.text_);
+  machine->addCommand(kCommandType_PushToTheStack, right_operand.text_);
+
+  // Then the next command will set the action to be applied to the previous operands.
+  if (operator_token.text_ == "<") {
+    machine->addCommand(kCommandType_LowerThanComparison);
+  }
+  else if (operator_token.text_ == ">") {
+    machine->addCommand(kCommandType_GreaterThanComparison);
+  }
+  else if (operator_token.text_ == "<=") {
+    machine->addCommand(kCommandType_LowerOrEqualThanComparison);
+  }
+  else if (operator_token.text_ == ">=") {
+    machine->addCommand(kCommandType_GreaterOrEqualThanComparison);
+  }
+  else if (operator_token.text_ == "==") {
+    machine->addCommand(kCommandType_EqualThanComparison);
+  }
+  else if (operator_token.text_ == "!=") {
+    machine->addCommand(kCommandType_NotEqualThanComparison);
+  }
+  else {
+    ReportError("Unexpected comparison token: " + operator_token.text_);
+    return kReport_UnexpectedComparisonToken;
+  }
+
+  // Deleting the tokens from the list and adding a "RESULT" Temporary one.
+  token_manager.transferContentBetweenIDsInclusive(token_index - 1, token_index + 1);
+  // After deleting from the list the three elements, we step back two positions.
+  token_index -= 2;
+
+  return kReport_NoErrors;
+}
+
+Report Compiler::compileEqualSeparatorToken(Machine* machine,
+  TokenManager& token_manager,
+  int32& token_index) {
+
+  int32 num_tokens = token_manager.numTokens();
+  if (num_tokens < 3 || token_index <= 0) {
+    return kReport_EqualNeedTokensBeforeAndAfter;
+  }
+  // Transfer the content after the = to a temp token manager.
+  TokenManager temp;
+  token_manager.transferContentBetweenIDsInclusive(token_index + 1, num_tokens - 1, &temp);
+  // Compile the content of this manager recursively.
+  Report report = compileTokens(machine, temp);
+  // Gets the token before the equal symbol.
+  token_index--;
+  Token token = token_manager.getToken(token_index);
+  machine->addCommand(kCommandType_EqualAssigment, token.text_);
+  // Then delete the content of from the one behind the "=", to the end of the sentence.
+  token_manager.transferContentBetweenIDsInclusive(token_index, num_tokens - 1);
+  token_index--;
+
+  return kReport_NoErrors;
+}
+
+/*******************************************************************************
+***                    KEYWORDS TOKEN COMPILER METHODS                       ***
+*******************************************************************************/
+
+Report Compiler::compileConditionalKeywordToken(Machine* machine,
+  TokenManager& token_manager,
+  int32& token_index) {
+
+  if (token_manager.getToken(token_index).text_ == "IF") {
+    // removing the "vayword.
+    token_manager.removeToken(token_index);
+    // Checks if the last token of the line sentence is a "{" to start the body.
+    if (token_manager.getToken(token_manager.numTokens() - 1).text_ != "{") {
+      return kReport_ExpectingOpenBrackets;
+    }
+    // Removing "{"
+    token_manager.removeToken(token_manager.numTokens() - 1);
+    addTag(kTag_Conditional);
+    // Compiling the condition.
+    Report report = compileTokens(machine, token_manager);
+    machine->addCommand(kCommandType_ConditionToEvaluate);
+    return report;
+  }
+
+  ReportError("\"else\" keyword functionality not programmed yet in this version");
+  return kReport_KeywordFunctionalityNotProgrammedYet;
+}
+
+Report Compiler::compileReturnKeywordToken(Machine* machine,
+  TokenManager& token_manager,
+  int32& token_index) {
+
+  Report report = kReport_NoErrors;
+
+  if (token_index != 0) {
+    return kReport_ReturnShouldBeTheFirstToken;
+  }
+
+  if (token_manager.numTokens() > 1) {
+    TokenManager temp; // use to save the content after return.
+    token_manager.transferContentBetweenIDsInclusive(token_index + 1, token_manager.numTokens() - 1, &temp);
+    // Compiling the right of return
+    report = compileTokens(machine, temp);
+    // After it the token_manager should be like: return "RESULT"
+  }
+  machine->addCommand(kCommandType_FunctionReturn);
+  return report;
+}
+
+Report Compiler::compileFunctionKeywordToken(Machine* machine,
+  TokenManager& token_manager,
+  int32& token_index) {
+  // ERROR CHECKINGS
+  // func keyword need to be the first word of the token_manager.
+  if (token_index != 0) {
+    return kReport_FunctionKeywordShouldBeTheFirstToken;
+  }
+
+  // Mininum function code... "FUNC name() {
+  if (token_manager.numTokens() < 5) {
+    return kReport_FunctionDefinitionIncorrect;
+  }
+
+  // Check that the last token is "{"
+  if (token_manager.getToken(token_manager.numTokens() - 1).text_ != "{") {
+    return kReport_ExpectingOpenBrackets;
+  }
+
+  // Check if the name is valid
+  Token token = token_manager.getToken(token_index + 1);
+  if (token.type_ != kTokenType_Variable) {
+    return kReport_InvalidNameOfFunction;
+  }
+
+  // FUNCTION DEFINITION
+  // Command to define the function.
+  machine->addCommand(kCommandType_FunctionDefinition, token.text_);
+  // Deleting "func" and "funtion_name" tokens and the "{" one.
+  token_manager.removeToken(token_index);
+  token_manager.removeToken(token_index);
+  token_manager.removeToken(token_manager.numTokens() - 1);
+
+  // PARAMETERS OF THE FUNCTION
+  // Saving the parameters in strings.
+  std::vector<std::string> params;
+  int32 num_tokens = token_manager.numTokens();
+  for (int32 i = 1; i < num_tokens - 1; i++) { // Ignoring "(" and ")"
+    token = token_manager.getToken(i);
+    if (token.text_ != ",") {
+      if (token.type_ != kTokenType_Variable) {
+        return kReport_UnexpectedFunctionParameters;
+      }
+      // Save the parameter
+      params.push_back(token.text_);
+    }
+  }
+
+  // Creating the commands -> Number of parameters, param1, param2...
+  int32 num_params = params.size();
+  if (num_params > MAX_PARAMETERS_PER_FUNCTION) {
+    return kReport_ExceededNumParamsAllowedPerFunction;
+  }
+  char num_params_text[3];
+  sprintf_s(num_params_text, 3, "%d", num_params);
+  machine->addCommand(kCommandType_FunctionNumParameters, num_params_text);
+  for (int32 i = 0; i < num_params; i++) {
+    machine->addCommand(kCommandType_FunctionParameter, params[i]);
+  }
+
+  // Tagging the start of the definition of a function
+  addTag(kTag_Function);
+
+  return kReport_NoErrors;
+}
+
+Report Compiler::compileLoopKeywordToken(Machine* machine,
+  TokenManager& token_manager,
+  int32& token_index) {
+
+  if (token_index != 0) {
+    return kReport_LoopKeywordShouldBeTheFirstToken;
+  }
+
+  if (token_manager.getToken(token_index).text_ == "WHILE") {
+    machine->addCommand(kCommandType_LoopStartPoint);
+    // removing the loop ("WHILE") keyword.
+    token_manager.removeToken(token_index);
+
+    // Checks if the last token of the line sentence is a "{" to start the body.
+    if (token_manager.getToken(token_manager.numTokens() - 1).text_ != "{") {
+      return kReport_ExpectingOpenBrackets;
+    }
+    // Removing "{"
+    token_manager.removeToken(token_manager.numTokens() - 1);
+    addTag(kTag_Loop);
+    // Compiling the condition sentence.
+    Report report = compileTokens(machine, token_manager);
+    // Once compiled, we assign a command to evaluate the condition.
+    machine->addCommand(kCommandType_ConditionToEvaluate);
+    return report;
+  }
+
+  ReportError("\"do\" and \"for\" keywords functionality not programmed yet in this version");
+  return kReport_KeywordFunctionalityNotProgrammedYet;
+}
+
+Report Compiler::compileVariableKeywordToken(Machine* machine,
+  TokenManager& token_manager,
+  int32& token_index) {
+
+  // Gets the variable name.
+  Token var_name = token_manager.getToken(token_index + 1);
+  if (var_name.type_ != kTokenType_Variable) {
+    return kReport_ExpectingNameOfVariable;
+  }
+  // Delete de "var" keyword   
+  token_manager.removeToken(token_index);  // "var"
+                                           // Adds a command who defines the variable name.
+  machine->addCommand(kCommandType_VariableDefinition, var_name.text_);
+  // Compile the rest of the line once the variable name is defined.
+  return compileTokens(machine, token_manager);
+}
+
+Report Compiler::compileVariablePackKeywordToken(Machine* machine,
+  TokenManager& token_manager,
+  int32& token_index) {
+
+  // ERROR CHECKINGS
+  // VARPACK keyword need to be the first word of the token_manager.
+  if (token_index != 0) {
+    return kReport_VariablePackKeywordShouldBeTheFirstToken;
+  }
+
+  // Mininum varpack code... "VARPACK name {"
+  if (token_manager.numTokens() < 3) {
+    return kReport_VariablePackDefinitionIncorrect;
+  }
+
+  // Check that the last token is "{"
+  if (token_manager.getToken(token_manager.numTokens() - 1).text_ != "{") {
+    return kReport_ExpectingOpenBrackets;
+  }
+
+  // Check if the name is valid
+  Token token = token_manager.getToken(token_index + 1);
+  if (token.type_ != kTokenType_Variable) {
+    return kReport_InvalidNameOfVariablePack;
+  }
+
+  // VARIABLE PACK DEFINITION
+  // Command to define the variable pack.
+  machine->addCommand(kCommandType_VariablePackDefinition, token.text_);
+  // Deleting "VARPACK" and "variable pack name" tokens and the "{" one.
+  token_manager.removeToken(token_index);
+  token_manager.removeToken(token_index);
+  token_manager.removeToken(token_manager.numTokens() - 1);
+
+  // Tagging the start of the definition of a variable pack
+  addTag(kTag_VariablePack);
+
+  return kReport_NoErrors;
+}
 
 
-
+#pragma endregion
 
 // Declaration of the static stack
 Machine::Stack Machine::stack_;
-
-
-
-
-
-
-
-
 
 
 
