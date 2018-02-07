@@ -21,6 +21,8 @@
 
 namespace JMP_SINGLE_HEADER {
 
+// Forward declaration
+class Machine;
 
 /*******************************************************************************
 /*******************************************************************************
@@ -232,7 +234,7 @@ void ReportWarning(std::string warning) {
   ReportMsg(" WARNING: " + warning + ".\n");
 }
 
-void PrintReport(Report& report, uint32 line_number) {
+void PrintReport(Report& report, uint32 line_number = 0) {
   switch (report) {
     case kReport_EmptyLine: {
       ReportWarning("Line " + std::to_string(line_number) + ": Nothing to compile..");
@@ -1496,7 +1498,7 @@ class Function {
 #pragma endregion
 
 /*******************************************************************************
-***                               COMMAND                                    ***
+***                              COMMAND                                     ***
 *******************************************************************************/
 
 #pragma region COMMAND_CLASS 
@@ -1515,30 +1517,30 @@ class Command {
 
 /*******************************   METHODS   **********************************/
 
-  Command::Command() {
+  Command() {
     type_ = kCommandType_None;
     name_ = "";
   }
 
-  Command::Command(const CommandType type, const char* name) {
+  Command(const CommandType type, const char* name) {
     type_ = type;
     name_ = name;
   }
 
-  Command::~Command() {}
+  ~Command() {}
 
-  Command::Command(const Command& copy) {
+  Command(const Command& copy) {
     type_ = copy.type_;
     name_ = copy.name_;
   }
 
-  Command & Command::operator=(const Command& copy) {
+  Command & operator=(const Command& copy) {
     type_ = copy.type_;
     name_ = copy.name_;
     return *this;
   }
 
-  ValueType Command::getNameDataType() {
+  ValueType getNameDataType() {
     int32 name_length = name_.size();
     if (name_length == 0) { return kValueType_None; }
     if (name_[0] == '"' && name_[name_length - 1] == '"') { return kValueType_Text; }
@@ -1561,7 +1563,7 @@ class Command {
     return kValueType_None;
   }
 
-  const bool Command::isDigit(const char8& character) {
+  const bool isDigit(const char8& character) {
     switch (character) {
     case '0': case '1': case '2': case '3': case '4':
     case '5': case '6': case '7': case '8': case '9':
@@ -1572,36 +1574,322 @@ class Command {
 
 /****************************  METHODS PROTOTYPES  ****************************/
 
-  Report execute(class Machine* machine, int32& next_command_to_execute);
-  Report executeAddition(class Machine* machine, int32& next_command_to_execute);
-  Report executeSubstraction(class Machine* machine, int32& next_command_to_execute);
-  Report executeMultiply(class Machine* machine, int32& next_command_to_execute);
-  Report executeDivision(class Machine* machine, int32& next_command_to_execute);
-  Report executePower(class Machine* machine, int32& next_command_to_execute);
-  Report executeEqualAssignment(class Machine* machine, int32& next_command_to_execute);
-  Report executeGreaterThanComparison(class Machine* machine, int32& next_command_to_execute);
-  Report executeLowerThanComparison(class Machine* machine, int32& next_command_to_execute);
-  Report executeGreaterOrEqualThanComparison(class Machine* machine, int32& next_command_to_execute);
-  Report executeLowerOrEqualThanComparison(class Machine* machine, int32& next_command_to_execute);
-  Report executeEqualThanComparison(class Machine* machine, int32& next_command_to_execute);
-  Report executeNotEqualThanComparison(class Machine* machine, int32& next_command_to_execute);
-  Report executePushToTheStack(class Machine* machine, int32& next_command_to_execute);
-  Report executeFunctionDefinition(class Machine* machine, int32& next_command_to_execute);
-  Report executeFunctionCall(class Machine* machine, int32& next_command_to_execute);
-  Report executeFunctionReturn(class Machine* machine, int32& next_command_to_execute);
-  Report executeFunctionEnd(class Machine* machine, int32& next_command_to_execute);
-  Report executeFunctionNumParams(class Machine* machine, int32& next_command_to_execute);
-  Report executeFunctionParam(class Machine* machine, int32& next_command_to_execute);
-  Report executeFinishedConditionalOrLoop(class Machine* machine, int32& next_command_to_execute);
-  Report executeConditionToEvaluate(class Machine* machine, int32& next_command_to_execute);
-  Report executeVariableDefinition(class Machine* machine, int32& next_command_to_execute);
-  Report executeVariablePackDefinition(class Machine* machine, int32& next_command_to_execute);
-  Report executeVariablePackEnd(class Machine* machine, int32& next_command_to_execute);
-  Report executeLoopStartPoint(class Machine* machine, int32& next_command_to_execute);
+  Report execute(Machine* machine, int32& next_command_to_execute);
+  Report executeAddition(Machine* machine, int32& next_command_to_execute);
+  Report executeSubstraction(Machine* machine, int32& next_command_to_execute);
+  Report executeMultiply(Machine* machine, int32& next_command_to_execute);
+  Report executeDivision(Machine* machine, int32& next_command_to_execute);
+  Report executePower(Machine* machine, int32& next_command_to_execute);
+  Report executeEqualAssignment(Machine* machine, int32& next_command_to_execute);
+  Report executeGreaterThanComparison(Machine* machine, int32& next_command_to_execute);
+  Report executeLowerThanComparison(Machine* machine, int32& next_command_to_execute);
+  Report executeGreaterOrEqualThanComparison(Machine* machine, int32& next_command_to_execute);
+  Report executeLowerOrEqualThanComparison(Machine* machine, int32& next_command_to_execute);
+  Report executeEqualThanComparison(Machine* machine, int32& next_command_to_execute);
+  Report executeNotEqualThanComparison(Machine* machine, int32& next_command_to_execute);
+  Report executePushToTheStack(Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionDefinition(Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionCall(Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionReturn(Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionEnd(Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionNumParams(Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionParam(Machine* machine, int32& next_command_to_execute);
+  Report executeFinishedConditionalOrLoop(Machine* machine, int32& next_command_to_execute);
+  Report executeConditionToEvaluate(Machine* machine, int32& next_command_to_execute);
+  Report executeVariableDefinition(Machine* machine, int32& next_command_to_execute);
+  Report executeVariablePackDefinition(Machine* machine, int32& next_command_to_execute);
+  Report executeVariablePackEnd(Machine* machine, int32& next_command_to_execute);
+  Report executeLoopStartPoint(Machine* machine, int32& next_command_to_execute);
 
 }; /* Command */
 
 #pragma endregion
+
+/*******************************************************************************
+***                              COMPILER                                    ***
+*******************************************************************************/
+
+#pragma region COMPILER_CLASS 
+
+/// Text parser and compiler used to save and manage all the tokens from .jmp files.
+class Compiler {
+
+private:
+
+  /******************************   ATTRIBUTES   ********************************/
+
+    /// List of tags used to group different bodys of conditionals, loops or functions.
+  std::vector<Tag> tag_list_;
+
+  /*******************************   METHODS   **********************************/
+
+    /// Default copy constructor.
+  Compiler(const Compiler& copy);
+  /// Assignment operator.
+  Compiler& operator=(const Compiler& copy);
+
+public:
+
+  /******************************   ATTRIBUTES   ********************************/
+
+    /// Current sentence that we will try to compile.
+  std::string sentence_;
+  /// Current sentence index, to know which character are we compiling.
+  uint32 sentence_index_;
+  /// Current token that we are analyzing.
+  Token current_token_;
+
+  /*******************************   METHODS   **********************************/
+
+  Compiler() {
+    current_token_.text_.clear();
+    current_token_.type_ = kTokenType_None;
+    sentence_.clear();
+    sentence_index_ = 0;
+    tag_list_.reserve(10);
+  }
+
+  ~Compiler() {
+    current_token_.text_.clear();
+    sentence_.clear();
+    tag_list_.clear();
+  }
+
+  void replaceSpacesFromQuotes(std::string& sentence, char8 replacement = '_') {
+
+    uint32 length = sentence.length();
+
+    for (uint32 i = 0; i < length; ++i) {
+      if (sentence[i] == '"') { // Begin of the quote.
+        ++i;
+        for (uint32 j = i; j < length; ++j) {
+          ++i;
+          if (sentence[j] == '"') { break; } // End of the quote.
+          if (sentence[j] == ' ') { sentence[j] = replacement; }
+        }
+      }
+    }
+
+  }
+
+  void recoverSpacesFromQuotes(std::string & sentence, char8 replacement = '_') {
+    uint32 length = sentence.length();
+
+    if (sentence[0] == '"') {
+      for (uint32 i = 0; i < length; ++i) {
+        if (sentence[i] == replacement) { sentence[i] = ' '; }
+      }
+    }
+
+  }
+
+
+  const bool isSeparator(const char8& character) {
+    switch (character) {
+    case ' ': case ',': case ';': case '?': case '!': case '^':
+    case '+': case '-': case '*': case '/': case '=': case '%':
+    case '(': case ')': case '{': case '}': case '<': case '>':
+      return true;
+    }
+    return false;
+  }
+
+  const bool isBlankSpace(const char8& character) {
+    if (character == ' ') {
+      return true;
+    }
+    return false;
+  }
+
+  const bool isLetter(const char8& character) {
+    if ((character >= 'a' && character <= 'z') ||
+      (character >= 'A' && character <= 'Z') ||
+      (character == '"') || (character == '_')) { // needed for quotes.
+      return true;
+    }
+    return false;
+  }
+
+  const bool isDigit(const char8& character) {
+    switch (character) {
+    case '0': case '1': case '2': case '3': case '4':
+    case '5': case '6': case '7': case '8': case '9':
+      return true;
+    }
+    return false;
+  }
+
+  const bool isKeyword(const std::string& word) {
+
+    if (word == "IF" || word == "ELSE" ||                   // Conditionals
+      word == "FUNC" || word == "RETURN" ||               // Functions
+      word == "DO" || word == "WHILE" || word == "FOR" || // Loops
+      word == "VAR" || word == "VARPACK") {               // Variables and packs
+      return true;
+    }
+    return false;
+  }
+
+  void addTag(const Tag tag) {
+    tag_list_.push_back(tag);
+  }
+
+  const Tag getAndRemoveLastTag() {
+    int32 num_tags = tag_list_.size();
+    if (num_tags <= 0) {
+      Report report = kReport_NoTagsToDelete;
+      PrintReport(report);
+      return kTag_None;
+    }
+    Tag tag = tag_list_[num_tags - 1];
+    tag_list_.pop_back();
+    return tag;
+  }
+
+  void generateTokens(std::string& sentence, TokenManager& token_manager) {
+
+    int32 num_parenthesis_opened = 0;
+
+    replaceSpacesFromQuotes(sentence, '_'); // Replace ' ' ==> '_'
+
+    sentence_index_ = 0;
+    sentence_ = sentence;
+
+    generateNextToken(); // Setting the first token as current.
+
+    while (current_token_.text_ != "") {
+
+      // Everytime a parenthesis is opened, we increase the priority.
+      // This way we will avoid the problem with multiple parenthetical groups.
+      if (current_token_.text_ == "(") {
+        current_token_.priority_ += num_parenthesis_opened;
+        num_parenthesis_opened++;
+      }
+
+      recoverSpacesFromQuotes(current_token_.text_); // Replace '_' ==> ' ' in quotes
+      token_manager.addToken(current_token_);
+      generateNextToken();
+    }
+
+  }
+
+  void generateNextToken() {
+
+    uint32 sentence_length = sentence_.length();
+
+    // Restarts the current token.
+    current_token_.text_ = "";
+    current_token_.type_ = kTokenType_None;
+
+    // To analyze sentences, spaces will be ignored.
+    while (sentence_index_ < sentence_length &&
+      isBlankSpace(sentence_[sentence_index_])) {
+      sentence_index_++;
+    }
+
+    // Checking end of line.
+    if (sentence_index_ >= sentence_length) {
+      current_token_.text_ = "\0";
+    }
+
+    // TOKEN ANALYZE: We will get the token type and the token text.
+
+    // Separators
+    if (isSeparator(sentence_[sentence_index_])) {
+      // Operators "==", "!=", "<=", ">=" checking
+      if (sentence_[sentence_index_] == '=' ||
+        sentence_[sentence_index_] == '!' ||
+        sentence_[sentence_index_] == '<' ||
+        sentence_[sentence_index_] == '>') {
+
+        if (sentence_index_ + 1 < sentence_length && sentence_[sentence_index_ + 1] == '=') {
+          current_token_.text_.push_back(sentence_[sentence_index_]);
+          sentence_index_++;
+        }
+      }
+      current_token_.text_.push_back(sentence_[sentence_index_]);
+      current_token_.type_ = kTokenType_Separator;
+      sentence_index_++;
+    }
+
+    // Numbers
+    else if (isDigit(sentence_[sentence_index_])) {
+      while (!isSeparator(sentence_[sentence_index_]) && sentence_index_ < sentence_length) {
+        current_token_.text_.push_back(sentence_[sentence_index_]);
+        sentence_index_++;
+      }
+      current_token_.type_ = kTokenType_Number;
+    }
+
+    // Vars and Keywords
+    else if (isLetter(sentence_[sentence_index_])) {
+      while (!isSeparator(sentence_[sentence_index_]) && sentence_index_ < sentence_length) {
+        current_token_.text_.push_back(sentence_[sentence_index_]);
+        sentence_index_++;
+      }
+
+      current_token_.type_ = kTokenType_Variable;
+      if (isKeyword(current_token_.text_)) { current_token_.type_ = kTokenType_Keyword; }
+    }
+
+    // Once the type is set, we will assign an initial priority depending on the type.
+    generateCurrentTokenInitialPriority();
+  }
+
+  void generateCurrentTokenInitialPriority() {
+    switch (current_token_.type_) {
+    case kTokenType_Keyword: { current_token_.priority_ = KEYWORD_PRIORITY; } break;
+    case kTokenType_Separator: {
+      std::string separator = current_token_.text_;
+      if (separator == "}") { current_token_.priority_ = CLOSE_BRACKETS_PRIORITY; }
+      else if (separator == "(") { current_token_.priority_ = OPEN_PARENTHESIS_PRIORITY; }
+      else if (separator == "^") { current_token_.priority_ = POWER_OPERATION_PRIORITY; }
+      else if (separator == "*" || separator == "/") { current_token_.priority_ = MULTIPLY_OPERATION_PRIORITY; }
+      else if (separator == "+" || separator == "-") { current_token_.priority_ = ADDITION_OPERATION_PRIORITY; }
+      else if (separator == ">" || separator == "<") { current_token_.priority_ = COMPARISON_PRIORITY; }
+      else if (separator == ">=" || separator == "<=") { current_token_.priority_ = COMPARISON_PRIORITY; }
+      else if (separator == "==" || separator == "!=") { current_token_.priority_ = COMPARISON_PRIORITY; }
+      else if (separator == "=") { current_token_.priority_ = EQUAL_PRIORITY; }
+      else if (separator == ",") { current_token_.priority_ = COMMA_PRIORITY; }
+    }break;
+    default: { current_token_.priority_ = DEFAULT_PRIORITY; } break;
+    }
+  }
+
+  /****************************  METHODS PROTOTYPES  ****************************/
+
+  Report compile(Machine* machine, std::string sentence, uint32 line_number);
+  Report compileTokens(Machine* machine, TokenManager& token_manager);
+  Report compileKeywordToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+  Report compileSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+  const bool checkIfAndCompileCommasContent(Machine* machine, TokenManager& token_manager);
+  Report compileOpenParenthesisSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+  Report compileCloseBracketsSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+  Report compileAdditionOperationSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+  Report compileMultiplyOperationSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+  Report compilePowerOperationSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+  Report compileComparisonOperationSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+  Report compileEqualSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+  Report compileConditionalKeywordToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+  Report compileReturnKeywordToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+  Report compileFunctionKeywordToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+  Report compileLoopKeywordToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+  Report compileVariableKeywordToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+  Report compileVariablePackKeywordToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+
+
+}; /* Compiler */
+
+#pragma endregion
+
+
+
+
+
+
+
+
+
 
 
 
