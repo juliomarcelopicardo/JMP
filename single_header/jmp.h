@@ -1798,8 +1798,24 @@ public:
 
     // TOKEN ANALYZE: We will get the token type and the token text.
 
-    // Separators
-    if (isSeparator(sentence_[sentence_index_])) {
+    // Text between quotes, then we will ignore separators, etc. 
+    if (sentence_[sentence_index_] == '\"') {
+      current_token_.text_.push_back(sentence_[sentence_index_]);
+      sentence_index_++;
+      while (sentence_index_ < sentence_length) {
+        current_token_.text_.push_back(sentence_[sentence_index_]);
+        if (sentence_[sentence_index_] == '\"') {
+          sentence_index_++;
+          break;
+        }
+        sentence_index_++;
+      }
+
+      current_token_.type_ = kTokenType_Variable;
+    }
+
+    // Separators 
+    else if (isSeparator(sentence_[sentence_index_])) {
       // Operators "==", "!=", "<=", ">=" checking
       if (sentence_[sentence_index_] == '=' ||
         sentence_[sentence_index_] == '!' ||
