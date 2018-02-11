@@ -57,6 +57,54 @@ class Value {
 
   /// @brief Prints the value.
   void print();
+
+/*****************************  MATH METHODS  *********************************/
+
+  /**
+  * @brief Calculates the Sin if the value is a number.
+  *
+  * @return Sin of the number or INITIALIZATION_VALUE if its not a number.
+  */
+  float32 Sin();
+
+  /**
+  * @brief Calculates the Cos if the value is a number.
+  *
+  * @return Cos of the number or INITIALIZATION_VALUE if its not a number.
+  */
+  float32 Cos();
+
+  /**
+  * @brief Calculates the Tan if the value is a number.
+  *
+  * @return Tan of the number or INITIALIZATION_VALUE if its not a number.
+  */
+  float32 Tan();
+
+  /**
+  * @brief Calculates the ASin if the value is a number.
+  *
+  * @return ASin of the number or INITIALIZATION_VALUE if its not a number.
+  */
+  float32 ASin();
+
+  /**
+  * @brief Calculates the ACos if the value is a number.
+  *
+  * @return ACos of the number or INITIALIZATION_VALUE if its not a number.
+  */
+  float32 ACos();
+
+  /**
+  * @brief Calculates the ATan if the value is a number.
+  *
+  * @return ATan of the number or INITIALIZATION_VALUE if its not a number.
+  */
+  float32 ATan();
+
+
+
+
  
 
 /*******************************************************************************

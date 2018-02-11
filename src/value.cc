@@ -84,6 +84,51 @@ void Value::print() {
   }
 }
 
+/*******************************************************************************
+***                              MATH METHODS                                ***
+*******************************************************************************/
+
+float32 Value::Sin() {
+  if (type_ == kValueType_Float) { return sinf(float_); }
+  if (type_ == kValueType_Integer) { return sinf((float32)integer_); }
+  ReportWarning(" Trying to calculate a SIN of a non number value");
+  return INITIALIZATION_VALUE;
+}
+
+float32 Value::Cos() {
+  if (type_ == kValueType_Float) { return cosf(float_); }
+  if (type_ == kValueType_Integer) { return cosf((float32)integer_); }
+  ReportWarning(" Trying to calculate a COS of a non number value");
+  return INITIALIZATION_VALUE;
+}
+
+float32 Value::Tan() {
+  if (type_ == kValueType_Float) { return tanf(float_); }
+  if (type_ == kValueType_Integer) { return tanf((float32)integer_); }
+  ReportWarning(" Trying to calculate a TAN of a non number value");
+  return INITIALIZATION_VALUE;
+}
+
+float32 Value::ASin() {
+  if (type_ == kValueType_Float) { return asinf(float_); }
+  if (type_ == kValueType_Integer) { return asinf((float32)integer_); }
+  ReportWarning(" Trying to calculate a ASIN of a non number value");
+  return INITIALIZATION_VALUE;
+}
+
+float32 Value::ACos() {
+  if (type_ == kValueType_Float) { return acosf(float_); }
+  if (type_ == kValueType_Integer) { return acosf((float32)integer_); }
+  ReportWarning(" Trying to calculate a ACOS of a non number value");
+  return INITIALIZATION_VALUE;
+}
+
+float32 Value::ATan() {
+  if (type_ == kValueType_Float) { return atanf(float_); }
+  if (type_ == kValueType_Integer) { return atanf((float32)integer_); }
+  ReportWarning(" Trying to calculate a ATAN of a non number value");
+  return INITIALIZATION_VALUE;
+}
 
 
 
