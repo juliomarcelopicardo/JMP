@@ -238,7 +238,7 @@ void ReportWarning(std::string warning) {
 void PrintReport(Report& report, uint32 line_number = 0) {
   switch (report) {
     case kReport_EmptyLine: {
-      ReportWarning("Line " + std::to_string(line_number) + ": Nothing to compile..");
+      //ReportWarning("Line " + std::to_string(line_number) + ": Nothing to compile..");
       report = kReport_NoErrors;
     } break;
     case kReport_NoTokensToCompile: {
@@ -3230,7 +3230,7 @@ Report Compiler::compile(Machine* machine,
   // Allocates all the tokens in the manager.
   TokenManager token_manager;
   generateTokens(sentence, token_manager);
-  token_manager.printTokenList();
+  //token_manager.printTokenList();
 
   // Compile all these tokens.
   Report report = compileTokens(machine, token_manager);
