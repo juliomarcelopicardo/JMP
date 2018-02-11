@@ -394,6 +394,48 @@ class Value {
     }
   }
 
+  float32 Sin() {
+    if (type_ == kValueType_Float) { return sinf(float_); }
+    if (type_ == kValueType_Integer) { return sinf((float32)integer_); }
+    ReportWarning(" Trying to calculate a SIN of a non number value");
+    return INITIALIZATION_VALUE;
+  }
+
+  float32 Cos() {
+    if (type_ == kValueType_Float) { return cosf(float_); }
+    if (type_ == kValueType_Integer) { return cosf((float32)integer_); }
+    ReportWarning(" Trying to calculate a COS of a non number value");
+    return INITIALIZATION_VALUE;
+  }
+
+  float32 Tan() {
+    if (type_ == kValueType_Float) { return tanf(float_); }
+    if (type_ == kValueType_Integer) { return tanf((float32)integer_); }
+    ReportWarning(" Trying to calculate a TAN of a non number value");
+    return INITIALIZATION_VALUE;
+  }
+
+  float32 ASin() {
+    if (type_ == kValueType_Float) { return asinf(float_); }
+    if (type_ == kValueType_Integer) { return asinf((float32)integer_); }
+    ReportWarning(" Trying to calculate a ASIN of a non number value");
+    return INITIALIZATION_VALUE;
+  }
+
+  float32 ACos() {
+    if (type_ == kValueType_Float) { return acosf(float_); }
+    if (type_ == kValueType_Integer) { return acosf((float32)integer_); }
+    ReportWarning(" Trying to calculate a ACOS of a non number value");
+    return INITIALIZATION_VALUE;
+  }
+
+  float32 ATan() {
+    if (type_ == kValueType_Float) { return atanf(float_); }
+    if (type_ == kValueType_Integer) { return atanf((float32)integer_); }
+    ReportWarning(" Trying to calculate a ATAN of a non number value");
+    return INITIALIZATION_VALUE;
+  }
+
 }; /* Value */
 
 
@@ -2904,6 +2946,48 @@ Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) {
   // First step will be checking if the function is called PRINT.
   if (name_ == "PRINT") {
     machine->getAndRemoveTheLastAddedStackValue().print();
+    next_cmd_id++; // Jump to the next command
+    return kReport_NoErrors;
+  }
+
+  // First step will be checking if the function is called SIN.
+  if (name_ == "SIN") {
+    machine->addValueToTheStack(machine->getAndRemoveTheLastAddedStackValue().Sin());
+    next_cmd_id++; // Jump to the next command
+    return kReport_NoErrors;
+  }
+
+  // First step will be checking if the function is called COS.
+  if (name_ == "COS") {
+    machine->addValueToTheStack(machine->getAndRemoveTheLastAddedStackValue().Cos());
+    next_cmd_id++; // Jump to the next command
+    return kReport_NoErrors;
+  }
+
+  // First step will be checking if the function is called TAN.
+  if (name_ == "TAN") {
+    machine->addValueToTheStack(machine->getAndRemoveTheLastAddedStackValue().Tan());
+    next_cmd_id++; // Jump to the next command
+    return kReport_NoErrors;
+  }
+
+  // First step will be checking if the function is called ASIN.
+  if (name_ == "ASIN") {
+    machine->addValueToTheStack(machine->getAndRemoveTheLastAddedStackValue().ASin());
+    next_cmd_id++; // Jump to the next command
+    return kReport_NoErrors;
+  }
+
+  // First step will be checking if the function is called ACOS.
+  if (name_ == "ACOS") {
+    machine->addValueToTheStack(machine->getAndRemoveTheLastAddedStackValue().ACos());
+    next_cmd_id++; // Jump to the next command
+    return kReport_NoErrors;
+  }
+
+  // First step will be checking if the function is called ATAN.
+  if (name_ == "ATAN") {
+    machine->addValueToTheStack(machine->getAndRemoveTheLastAddedStackValue().ATan());
     next_cmd_id++; // Jump to the next command
     return kReport_NoErrors;
   }

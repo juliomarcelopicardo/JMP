@@ -26,7 +26,7 @@ JMP_PROJECT::int32 main() {
 
   JMP_PROJECT::float32 variable = 3.02f;
   machine.processFile("../scripts/script.jmp");
-  std::string pedro = machine.getString("w", "camera");
+  float pedro = machine.getFloat("paco");
   machine.registerVariable("variable", JMP_PROJECT::kValueType_Float, &variable);
   machine.registerFunction("ExternalFunction", &RegFunc);
   //machine.runFunction("PrintExample(40, \"texto\", 40.34)");

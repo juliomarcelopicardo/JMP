@@ -247,6 +247,48 @@ Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) {
     return kReport_NoErrors;
   }
 
+  // First step will be checking if the function is called SIN.
+  if (name_ == "SIN") {
+    machine->addValueToTheStack(machine->getAndRemoveTheLastAddedStackValue().Sin());
+    next_cmd_id++; // Jump to the next command
+    return kReport_NoErrors;
+  }
+
+  // First step will be checking if the function is called COS.
+  if (name_ == "COS") {
+    machine->addValueToTheStack(machine->getAndRemoveTheLastAddedStackValue().Cos());
+    next_cmd_id++; // Jump to the next command
+    return kReport_NoErrors;
+  }
+
+  // First step will be checking if the function is called TAN.
+  if (name_ == "TAN") {
+    machine->addValueToTheStack(machine->getAndRemoveTheLastAddedStackValue().Tan());
+    next_cmd_id++; // Jump to the next command
+    return kReport_NoErrors;
+  }
+
+  // First step will be checking if the function is called ASIN.
+  if (name_ == "ASIN") {
+    machine->addValueToTheStack(machine->getAndRemoveTheLastAddedStackValue().ASin());
+    next_cmd_id++; // Jump to the next command
+    return kReport_NoErrors;
+  }
+
+  // First step will be checking if the function is called ACOS.
+  if (name_ == "ACOS") {
+    machine->addValueToTheStack(machine->getAndRemoveTheLastAddedStackValue().ACos());
+    next_cmd_id++; // Jump to the next command
+    return kReport_NoErrors;
+  }
+
+  // First step will be checking if the function is called ATAN.
+  if (name_ == "ATAN") {
+    machine->addValueToTheStack(machine->getAndRemoveTheLastAddedStackValue().ATan());
+    next_cmd_id++; // Jump to the next command
+    return kReport_NoErrors;
+  }
+
   RegisteredFunction* function = machine->getRegisteredFunction(name_);
   if (function) {
     // Get the num of params. (do this because of the order of them.

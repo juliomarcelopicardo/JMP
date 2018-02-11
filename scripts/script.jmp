@@ -1,4 +1,4 @@
-VAR paco = 1
+VAR paco = ACOS(0.0)
 
 VARPACK camera {
   VAR x = 1
@@ -41,7 +41,6 @@ FUNC Example(first,second){
 
 FUNC Example2() {
   ExternalFunction(camera.x, camera.y, camera.z)
-
 }
 
 VAR pedro = camera.x
