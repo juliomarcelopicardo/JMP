@@ -1803,7 +1803,7 @@ public:
 
     generateNextToken(); // Setting the first token as current.
 
-    while (current_token_.text_ != "") {
+    while (current_token_.text_ != "\0") { // End of line or empty text ""
 
       // Everytime a parenthesis is opened, we increase the priority.
       // This way we will avoid the problem with multiple parenthetical groups.
@@ -1824,7 +1824,7 @@ public:
     uint32 sentence_length = sentence_.length();
 
     // Restarts the current token.
-    current_token_.text_ = "";
+    current_token_.text_ = "\0";
     current_token_.type_ = kTokenType_None;
 
     // To analyze sentences, spaces will be ignored.
@@ -1836,6 +1836,13 @@ public:
     // Checking end of line.
     if (sentence_index_ >= sentence_length) {
       current_token_.text_ = "\0";
+      return;
+    }
+
+    // Checking comments.
+    if (sentence_[sentence_index_] == '#') {
+      current_token_.text_ = "\0";
+      return;
     }
 
     // TOKEN ANALYZE: We will get the token type and the token text.
