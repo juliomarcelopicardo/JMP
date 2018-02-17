@@ -1,6 +1,10 @@
-VAR paco = ACOS(0.0)
+# JMP Scripting Language.
+# Author: Julio Marcelo Picardo
+# Contact: juliomarcelopicardo@gmail.com
 
-VARPACK camera {
+VAR paco = ACOS(0.0)  
+
+VARPACK camera { 
   VAR x = 1
   VAR y = camera.x
   VAR z = 3.00
