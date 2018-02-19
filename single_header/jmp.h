@@ -436,6 +436,20 @@ class Value {
     return INITIALIZATION_VALUE;
   }
 
+  float32 getAsFloat() {
+    if (type_ == kValueType_Float) { return float_; }
+    if (type_ == kValueType_Integer) { return (float32)integer_; }
+    ReportWarning(" Trying to get a float from a non-number value");
+    return INITIALIZATION_VALUE;
+  }
+
+  int32 getAsInteger() {
+    if (type_ == kValueType_Integer) { return integer_; }
+    if (type_ == kValueType_Float) { return (int32)float_; }
+    ReportWarning(" Trying to get an integer from a non-number value");
+    return INITIALIZATION_VALUE;
+  }
+
 }; /* Value */
 
 
@@ -1326,7 +1340,7 @@ class TokenManager {
     TokenManager* transfer_output) {
     // Copying the content into the output.
     int32 num_tokens_transfered = 0;
-    for (int32 i = open_parenthesis_id + 1; i < close_parenthesis_id; i++) {
+    for (int32 i = open_parenthesis_id + 1; i < close_parenthesis_id; ++i) {
       transfer_output->addToken(token_list_[i]);
       num_tokens_transfered++;
     }
@@ -1335,7 +1349,7 @@ class TokenManager {
     token_list_[open_parenthesis_id] = { "RESULT", kTokenType_None, 0 };
 
     // Deleting the rest of the tokens. including the ")" one.
-    for (int32 i = 0; i < num_tokens_transfered + 1; i++) {
+    for (int32 i = 0; i < num_tokens_transfered + 1; ++i) {
       removeToken(open_parenthesis_id + 1);
     }
   }
@@ -1345,7 +1359,7 @@ class TokenManager {
                                           TokenManager* transfer_output = nullptr) {
     // Copying the content into the output.
     int32 num_tokens_transfered = 0;
-    for (int32 i = initial_id; i <= final_id; i++) {
+    for (int32 i = initial_id; i <= final_id; ++i) {
       if (transfer_output) { transfer_output->addToken(token_list_[i]); }
       num_tokens_transfered++;
     }
@@ -1354,7 +1368,7 @@ class TokenManager {
     token_list_[initial_id] = { "RESULT", kTokenType_None, 0 };
 
     // Deleting the rest of the tokens. including the ")" one.
-    for (int32 i = 0; i < num_tokens_transfered - 1; i++) {
+    for (int32 i = 0; i < num_tokens_transfered - 1; ++i) {
       removeToken(initial_id + 1);
     }
   }
@@ -1372,7 +1386,7 @@ class TokenManager {
     int32 maximum_priority = -1;
     int32 index = -1;
 
-    for (int32 i = 0; i < token_list_length_; i++) {
+    for (int32 i = 0; i < token_list_length_; ++i) {
       if (token_list_[i].priority_ > maximum_priority) {
         maximum_priority = token_list_[i].priority_;
         index = i;
@@ -1400,7 +1414,7 @@ class TokenManager {
   }
 
   const bool areAnyCommaTokenInList() {
-    for (int32 i = 0; i < token_list_length_; i++) {
+    for (int32 i = 0; i < token_list_length_; ++i) {
       if (token_list_[i].text_ == ",") {
         return true;
       }
@@ -1436,7 +1450,7 @@ class TokenManager {
   }
 
   void printTokenList() {
-    for (int32 i = 0; i < token_list_length_; i++) {
+    for (int32 i = 0; i < token_list_length_; ++i) {
       printToken(i);
     }
   }
@@ -1513,7 +1527,7 @@ class Function {
   }
 
   const int32 getVariableID(const std::string& variable_name) {
-    for (int32 i = 0; i < variable_list_length_; i++) {
+    for (int32 i = 0; i < variable_list_length_; ++i) {
       if (variable_list_[i].name_ == variable_name) {
         return i;
       }
@@ -1592,7 +1606,7 @@ class Command {
     if (name_[0] == '"' && name_[name_length - 1] == '"') { return kValueType_Text; }
     if (name_[0] == '-' || isDigit(name_[0])) { // Check type of number
       int32 num_dots = 0;
-      for (int32 i = 1; i < name_length; i++) {
+      for (int32 i = 1; i < name_length; ++i) {
         if (!isDigit(name_[i])) {
           if (name_[i] == '.' && num_dots == 0) {
             num_dots++;
@@ -2093,7 +2107,7 @@ public:
 
       // To prevent errors I will remove all the tabs. Changing them to blank spaces
       uint32 string_length = code_line.length();
-      for (uint32 i = 0; i < string_length; i++) {
+      for (uint32 i = 0; i < string_length; ++i) {
         if (code_line[i] == '\t') { code_line[i] = ' '; }
       }
 
@@ -2166,7 +2180,7 @@ public:
     if (report == kReport_LastActiveFunctionReturnCalled) { report = kReport_NoErrors; }
 
     // Delete the commands added from the other machine.
-    for (int32 i = 0; i < num_commands_added; i++) {
+    for (int32 i = 0; i < num_commands_added; ++i) {
       removeCommand(this_machine_initial_num_commands);
     }
 
@@ -2289,7 +2303,7 @@ public:
   }
 
   void Machine::pushBackOtherMachineCommandList(Machine* other_machine) {
-    for (int32 i = 0; i < other_machine->numCommands(); i++) {
+    for (int32 i = 0; i < other_machine->numCommands(); ++i) {
       addCommand(other_machine->getCommand(i));
     }
   }
@@ -2306,7 +2320,7 @@ public:
     }
 
     // If the variable already exists, we will edit the existing one.
-    for (int32 i = 0; i < variable_registry_length_; i++) {
+    for (int32 i = 0; i < variable_registry_length_; ++i) {
       if (name == variable_registry_[i].name_) {
         char warning[64];
         sprintf_s(warning, 64, "\"%s\": Variable already registered", name);
@@ -2325,7 +2339,7 @@ public:
 
   void Machine::unregisterVariable(const char* name) {
 
-    for (int32 i = 0; i < variable_registry_length_; i++) {
+    for (int32 i = 0; i < variable_registry_length_; ++i) {
       if (name == variable_registry_[i].name_) {
         variable_registry_.erase(variable_registry_.begin() + i);
         variable_registry_length_--;
@@ -2357,7 +2371,7 @@ public:
 
   Report Machine::addGlobalVariableToCurrentPack(const Variable variable) {
     int32 length = global_variable_pack_list_[current_global_variable_pack_].var.size();
-    for (int32 i = 0; i < length; i++) {
+    for (int32 i = 0; i < length; ++i) {
       if (global_variable_pack_list_[current_global_variable_pack_].var[i].name_ == variable.name_) {
         ReportError("Multiple definition of the variable: " + variable.name_);
         return kReport_VariableDefinedTwice;
@@ -2369,7 +2383,7 @@ public:
 
   Report Machine::addGlobalVariableToCurrentPack(const char* name, const Value value) {
     int32 length = global_variable_pack_list_[current_global_variable_pack_].var.size();
-    for (int32 i = 0; i < length; i++) {
+    for (int32 i = 0; i < length; ++i) {
       if (global_variable_pack_list_[current_global_variable_pack_].var[i].name_ == name) {
         std::string n = name;
         ReportError("Multiple definition of the variable: " + n);
@@ -2400,7 +2414,7 @@ public:
     }
 
     // If not found, we will look for it in the variable registry.
-    for (int32 i = 0; i < variable_registry_length_; i++) {
+    for (int32 i = 0; i < variable_registry_length_; ++i) {
       if (variable_registry_[i].name_ == variable_name) {
         return &variable_registry_[i];
       }
@@ -2411,13 +2425,13 @@ public:
     // We will look for "."  --> example:  ->>>   camera.position
     int32 length = variable_name.length();
     int32 index = -1;
-    for (int32 i = 0; i < length; i++) {
+    for (int32 i = 0; i < length; ++i) {
       if (variable_name[i] == '.') { index = i; break; }
     }
     if (index == -1) { // No "." found
                        // Look for in the default variable pack.
       length = global_variable_pack_list_[0].var.size();
-      for (int32 i = 0; i < length; i++) {
+      for (int32 i = 0; i < length; ++i) {
         if (global_variable_pack_list_[0].var[i].name_ == variable_name) {
           return &global_variable_pack_list_[0].var[i];
         }
@@ -2428,7 +2442,7 @@ public:
       std::string var_name = variable_name.substr(index + 1); // to ignore "."
       index = 0;
       // looking for the pack
-      for (int32 i = 0; i < global_variable_pack_list_length_; i++) {
+      for (int32 i = 0; i < global_variable_pack_list_length_; ++i) {
         if (global_variable_pack_list_[i].name == pack_name) {
           length = global_variable_pack_list_[i].var.size();
           for (int32 j = 0; j < length; j++) {
@@ -2455,7 +2469,7 @@ public:
     }
 
     // If the function already exists, we will edit the existing one.
-    for (int32 i = 0; i < function_registry_length_; i++) {
+    for (int32 i = 0; i < function_registry_length_; ++i) {
       if (name == function_registry_[i].name_) {
         char warning[64];
         sprintf_s(warning, 64, "\"%s\": Function already registered", name);
@@ -2475,7 +2489,7 @@ public:
 
   void Machine::unregisterFunction(const char* name) {
 
-    for (int32 i = 0; i < function_registry_length_; i++) {
+    for (int32 i = 0; i < function_registry_length_; ++i) {
       if (name == function_registry_[i].name_) {
         function_registry_.erase(function_registry_.begin() + i);
         function_registry_length_--;
@@ -2502,7 +2516,7 @@ public:
   RegisteredFunction* Machine::getRegisteredFunction(const std::string& function_name) {
 
     // If not found, we will look for it in the function registry.
-    for (int32 i = 0; i < function_registry_length_; i++) {
+    for (int32 i = 0; i < function_registry_length_; ++i) {
       if (function_registry_[i].name_ == function_name) {
         return &function_registry_[i];
       }
@@ -2518,7 +2532,7 @@ public:
     }
 
     // If the variable already exists, we will edit the existing one.
-    for (int32 i = 0; i < defined_function_list_length_; i++) {
+    for (int32 i = 0; i < defined_function_list_length_; ++i) {
       if (name == defined_function_list_[i].name) {
         char error[64];
         sprintf_s(error, 64, "\"%s\": Function already defined", name);
@@ -2536,7 +2550,7 @@ public:
 
   int32 Machine::getDefinedFunctionID(const char* name) {
     std::string function_name = name;
-    for (int32 i = 0; i < defined_function_list_length_; i++) {
+    for (int32 i = 0; i < defined_function_list_length_; ++i) {
       if (defined_function_list_[i].name == function_name) {
         return defined_function_list_[i].command_index;
       }
@@ -2547,7 +2561,7 @@ public:
   }
 
   void Machine::removeDefinedFunction(const char* name) {
-    for (int32 i = 0; i < defined_function_list_length_; i++) {
+    for (int32 i = 0; i < defined_function_list_length_; ++i) {
       if (name == defined_function_list_[i].name) {
         defined_function_list_.erase(defined_function_list_.begin() + i);
         defined_function_list_length_--;
@@ -2628,7 +2642,7 @@ public:
     Variable* var = nullptr;
     int32 length = 0;
     int32 i = 0;
-    for (i = 0; i < global_variable_pack_list_length_; i++) {
+    for (i = 0; i < global_variable_pack_list_length_; ++i) {
       if (global_variable_pack_list_[i].name == variable_pack_name) {
         varpack = &global_variable_pack_list_[i];
         break;
@@ -2641,7 +2655,7 @@ public:
     }
 
     length = varpack->var.size();
-    for (i = 0; i < length; i++) {
+    for (i = 0; i < length; ++i) {
       if (varpack->var[i].name_ == variable_name) {
         var = &varpack->var[i];
         break;
@@ -2666,7 +2680,7 @@ public:
     Variable* var = nullptr;
     int32 length = 0;
     int32 i = 0;
-    for (i = 0; i < global_variable_pack_list_length_; i++) {
+    for (i = 0; i < global_variable_pack_list_length_; ++i) {
       if (global_variable_pack_list_[i].name == variable_pack_name) {
         varpack = &global_variable_pack_list_[i];
         break;
@@ -2679,7 +2693,7 @@ public:
     }
 
     length = varpack->var.size();
-    for (i = 0; i < length; i++) {
+    for (i = 0; i < length; ++i) {
       if (varpack->var[i].name_ == variable_name) {
         var = &varpack->var[i];
         break;
@@ -2705,7 +2719,7 @@ public:
     Variable* var = nullptr;
     int32 length = 0;
     int32 i = 0;
-    for (i = 0; i < global_variable_pack_list_length_; i++) {
+    for (i = 0; i < global_variable_pack_list_length_; ++i) {
       if (global_variable_pack_list_[i].name == variable_pack_name) {
         varpack = &global_variable_pack_list_[i];
         break;
@@ -2718,7 +2732,7 @@ public:
     }
 
     length = varpack->var.size();
-    for (i = 0; i < length; i++) {
+    for (i = 0; i < length; ++i) {
       if (varpack->var[i].name_ == variable_name) {
         var = &varpack->var[i];
         break;
@@ -3152,7 +3166,7 @@ Report Command::executeConditionToEvaluate(Machine* machine, int32& next_cmd_id)
 
   int32 exit_counter = 0;
   Command cmd;
-  for (int32 i = next_cmd_id; i < machine->numCommands(); i++) {
+  for (int32 i = next_cmd_id; i < machine->numCommands(); ++i) {
     cmd = machine->getCommand(i);
     if (cmd.type_ == kCommandType_ConditionToEvaluate) {
       exit_counter++;
@@ -3364,7 +3378,7 @@ const bool Compiler::checkIfAndCompileCommasContent(Machine * machine,
   if (token_manager.areAnyCommaTokenInList()) {
     int32 num_tokens = token_manager.numTokens();
     // Compile tokens with comas recursively.
-    for (int32 i = 0; i < num_tokens; i++) {
+    for (int32 i = 0; i < num_tokens; ++i) {
       if (token_manager.getToken(i).text_ == ",") {
         TokenManager temp;
         // In case that we find any comma, we will take the previous content to compile it.
@@ -3674,7 +3688,7 @@ Report Compiler::compileFunctionKeywordToken(Machine* machine,
   // Saving the parameters in strings.
   std::vector<std::string> params;
   int32 num_tokens = token_manager.numTokens();
-  for (int32 i = 1; i < num_tokens - 1; i++) { // Ignoring "(" and ")"
+  for (int32 i = 1; i < num_tokens - 1; ++i) { // Ignoring "(" and ")"
     token = token_manager.getToken(i);
     if (token.text_ != ",") {
       if (token.type_ != kTokenType_Variable) {
@@ -3693,7 +3707,9 @@ Report Compiler::compileFunctionKeywordToken(Machine* machine,
   char num_params_text[3];
   sprintf_s(num_params_text, 3, "%d", num_params);
   machine->addCommand(kCommandType_FunctionNumParameters, num_params_text);
-  for (int32 i = 0; i < num_params; i++) {
+  // We put them in order inverse because when we push the values to the stack, 
+  // The last pushed correspondant to the first parameter 
+  for (int32 i = num_params - 1; i >= 0; --i) {
     machine->addCommand(kCommandType_FunctionParameter, params[i]);
   }
 

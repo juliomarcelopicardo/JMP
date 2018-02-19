@@ -90,7 +90,7 @@ Report Machine::processFile(std::string script_filename) {
 
     // To prevent errors I will remove all the tabs. Changing them to blank spaces
     uint32 string_length = code_line.length();
-    for (uint32 i = 0; i < string_length; i++) {
+    for (uint32 i = 0; i < string_length; ++i) {
       if (code_line[i] == '\t') { code_line[i] = ' '; }
     }
 
@@ -163,7 +163,7 @@ Report Machine::runFunction(std::string function_call_sentence) {
   if (report == kReport_LastActiveFunctionReturnCalled) { report = kReport_NoErrors; }
 
   // Delete the commands added from the other machine.
-  for (int32 i = 0; i < num_commands_added; i++) {
+  for (int32 i = 0; i < num_commands_added; ++i) {
     removeCommand(this_machine_initial_num_commands);
   }
 
@@ -291,7 +291,7 @@ const int32 Machine::numCommands() {
 }
 
 void Machine::pushBackOtherMachineCommandList(Machine* other_machine) {
-  for (int32 i = 0; i < other_machine->numCommands(); i++) {
+  for (int32 i = 0; i < other_machine->numCommands(); ++i) {
     addCommand(other_machine->getCommand(i));
   }
 }
@@ -311,7 +311,7 @@ Report Machine::registerVariable(const char *name,
   }
   
   // If the variable already exists, we will edit the existing one.
-  for (int32 i = 0; i < variable_registry_length_; i++) {
+  for (int32 i = 0; i < variable_registry_length_; ++i) {
     if (name == variable_registry_[i].name_) {
       char warning[64];
       sprintf_s(warning, 64, "\"%s\": Variable already registered", name);
@@ -330,7 +330,7 @@ Report Machine::registerVariable(const char *name,
 
 void Machine::unregisterVariable(const char* name) {
 
-  for (int32 i = 0; i < variable_registry_length_; i++) {
+  for (int32 i = 0; i < variable_registry_length_; ++i) {
     if (name == variable_registry_[i].name_) {
       variable_registry_.erase(variable_registry_.begin() + i);
       variable_registry_length_--;
@@ -362,7 +362,7 @@ void Machine::addGlobalVariablePack(const char* name) {
 
 Report Machine::addGlobalVariableToCurrentPack(const Variable variable) {
   int32 length = global_variable_pack_list_[current_global_variable_pack_].var.size();
-  for (int32 i = 0; i < length; i++) {
+  for (int32 i = 0; i < length; ++i) {
     if (global_variable_pack_list_[current_global_variable_pack_].var[i].name_ == variable.name_) {
       ReportError("Multiple definition of the variable: " + variable.name_);
       return kReport_VariableDefinedTwice;
@@ -374,7 +374,7 @@ Report Machine::addGlobalVariableToCurrentPack(const Variable variable) {
 
 Report Machine::addGlobalVariableToCurrentPack(const char* name, const Value value) {
   int32 length = global_variable_pack_list_[current_global_variable_pack_].var.size();
-  for (int32 i = 0; i < length; i++) {
+  for (int32 i = 0; i < length; ++i) {
     if (global_variable_pack_list_[current_global_variable_pack_].var[i].name_ == name) {
       std::string n = name;
       ReportError("Multiple definition of the variable: " + n);
@@ -405,7 +405,7 @@ Variable* Machine::getVariable(const std::string& variable_name) {
   }
 
   // If not found, we will look for it in the variable registry.
-  for (int32 i = 0; i < variable_registry_length_; i++) {
+  for (int32 i = 0; i < variable_registry_length_; ++i) {
     if (variable_registry_[i].name_ == variable_name) {
       return &variable_registry_[i];
     }
@@ -416,13 +416,13 @@ Variable* Machine::getVariable(const std::string& variable_name) {
   // We will look for "."  --> example:  ->>>   camera.position
   int32 length = variable_name.length();
   int32 index = -1;
-  for (int32 i = 0; i < length; i++) {
+  for (int32 i = 0; i < length; ++i) {
     if (variable_name[i] == '.') { index = i; break; }
   }
   if (index == -1) { // No "." found
     // Look for in the default variable pack.
     length = global_variable_pack_list_[0].var.size();
-    for (int32 i = 0; i < length; i++) {
+    for (int32 i = 0; i < length; ++i) {
       if (global_variable_pack_list_[0].var[i].name_ == variable_name) {
         return &global_variable_pack_list_[0].var[i];
       }
@@ -433,7 +433,7 @@ Variable* Machine::getVariable(const std::string& variable_name) {
     std::string var_name = variable_name.substr(index + 1); // to ignore "."
     index = 0;
     // looking for the pack
-    for (int32 i = 0; i < global_variable_pack_list_length_; i++) {
+    for (int32 i = 0; i < global_variable_pack_list_length_; ++i) {
       if (global_variable_pack_list_[i].name == pack_name) {
         length = global_variable_pack_list_[i].var.size();
         for (int32 j = 0; j < length; j++) {
@@ -463,7 +463,7 @@ Report Machine::registerFunction(const char* name,
   }
 
   // If the function already exists, we will edit the existing one.
-  for (int32 i = 0; i < function_registry_length_; i++) {
+  for (int32 i = 0; i < function_registry_length_; ++i) {
     if (name == function_registry_[i].name_) {
       char warning[64];
       sprintf_s(warning, 64, "\"%s\": Function already registered", name);
@@ -483,7 +483,7 @@ Report Machine::registerFunction(const char* name,
 
 void Machine::unregisterFunction(const char* name) {
 
-  for (int32 i = 0; i < function_registry_length_; i++) {
+  for (int32 i = 0; i < function_registry_length_; ++i) {
     if (name == function_registry_[i].name_) {
       function_registry_.erase(function_registry_.begin() + i);
       function_registry_length_--;
@@ -510,7 +510,7 @@ void Machine::unregisterFunction(const int32 id) {
 RegisteredFunction* Machine::getRegisteredFunction(const std::string& function_name) {
 
   // If not found, we will look for it in the function registry.
-  for (int32 i = 0; i < function_registry_length_; i++) {
+  for (int32 i = 0; i < function_registry_length_; ++i) {
     if (function_registry_[i].name_ == function_name) {
       return &function_registry_[i];
     }
@@ -530,7 +530,7 @@ Report Machine::addDefinedFunction(const char* name, const int32 command_index) 
   }
 
   // If the variable already exists, we will edit the existing one.
-  for (int32 i = 0; i < defined_function_list_length_; i++) {
+  for (int32 i = 0; i < defined_function_list_length_; ++i) {
     if (name == defined_function_list_[i].name) {
       char error[64];
       sprintf_s(error, 64, "\"%s\": Function already defined", name);
@@ -548,7 +548,7 @@ Report Machine::addDefinedFunction(const char* name, const int32 command_index) 
 
 int32 Machine::getDefinedFunctionID(const char* name) {
   std::string function_name = name;
-  for (int32 i = 0; i < defined_function_list_length_; i++) {
+  for (int32 i = 0; i < defined_function_list_length_; ++i) {
     if (defined_function_list_[i].name == function_name) {
       return defined_function_list_[i].command_index;
     }
@@ -559,7 +559,7 @@ int32 Machine::getDefinedFunctionID(const char* name) {
 }
 
 void Machine::removeDefinedFunction(const char* name) {
-  for (int32 i = 0; i < defined_function_list_length_; i++) {
+  for (int32 i = 0; i < defined_function_list_length_; ++i) {
     if (name == defined_function_list_[i].name) {
       defined_function_list_.erase(defined_function_list_.begin() + i);
       defined_function_list_length_--;
@@ -652,7 +652,7 @@ int32 Machine::getInteger(const char* variable_name, const char* variable_pack_n
   Variable* var = nullptr;
   int32 length = 0;
   int32 i = 0;
-  for (i = 0; i < global_variable_pack_list_length_; i++) {
+  for (i = 0; i < global_variable_pack_list_length_; ++i) {
     if (global_variable_pack_list_[i].name == variable_pack_name) {
       varpack = &global_variable_pack_list_[i];
       break;
@@ -665,7 +665,7 @@ int32 Machine::getInteger(const char* variable_name, const char* variable_pack_n
   }
 
   length = varpack->var.size();
-  for (i = 0; i < length; i++) {
+  for (i = 0; i < length; ++i) {
     if (varpack->var[i].name_ == variable_name) {
       var = &varpack->var[i];
       break;
@@ -690,7 +690,7 @@ float32 Machine::getFloat(const char* variable_name, const char* variable_pack_n
   Variable* var = nullptr;
   int32 length = 0;
   int32 i = 0;
-  for (i = 0; i < global_variable_pack_list_length_; i++) {
+  for (i = 0; i < global_variable_pack_list_length_; ++i) {
     if (global_variable_pack_list_[i].name == variable_pack_name) {
       varpack = &global_variable_pack_list_[i];
       break;
@@ -703,7 +703,7 @@ float32 Machine::getFloat(const char* variable_name, const char* variable_pack_n
   }
 
   length = varpack->var.size();
-  for (i = 0; i < length; i++) {
+  for (i = 0; i < length; ++i) {
     if (varpack->var[i].name_ == variable_name) {
       var = &varpack->var[i];
       break;
@@ -729,7 +729,7 @@ std::string Machine::getString(const char* variable_name, const char* variable_p
   Variable* var = nullptr;
   int32 length = 0;
   int32 i = 0;
-  for (i = 0; i < global_variable_pack_list_length_; i++) {
+  for (i = 0; i < global_variable_pack_list_length_; ++i) {
     if (global_variable_pack_list_[i].name == variable_pack_name) {
       varpack = &global_variable_pack_list_[i];
       break;
@@ -742,7 +742,7 @@ std::string Machine::getString(const char* variable_name, const char* variable_p
   }
 
   length = varpack->var.size();
-  for (i = 0; i < length; i++) {
+  for (i = 0; i < length; ++i) {
     if (varpack->var[i].name_ == variable_name) {
       var = &varpack->var[i];
       break;

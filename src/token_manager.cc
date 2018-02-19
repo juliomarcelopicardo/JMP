@@ -73,7 +73,7 @@ void TokenManager::transferParenthesisContent(int32 open_parenthesis_id,
                                               TokenManager* transfer_output) {
   // Copying the content into the output.
   int32 num_tokens_transfered = 0;
-  for (int32 i = open_parenthesis_id + 1; i < close_parenthesis_id; i++) {
+  for (int32 i = open_parenthesis_id + 1; i < close_parenthesis_id; ++i) {
     transfer_output->addToken(token_list_[i]);
     num_tokens_transfered++;
   }
@@ -82,7 +82,7 @@ void TokenManager::transferParenthesisContent(int32 open_parenthesis_id,
   token_list_[open_parenthesis_id] = { "RESULT", kTokenType_None, 0 };
   
   // Deleting the rest of the tokens. including the ")" one.
-  for (int32 i = 0; i < num_tokens_transfered + 1; i++) {
+  for (int32 i = 0; i < num_tokens_transfered + 1; ++i) {
     removeToken(open_parenthesis_id + 1);
   }
 }
@@ -92,7 +92,7 @@ void TokenManager::transferContentBetweenIDsInclusive(int32 initial_id,
                                                       TokenManager* transfer_output) {
   // Copying the content into the output.
   int32 num_tokens_transfered = 0;
-  for (int32 i = initial_id; i <= final_id; i++) {
+  for (int32 i = initial_id; i <= final_id; ++i) {
     if (transfer_output) { transfer_output->addToken(token_list_[i]); }
     num_tokens_transfered++;
   }
@@ -101,7 +101,7 @@ void TokenManager::transferContentBetweenIDsInclusive(int32 initial_id,
   token_list_[initial_id] = { "RESULT", kTokenType_None, 0 };
 
   // Deleting the rest of the tokens. including the ")" one.
-  for (int32 i = 0; i < num_tokens_transfered - 1; i++) {
+  for (int32 i = 0; i < num_tokens_transfered - 1; ++i) {
     removeToken(initial_id + 1);
   }
 }
@@ -126,7 +126,7 @@ int32 TokenManager::getHighestPriorityTokenIndex() {
   int32 maximum_priority = -1;
   int32 index = -1;
 
-  for (int32 i = 0; i < token_list_length_; i++) {
+  for (int32 i = 0; i < token_list_length_; ++i) {
     if (token_list_[i].priority_ > maximum_priority) {
       maximum_priority = token_list_[i].priority_;
       index = i;
@@ -154,7 +154,7 @@ const uint32 TokenManager::numTokens() {
 }
 
 const bool TokenManager::areAnyCommaTokenInList() {
-  for (int32 i = 0; i < token_list_length_; i++) {
+  for (int32 i = 0; i < token_list_length_; ++i) {
     if (token_list_[i].text_ == ",") {
       return true;
     }
@@ -196,7 +196,7 @@ void TokenManager::printToken(int32 id) {
 }
 
 void TokenManager::printTokenList() {
-  for (int32 i = 0; i < token_list_length_; i++) {
+  for (int32 i = 0; i < token_list_length_; ++i) {
     printToken(i);
   }
 }

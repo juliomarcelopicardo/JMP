@@ -68,7 +68,7 @@ Report Function::addVariable(const char* name, const Value value) {
 *******************************************************************************/
 
 const int32 Function::getVariableID(const std::string& variable_name) {
-  for (int32 i = 0; i < variable_list_length_; i++) {
+  for (int32 i = 0; i < variable_list_length_; ++i) {
     if (variable_list_[i].name_ == variable_name) {
       return i;
     }

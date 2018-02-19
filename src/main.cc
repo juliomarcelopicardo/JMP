@@ -13,7 +13,7 @@
 
 void RegFunc(std::vector<JMP_PROJECT::Value>& params) {
 
-  for (JMP_PROJECT::uint32 i = 0; i < params.size(); i++) {
+  for (JMP_PROJECT::uint32 i = 0; i < params.size(); ++i) {
     params[i].print();
   }
 }
@@ -26,9 +26,9 @@ JMP_PROJECT::int32 main() {
 
   JMP_PROJECT::float32 variable = 3.02f;
   machine.processFile("../scripts/script.jmp");
-  float pedro = machine.getFloat("paco");
-  machine.registerVariable("variable", JMP_PROJECT::kValueType_Float, &variable);
-  machine.registerFunction("ExternalFunction", &RegFunc);
+  //float pedro = machine.getFloat("paco");
+  //machine.registerVariable("variable", JMP_PROJECT::kValueType_Float, &variable);
+  //machine.registerFunction("ExternalFunction", &RegFunc);
   //machine.runFunction("PrintExample(40, \"texto\", 40.34)");
   //machine.runFunction("Example(11111,22222)");
   //machine.runFunction("Example2()");
@@ -55,7 +55,7 @@ JMP_PROJECT::int32 main() {
 
 void RegFunc(std::vector<JMP::Value>& params) {
 
-  for (JMP::uint32 i = 0; i < params.size(); i++) {
+  for (JMP::uint32 i = 0; i < params.size(); ++i) {
     params[i].print();
   }
 }

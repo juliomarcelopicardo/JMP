@@ -173,7 +173,7 @@ const bool Compiler::checkIfAndCompileCommasContent(Machine * machine,
   if (token_manager.areAnyCommaTokenInList()) {
     int32 num_tokens = token_manager.numTokens();
     // Compile tokens with comas recursively.
-    for (int32 i = 0; i < num_tokens; i++) {
+    for (int32 i = 0; i < num_tokens; ++i) {
       if (token_manager.getToken(i).text_ == ",") {
         TokenManager temp;
         // In case that we find any comma, we will take the previous content to compile it.
@@ -483,7 +483,7 @@ Report Compiler::compileFunctionKeywordToken(Machine* machine,
   // Saving the parameters in strings.
   std::vector<std::string> params;
   int32 num_tokens = token_manager.numTokens();
-  for (int32 i = 1; i < num_tokens - 1; i++) { // Ignoring "(" and ")"
+  for (int32 i = 1; i < num_tokens - 1; ++i) { // Ignoring "(" and ")"
     token = token_manager.getToken(i);
     if (token.text_ != ",") {
       if (token.type_ != kTokenType_Variable) {
@@ -502,7 +502,7 @@ Report Compiler::compileFunctionKeywordToken(Machine* machine,
   char num_params_text[3];
   sprintf_s(num_params_text, 3, "%d", num_params);
   machine->addCommand(kCommandType_FunctionNumParameters, num_params_text);
-  for (int32 i = 0; i < num_params; i++) {
+  for (int32 i = num_params - 1; i >= 0; --i) {
     machine->addCommand(kCommandType_FunctionParameter, params[i]);
   }
 

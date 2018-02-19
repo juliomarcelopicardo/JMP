@@ -442,7 +442,7 @@ Report Command::executeConditionToEvaluate(Machine* machine, int32& next_cmd_id)
   
   int32 exit_counter = 0;
   Command cmd;
-  for (int32 i = next_cmd_id; i < machine->numCommands(); i++) {
+  for (int32 i = next_cmd_id; i < machine->numCommands(); ++i) {
     cmd = machine->getCommand(i);
     if (cmd.type_ == kCommandType_ConditionToEvaluate) {
       exit_counter++;
@@ -517,7 +517,7 @@ ValueType Command::getNameDataType() {
   if (name_[0] == '"' && name_[name_length - 1] == '"') { return kValueType_Text; }
   if (name_[0] == '-' || isDigit(name_[0])) { // Check type of number
     int32 num_dots = 0;
-    for (int32 i = 1; i < name_length; i++) {
+    for (int32 i = 1; i < name_length; ++i) {
       if (!isDigit(name_[i])) {
         if (name_[i] == '.' && num_dots == 0) {
           num_dots++;
