@@ -2242,6 +2242,12 @@ public:
     processFile(last_script_compiled_path_);
   }
 
+  std::string Machine::getCurrentScript() const {
+    std::ifstream script(last_script_compiled_path_);
+    std::string script_code{ std::istreambuf_iterator<char>(script), std::istreambuf_iterator<char>() };
+    return script_code;
+  }
+
   void Machine::addCommand(const CommandType type) {
     Command cmd = { type, "" };
     cmd_list_.push_back(cmd);

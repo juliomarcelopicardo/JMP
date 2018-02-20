@@ -225,6 +225,12 @@ void Machine::reload() {
   processFile(last_script_compiled_path_);
 }
 
+std::string Machine::getCurrentScript() const{
+  std::ifstream script(last_script_compiled_path_);
+  std::string script_code { std::istreambuf_iterator<char>(script), std::istreambuf_iterator<char>() };
+  return script_code;
+}
+
 /*******************************************************************************
 ***                           COMMAND LIST METHODS                           ***
 *******************************************************************************/

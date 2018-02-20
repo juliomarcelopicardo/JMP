@@ -74,6 +74,13 @@ class Machine {
   ///@brief Deletes the last compilation and process and compile the last file.
   void reload();
 
+  /**
+  * @brief Current script code getter.
+  *
+  * @return String with all the code allocated in the current script file.
+  */
+  std::string getCurrentScript() const;
+
 /***************************  COMMAND LIST METHODS  ***************************/
 
   /**
