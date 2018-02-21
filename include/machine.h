@@ -16,9 +16,8 @@
 #include "variable.h"
 #include "function.h"
 #include "registered_function.h"
-#include "token_manager.h"
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 /// Core of the language, this machine will be used to process .jpm script files.
 class Machine {
@@ -33,16 +32,20 @@ class Machine {
   Machine();
   /// Default class destructor.
   ~Machine();
+  /// Default copy constructor.
+  Machine(const Machine& copy) = delete;
+  /// Assignment operator.
+  Machine& operator=(const Machine& copy) = delete;
 
 /***************************  MAIN MACHINE METHODS  ***************************/
 
   /**
   * @brief Loads a script file so the machine can process it. Extension must be .jmp
   *
-  * @param script Script file path.
+  * @param script_filename Script file path.
   * @return Report with the function result.
   */
-  Report processFile(std::string script_filename);
+  Report processFile(const std::string& script_filename);
 
   /**
   * @brief Checks if the extension of the file is .jpm
@@ -50,7 +53,7 @@ class Machine {
   * @param filename File to check.
   * @return InvalidExtension if failed.
   */
-  Report checkExtension(std::string filename);
+  Report checkExtension(const std::string& filename) const;
 
   /**
   * @brief Runs or executes a function from a previous loaded script.
@@ -88,7 +91,7 @@ class Machine {
   *
   * @param type Type of the command.
   */
-  void addCommand(const CommandType type);
+  void addCommand(CommandType type);
 
   /**
   * @brief Adds a new command to the list.
@@ -96,7 +99,7 @@ class Machine {
   * @param type Type of the command.
   * @param name Name of the command.
   */
-  void addCommand(const CommandType type, const char* name);
+  void addCommand(CommandType type, const char* name);
 
   /**
   * @brief Adds a new command to the list.
@@ -104,7 +107,7 @@ class Machine {
   * @param type Type of the command.
   * @param name Name of the command.
   */
-  void addCommand(const CommandType type, const std::string name);
+  void addCommand(CommandType type, const std::string& name);
 
   /**
   * @brief Adds a new command to the list.
@@ -129,14 +132,14 @@ class Machine {
   * @param list_index Index of the command in the list.
   * @return Command from the list.
   */
-  Command getCommand(const int32 list_index);
+  Command getCommand(int32 list_index);
 
   /**
   * @brief Getter of the number of commands allocated in the command manager list.
   *
   * @return Command list length.
   */
-  const int32 numCommands();
+  int32 numCommands() const;
 
   /**
   * @brief Concatenates the other machine command list, to the original one.
@@ -170,7 +173,7 @@ class Machine {
   *
   * @param id ID of the variable in the registry vector.
   */
-  void unregisterVariable(const int32 id);
+  void unregisterVariable(int32 id);
 
   /**
   * @brief Push back a new global variable pack and set it as current.
@@ -186,15 +189,16 @@ class Machine {
   * @param variable Variable to push back in the list
   * @return Report with the result of the function.
   */
-  Report addGlobalVariableToCurrentPack(const Variable variable);
+  Report addGlobalVariableToCurrentPack(Variable variable);
 
   /**
   * @brief Push back a global type variable in the current pack list.
   *
+  * @param name Name of the variable
   * @param value Value of the variable.
   * @return Report with the result of the function.
   */
-  Report addGlobalVariableToCurrentPack(const char* name, const Value value);
+  Report addGlobalVariableToCurrentPack(const char* name, const Value& value);
 
   /**
   * @brief Current pack index will be 0, which is the pack for non-packaged global variables.
@@ -211,7 +215,7 @@ class Machine {
   /**
   * @brief Variable getter, will look for it in the function lists and in the variable registry.
   *
-  * @param name Name of the variable in the registry (Case sensitive).
+  * @param variable_name Name of the variable in the registry (Case sensitive).
   * @return Variable from the list, null if not found.
   */
   Variable* getVariable(const std::string& variable_name);
@@ -222,13 +226,13 @@ class Machine {
   /**
   * @brief Adds a function to the registry.
   *
-  *         To register a function its declaration needs to be:
-  *    <<<<<  void FunctionName(std::vector<Value>& params);  >>>>>
+  * To register a function its declaration needs to be:
+  * "void FunctionName(std::vector<Value>& params)"
   * Params is a list of the parameters used everytime we call it from the script.
   *
   * @param name Name of the function in the script (Case sensitive).
   * @param function_ptr Pointer to the function defined in c++.
-  * @return Report with the result of the instruction. NoErrors if succesful.
+  * @return Report with the result of the instruction, NoErrors if succesful.
   */
   Report registerFunction(const char* name, void(*function_ptr)(std::vector<Value>&));
 
@@ -244,15 +248,15 @@ class Machine {
   *
   * @param id ID of the function in the registry vector.
   */
-  void unregisterFunction(const int32 id);
+  void unregisterFunction(int32 id);
 
   /**
   * @brief Function getter, will look for it in the function lists and in the variable registry.
   *
-  * @param name Name of the function in the registry (Case sensitive).
+  * @param function_name Name of the function in the registry (Case sensitive).
   * @return Pointer to the registered function. Nullptr if not found.
   */
-  RegisteredFunction* getRegisteredFunction(const std::string& variable_name);
+  RegisteredFunction* getRegisteredFunction(const std::string& function_name);
 
 /**********************  DEFINED FUNCTION LIST METHODS  ***********************/
 
@@ -263,13 +267,12 @@ class Machine {
   * @param command_index Position in the list of commands.
   * @return kReport_NoErrors if succesful.
   */
-  Report addDefinedFunction(const char* name, const int32 command_index);
+  Report addDefinedFunction(const char* name, int32 command_index);
 
   /**
   * @brief Looks for a function in the defined function list and return its ID.
   *
   * @param name Name of the function.
-  * @param command_index Position in the list of commands.
   * @return The ID which is the command where the function body starts.
   */
   int32 getDefinedFunctionID(const char* name);
@@ -286,7 +289,7 @@ class Machine {
   *
   * @param id ID of the function in the defined function list.
   */
-  void removeDefinedFunction(const int32 id);
+  void removeDefinedFunction(int32 id);
 
 
 /**********************  EXECUTION FUNCTION LIST METHODS  **********************/
@@ -297,7 +300,7 @@ class Machine {
   *
   * @param origin_id Once finished the execution of the function will return to this command.
   */
-  void addFunction(const int32 origin_id);
+  void addFunction(int32 origin_id);
 
 
   /**
@@ -312,7 +315,7 @@ class Machine {
   *
   * @param id ID or position in the list.
   */
-  void removeFunction(const int32 id);
+  void removeFunction(int32 id);
 
   /**
   * @brief Removes the last function from the execution function list.
@@ -324,7 +327,7 @@ class Machine {
   *
   * @return number of active functions, function list length.
   */
-  const int32 numActiveFunctions();
+  int32 numActiveFunctions() const;
 
 /***************************** STACK OF VALUES ********************************/
 
@@ -333,21 +336,21 @@ class Machine {
   *
   * @param value Value to push back.
   */
-  void addValueToTheStack(const Value value);
+  void addValueToTheStack(const Value& value) const;
 
   /**
   * @brief Gets and removes the last value added to the stack.
   *
   * @return Last value added to the stack, (default value if stack is empty).
   */
-  Value getAndRemoveTheLastAddedStackValue();
+  Value getAndRemoveTheLastAddedStackValue() const;
 
   /**
   * @brief Gets the number of values allocated in the stack.
   *
   * @return number of values.
   */
-  int32 numStackValues();
+  int32 numStackValues() const;
 
 /**************************** VARIABLE GETTERS ********************************/
 
@@ -400,15 +403,7 @@ class Machine {
 
  private:
 
-/*******************************************************************************
-***                            PRIVATE METHODS                               ***
-*******************************************************************************/
 
-
-  /// Default copy constructor.
-  Machine(const Machine& copy);
-  /// Assignment operator.
-  Machine& operator=(const Machine& copy);
 
 /*******************************************************************************
 ***                          PRIVATE ATTRIBUTES                              ***

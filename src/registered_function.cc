@@ -8,10 +8,8 @@
 */
 
 #include "registered_function.h"
-#include "report.h"
-#include <math.h>
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 
 /*******************************************************************************

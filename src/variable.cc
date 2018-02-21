@@ -9,7 +9,7 @@
 
 #include "variable.h"
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 /*******************************************************************************
 ***                       CONSTRUCTOR & DESTRUCTOR                           ***
@@ -48,7 +48,7 @@ Variable::Variable(const char* name, const char* text_value) {
   value_ = { text_value };
 }
 
-Variable::Variable(const char* name, Value value) {
+Variable::Variable(const char* name, const Value& value) {
   is_registered_ = false;
   name_ = name;
   pointer_to_the_original_ = nullptr;
@@ -89,45 +89,45 @@ Report Variable::setValue(const Value value) {
 
     // Original value is a TEXT.
     if (value_.type_ == kValueType_Text && value.type_ == kValueType_Text) {
-      std::string* ptr = static_cast<std::string*>(pointer_to_the_original_);
+      auto* ptr = static_cast<std::string*>(pointer_to_the_original_);
       *ptr = value.text_;
       return kReport_NoErrors;
     }
 
     if (value_.type_ == kValueType_Text && value.type_ == kValueType_Float) {
-      std::string* ptr = static_cast<std::string*>(pointer_to_the_original_);
+      auto* ptr = static_cast<std::string*>(pointer_to_the_original_);
       *ptr = std::to_string(value.float_);
       return kReport_NoErrors;
     }
 
     if (value_.type_ == kValueType_Text && value.type_ == kValueType_Integer) {
-      std::string* ptr = static_cast<std::string*>(pointer_to_the_original_);
+      auto* ptr = static_cast<std::string*>(pointer_to_the_original_);
       *ptr = std::to_string(value.integer_);
       return kReport_NoErrors;
     }
 
     // Original value is an INTEGER.
     if (value_.type_ == kValueType_Integer && value.type_ == kValueType_Integer) {
-      int32* ptr = static_cast<int32*>(pointer_to_the_original_);
+      auto* ptr = static_cast<int32*>(pointer_to_the_original_);
       *ptr = value.integer_;
       return kReport_NoErrors;
     }
 
     if (value_.type_ == kValueType_Integer && value.type_ == kValueType_Float) {
-      int32* ptr = static_cast<int32*>(pointer_to_the_original_);
+      auto* ptr = static_cast<int32*>(pointer_to_the_original_);
       *ptr = (int32)value.float_;
       return kReport_NoErrors;
     }
 
     // Original value is a FLOAT.
     if (value_.type_ == kValueType_Float && value.type_ == kValueType_Float) {
-      float32* ptr = static_cast<float32*>(pointer_to_the_original_);
+      auto* ptr = static_cast<float32*>(pointer_to_the_original_);
       *ptr = value.float_;
       return kReport_NoErrors;
     }
 
     if (value_.type_ == kValueType_Float && value.type_ == kValueType_Integer) {
-      float32* ptr = static_cast<float32*>(pointer_to_the_original_);
+      auto* ptr = static_cast<float32*>(pointer_to_the_original_);
       *ptr = (float32)value.integer_;
       return kReport_NoErrors;
     }
@@ -192,23 +192,23 @@ Report Variable::setValue(const Value value) {
 ***                                GETTERS                                   ***
 *******************************************************************************/
 
-const Value Variable::getValue() {
+Value Variable::getValue() const {
   if (!is_registered_) {
     return value_;
   }
 
   if (value_.type_ == kValueType_Text) {
-    std::string* ptr = static_cast<std::string*>(pointer_to_the_original_);
+    auto* ptr = static_cast<std::string*>(pointer_to_the_original_);
     return { ptr->c_str() };
   }
 
   if (value_.type_ == kValueType_Float) {
-    float32* ptr = static_cast<float32*>(pointer_to_the_original_);
+    auto* ptr = static_cast<float32*>(pointer_to_the_original_);
     return { *ptr };
   }
 
   if (value_.type_ == kValueType_Integer) {
-    int32* ptr = static_cast<int32*>(pointer_to_the_original_);
+    auto* ptr = static_cast<int32*>(pointer_to_the_original_);
     return { *ptr };
   }
 

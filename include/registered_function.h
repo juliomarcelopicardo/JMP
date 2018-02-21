@@ -10,12 +10,11 @@
 #ifndef __JMP_REGISTERED_FUNCTION_H__
 #define __JMP_REGISTERED_FUNCTION_H__ 1
 
-#include "types.h"
 #include "value.h"
 #include <string>
 #include <vector>
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 /// Class used to manage the different functions registered from c++
 class RegisteredFunction {
@@ -48,19 +47,6 @@ class RegisteredFunction {
   void(*function_pointer_)(std::vector<Value>&);
   /// Parameters of the function when its called from the script.
   std::vector<Value> params_;
-
- private:
-
-/*******************************************************************************
-***                            PRIVATE METHODS                               ***
-*******************************************************************************/
-
-
-
-
-/*******************************************************************************
-***                          PRIVATE ATTRIBUTES                              ***
-*******************************************************************************/
 
 
 

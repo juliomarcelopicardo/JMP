@@ -15,7 +15,7 @@
 #include <string>
 #include "report.h"
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 /// Class used to manage the variables that will be added to the registger.
 /// Depending on if the variable is a external registered one (created in C++) or
@@ -39,7 +39,7 @@ class Variable {
   /// Overloaded class constructor.
   Variable(const char* name, const char* text_value);
   /// Overloaded class constructor.
-  Variable(const char* name, Value value);
+  Variable(const char* name, const Value& value);
   /// Overloaded class constructor.
   Variable(const char* name, ValueType type, void* ptr_to_the_original);
   /// Default class destructor.
@@ -59,7 +59,7 @@ class Variable {
   * @param value Value to set to the variable.
   * @return Report with the result of the function.
   */
-  Report setValue(const Value value);
+  Report setValue(Value value);
 
 /********************************  GETTERS  ***********************************/
 
@@ -68,7 +68,7 @@ class Variable {
   *
   * @return Value of the variable even if its a registered one.
   */
-  const Value getValue();
+  Value getValue() const;
 
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***
@@ -87,19 +87,6 @@ class Variable {
 /****************************  NOT REGISTERED  ********************************/
   /// Value of the variable
   Value value_;
-
- private:
-
-/*******************************************************************************
-***                            PRIVATE METHODS                               ***
-*******************************************************************************/
-
-
-
-
-/*******************************************************************************
-***                          PRIVATE ATTRIBUTES                              ***
-*******************************************************************************/
 
 
 

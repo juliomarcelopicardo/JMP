@@ -13,7 +13,7 @@
 #include "types.h"
 #include <string>
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 /// Token type.
 enum TokenType {
@@ -37,7 +37,7 @@ class Token {
   /// Default class constructor.
   Token();
   /// Default class constructor.
-  Token(const char* text, const TokenType type, const int32 priority);
+  Token(const char* text, TokenType type, int32 priority);
   /// Default class destructor.
   ~Token();
   /// Default copy constructor.
@@ -61,20 +61,6 @@ class Token {
   TokenType type_;
   /// Token priority
   int32 priority_;
-
- private:
-
-/*******************************************************************************
-***                            PRIVATE METHODS                               ***
-*******************************************************************************/
-
-
-
-
-/*******************************************************************************
-***                          PRIVATE ATTRIBUTES                              ***
-*******************************************************************************/
-
 
 
 }; /* Token */

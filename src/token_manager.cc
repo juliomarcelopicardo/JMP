@@ -13,7 +13,7 @@
 #include <Windows.h>
 #include <string>
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 /*******************************************************************************
 ***                       CONSTRUCTOR & DESTRUCTOR                           ***
@@ -33,7 +33,7 @@ TokenManager::~TokenManager() {
 *******************************************************************************/
 
 void TokenManager::addToken(const char * text, const TokenType type, int32 priority) {
-  token_list_.push_back({ text, type, priority });
+  token_list_.emplace_back(text, type, priority);
   token_list_length_++;
 
   // To determine if there's a function name behind the token.
@@ -149,11 +149,12 @@ int32 TokenManager::getNextCloseParenthesisIndex(int32 open_parenthesis_index) {
   return -1; // No maatching close parenthesis found.
 }
 
-const uint32 TokenManager::numTokens() {
+  uint32 TokenManager::numTokens() const
+  {
   return token_list_length_;
 }
 
-const bool TokenManager::areAnyCommaTokenInList() {
+  bool TokenManager::areAnyCommaTokenInList() {
   for (int32 i = 0; i < token_list_length_; ++i) {
     if (token_list_[i].text_ == ",") {
       return true;
@@ -172,11 +173,11 @@ void TokenManager::printToken(int32 id) {
 
   OutputDebugString(" Type: ");
   switch (token_list_[id].type_) {
-    case JMP_PROJECT::kTokenType_None: { OutputDebugString("None \t\t"); }break;
-    case JMP_PROJECT::kTokenType_Keyword: { OutputDebugString("Keyword \t\t"); }break;
-    case JMP_PROJECT::kTokenType_Number: { OutputDebugString("Number \t\t"); }break;
-    case JMP_PROJECT::kTokenType_Separator: { OutputDebugString("Separator \t"); }break;
-    case JMP_PROJECT::kTokenType_Variable: { OutputDebugString("Variable \t"); }break;
+    case JMP::kTokenType_None: { OutputDebugString("None \t\t"); }break;
+    case JMP::kTokenType_Keyword: { OutputDebugString("Keyword \t\t"); }break;
+    case JMP::kTokenType_Number: { OutputDebugString("Number \t\t"); }break;
+    case JMP::kTokenType_Separator: { OutputDebugString("Separator \t"); }break;
+    case JMP::kTokenType_Variable: { OutputDebugString("Variable \t"); }break;
     default: { OutputDebugString("None \t\t"); }break;
   }
 

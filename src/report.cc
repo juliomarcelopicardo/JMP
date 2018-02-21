@@ -8,81 +8,81 @@
 */
 
 #include "report.h"
-#include <Windows.h>
 
 
-namespace JMP_PROJECT {
+namespace JMP {
 
-void ReportError(std::string error) {
+void ReportError(const std::string& error) {
   ReportMsg(" ERROR: " + error + ".\n");
 }
 
-void ReportWarning(std::string warning) {
+void ReportWarning(const std::string& warning) {
   ReportMsg(" WARNING: " + warning + ".\n");
 }
 
 void PrintReport(Report& report, uint32 line_number) {
   switch (report) {
-    case JMP_PROJECT::kReport_EmptyLine: {
+    case JMP::kReport_EmptyLine: {
       ReportWarning("Line " + std::to_string(line_number) + ": Nothing to compile..");
       report = kReport_NoErrors;
     } break;
-    case JMP_PROJECT::kReport_NoTokensToCompile: {
+    case JMP::kReport_NoTokensToCompile: {
       ReportError("Line " + std::to_string(line_number) + ": Can't compile, no compilable tokens available..");
     } break;
-    case JMP_PROJECT::kReport_NoMatchingCloseParenthesis: {
+    case JMP::kReport_NoMatchingCloseParenthesis: {
       ReportError("Line " + std::to_string(line_number) + ": No matching close parenthesis found..");
     } break;
-    case JMP_PROJECT::kReport_NoTagsToDelete: {
+    case JMP::kReport_NoTagsToDelete: {
       ReportError(": No matching tag to remove was found, more conditional, functions or loops closed than created..");
     } break;
-    case JMP_PROJECT::kReport_UnexpectedKeyword: {
+    case JMP::kReport_UnexpectedKeyword: {
       ReportError(": Unexpected or unkwown keyword used..");
     } break;
-    case JMP_PROJECT::kReport_ExpectingOpenBrackets: {
+    case JMP::kReport_ExpectingOpenBrackets: {
       ReportError(": \"{\" separator expected at the end of the line..");
     } break;
-    case JMP_PROJECT::kReport_ExpectingNameOfVariable: {
+    case JMP::kReport_ExpectingNameOfVariable: {
       ReportError(": Expecting name of variable after the \"var\" keyword..");
     } break;
-    case JMP_PROJECT::kReport_ReturnShouldBeTheFirstToken: {
+    case JMP::kReport_ReturnShouldBeTheFirstToken: {
       ReportError(": Expecting \"return\" to be the first word of the line..");
     } break;
-    case JMP_PROJECT::kReport_LoopKeywordShouldBeTheFirstToken: {
+    case JMP::kReport_LoopKeywordShouldBeTheFirstToken: {
       ReportError(": Expecting loop keyword to be the first of the line..");
     } break;
-    case JMP_PROJECT::kReport_FunctionKeywordShouldBeTheFirstToken: {
+    case JMP::kReport_FunctionKeywordShouldBeTheFirstToken: {
       ReportError(": Expecting function keyword \"func\" to be the first of the line..");
     } break;
-    case JMP_PROJECT::kReport_FunctionDefinitionIncorrect: {
+    case JMP::kReport_FunctionDefinitionIncorrect: {
       ReportError(": Function definition incorrect, expecting at least \"func name() {\"..");
     } break;
-    case JMP_PROJECT::kReport_EqualNeedTokensBeforeAndAfter: {
+    case JMP::kReport_EqualNeedTokensBeforeAndAfter: {
       ReportError(": Expecting tokens before and after the \"=\" token..");
     } break;
-    case JMP_PROJECT::kReport_UnexpectedFunctionParameters: {
+    case JMP::kReport_UnexpectedFunctionParameters: {
       ReportError(": Unexpected function parameters, only strings allowed..");
     } break;
-    case JMP_PROJECT::kReport_ExceededNumParamsAllowedPerFunction: {
+    case JMP::kReport_ExceededNumParamsAllowedPerFunction: {
       ReportError(": Too many parameters, the maximum allowed are 30..");
     } break;
-    case JMP_PROJECT::kReport_InvalidNameOfFunction: {
+    case JMP::kReport_InvalidNameOfFunction: {
       ReportError(": Invalid function name..");
     } break;
-    case JMP_PROJECT::kReport_ReturnCalledWithoutAnyActiveFunction: {
+    case JMP::kReport_ReturnCalledWithoutAnyActiveFunction: {
       ReportError(": Return was called, but there isnt any active function..");
     } break;
-    case JMP_PROJECT::kReport_ConditionOutsideOfAFunction: {
+    case JMP::kReport_ConditionOutsideOfAFunction: {
       ReportError(": Conditions can only be evaluated inside a function body..");
     } break;
-    case JMP_PROJECT::kReport_LoopOutsideOfAFunction: {
+    case JMP::kReport_LoopOutsideOfAFunction: {
       ReportError(": Loops can only be executed inside a function body..");
     } break;
+  default: {}
   }
 }
 
-void ReportMsg(std::string msg) {
-  OutputDebugString(msg.c_str());
+void ReportMsg(const std::string& msg) {
+  printf(msg.c_str());
 }
 
 }; /* JMP_PROJECT */

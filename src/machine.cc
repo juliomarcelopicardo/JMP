@@ -12,9 +12,10 @@
 #include <Windows.h>
 #include <string>
 #include <fstream>
+#include <utility>
 
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 // Declaration of the static stack
 Machine::Stack Machine::stack_; 
@@ -64,7 +65,7 @@ Machine::~Machine() {
 *******************************************************************************/
 
 
-Report Machine::processFile(std::string script_filename) {
+Report Machine::processFile(const std::string& script_filename) {
 
   // To force .jmp extensions.
   if (checkExtension(script_filename) != kReport_NoErrors) {
@@ -89,7 +90,7 @@ Report Machine::processFile(std::string script_filename) {
     std::getline(script, code_line);
 
     // To prevent errors I will remove all the tabs. Changing them to blank spaces
-    uint32 string_length = code_line.length();
+    const uint32 string_length = code_line.length();
     for (uint32 i = 0; i < string_length; ++i) {
       if (code_line[i] == '\t') { code_line[i] = ' '; }
     }
@@ -117,10 +118,10 @@ Report Machine::processFile(std::string script_filename) {
 
 
 
-Report Machine::checkExtension(std::string filename) {
+Report Machine::checkExtension(const std::string& filename) const {
   
   // We will take the last 4 characters to check the extension.
-  uint32 index = filename.length() - 4;
+  const uint32 index = filename.length() - 4;
   std::string pepe = filename.substr(index);
   if (index > 1 && filename.substr(index) == ".jmp") {
     return kReport_NoErrors;
@@ -142,15 +143,14 @@ Report Machine::runFunction(std::string function_call_sentence) {
   // Create a machine and a parser to compile the code received by parameter.
   Machine other_machine;
   Compiler other_compiler;
-  Report report;
-  report = other_compiler.compile(&other_machine, function_call_sentence, -1); // -1 as theres no line number
+  Report report = other_compiler.compile(&other_machine, std::move(function_call_sentence), -1); // -1 as theres no line number
   if (report != kReport_NoErrors) { return report; }
 
   // Once compiled we will concatenate both machines command lists.
   // The result will be, this_machine = this_machine + other_machine;
-  int32 this_machine_initial_num_commands = numCommands();
+  const int32 this_machine_initial_num_commands = numCommands();
   pushBackOtherMachineCommandList(&other_machine);
-  int32 num_commands_added = other_machine.numCommands();
+  const int32 num_commands_added = other_machine.numCommands();
 
   // Now we will execute the complete command list
   int32 index = this_machine_initial_num_commands;
@@ -237,13 +237,13 @@ std::string Machine::getCurrentScript() const{
 
 
 void Machine::addCommand(const CommandType type) {
-  Command cmd = { type, "" };
+  const Command cmd = { type, "" };
   cmd_list_.push_back(cmd);
   cmd_list_length_++;
 }
 
 void Machine::addCommand(const CommandType type, const char* name) {
-  Command cmd = { type, name };
+  const Command cmd = { type, name };
   if (cmd.name_ != "RESULT") { // Temporal tokens waiting for result no added.
     cmd_list_.push_back(cmd);
     cmd_list_length_++;
@@ -253,8 +253,8 @@ void Machine::addCommand(const CommandType type, const char* name) {
   }
 }
 
-void Machine::addCommand(const CommandType type, const std::string name) {
-  Command cmd = { type, name.c_str() };
+void Machine::addCommand(const CommandType type, const std::string& name) {
+  const Command cmd = { type, name.c_str() };
   if (cmd.name_ != "RESULT") {
     cmd_list_.push_back(cmd);
     cmd_list_length_++;
@@ -292,7 +292,7 @@ Command Machine::getCommand(const int32 list_index) {
   return cmd_list_[list_index];
 }
 
-const int32 Machine::numCommands() {
+int32 Machine::numCommands() const {
   return cmd_list_length_;
 }
 
@@ -328,7 +328,7 @@ Report Machine::registerVariable(const char *name,
   }
 
   // if the variable is not registered yet, we will add a new one to the registry.
-  variable_registry_.push_back({ name, type, ptr_to_var });
+  variable_registry_.emplace_back(name, type, ptr_to_var);
   variable_registry_length_++;
 
   return kReport_NoErrors;
@@ -367,7 +367,7 @@ void Machine::addGlobalVariablePack(const char* name) {
 }
 
 Report Machine::addGlobalVariableToCurrentPack(const Variable variable) {
-  int32 length = global_variable_pack_list_[current_global_variable_pack_].var.size();
+  const int32 length = global_variable_pack_list_[current_global_variable_pack_].var.size();
   for (int32 i = 0; i < length; ++i) {
     if (global_variable_pack_list_[current_global_variable_pack_].var[i].name_ == variable.name_) {
       ReportError("Multiple definition of the variable: " + variable.name_);
@@ -378,16 +378,16 @@ Report Machine::addGlobalVariableToCurrentPack(const Variable variable) {
   return kReport_NoErrors;
 }
 
-Report Machine::addGlobalVariableToCurrentPack(const char* name, const Value value) {
-  int32 length = global_variable_pack_list_[current_global_variable_pack_].var.size();
+Report Machine::addGlobalVariableToCurrentPack(const char* name, const Value& value) {
+  const int32 length = global_variable_pack_list_[current_global_variable_pack_].var.size();
   for (int32 i = 0; i < length; ++i) {
     if (global_variable_pack_list_[current_global_variable_pack_].var[i].name_ == name) {
-      std::string n = name;
+      const std::string n = name;
       ReportError("Multiple definition of the variable: " + n);
       return kReport_VariableDefinedTwice;
     }
   }
-  global_variable_pack_list_[current_global_variable_pack_].var.push_back({ name, value });
+  global_variable_pack_list_[current_global_variable_pack_].var.emplace_back(name, value);
   return kReport_NoErrors;
 }
 
@@ -435,9 +435,9 @@ Variable* Machine::getVariable(const std::string& variable_name) {
     }
   }
   else { // Separate "camera.position" ->>>> to "camera"(pack) and "position"(var)
-    std::string pack_name = variable_name.substr(0, index); // not including "."
-    std::string var_name = variable_name.substr(index + 1); // to ignore "."
-    index = 0;
+    const std::string pack_name = variable_name.substr(0, index); // not including "."
+    const std::string var_name = variable_name.substr(index + 1); // to ignore "."
+
     // looking for the pack
     for (int32 i = 0; i < global_variable_pack_list_length_; ++i) {
       if (global_variable_pack_list_[i].name == pack_name) {
@@ -481,7 +481,7 @@ Report Machine::registerFunction(const char* name,
   }
 
   // if the variable is not registered yet, we will add a new one to the registry.
-  function_registry_.push_back({ name, function_ptr });
+  function_registry_.emplace_back(name, function_ptr);
   function_registry_length_++;
 
   return kReport_NoErrors;
@@ -553,7 +553,7 @@ Report Machine::addDefinedFunction(const char* name, const int32 command_index) 
 }
 
 int32 Machine::getDefinedFunctionID(const char* name) {
-  std::string function_name = name;
+  const std::string function_name = name;
   for (int32 i = 0; i < defined_function_list_length_; ++i) {
     if (defined_function_list_[i].name == function_name) {
       return defined_function_list_[i].command_index;
@@ -595,7 +595,7 @@ void Machine::removeDefinedFunction(const int32 id) {
 *******************************************************************************/
 
 void Machine::addFunction(const int32 origin_id) {
-  function_list_.push_back({ origin_id });
+  function_list_.emplace_back(origin_id);
   function_list_length_++;
 }
 
@@ -620,7 +620,7 @@ void Machine::removeCurrentFunction() {
   removeFunction(function_list_length_ - 1);
 }
 
-const int32 Machine::numActiveFunctions() {
+int32 Machine::numActiveFunctions() const {
   return function_list_length_;
 }
 
@@ -628,12 +628,12 @@ const int32 Machine::numActiveFunctions() {
 ***                             STACK METHODS                                ***
 *******************************************************************************/
 
-void Machine::addValueToTheStack(const Value value) {
-  stack_.value.push_back(value);
-  stack_.length++;
+void Machine::addValueToTheStack(const Value& value) const {
+    stack_.value.push_back(value);
+    stack_.length++;
 }
 
-Value Machine::getAndRemoveTheLastAddedStackValue() {
+Value Machine::getAndRemoveTheLastAddedStackValue() const {
   Value value;
   if (stack_.length <= 0) {
     ReportWarning(" Trying to extract a value from an empty stack.");
@@ -645,7 +645,7 @@ Value Machine::getAndRemoveTheLastAddedStackValue() {
   return value;
 }
 
-int32 Machine::numStackValues() {
+int32 Machine::numStackValues() const {
   return stack_.length;
 }
 
@@ -656,9 +656,8 @@ int32 Machine::numStackValues() {
 int32 Machine::getInteger(const char* variable_name, const char* variable_pack_name) {
   VariablePack* varpack = nullptr;
   Variable* var = nullptr;
-  int32 length = 0;
-  int32 i = 0;
-  for (i = 0; i < global_variable_pack_list_length_; ++i) {
+  
+  for (int32 i = 0; i < global_variable_pack_list_length_; ++i) {
     if (global_variable_pack_list_[i].name == variable_pack_name) {
       varpack = &global_variable_pack_list_[i];
       break;
@@ -670,8 +669,8 @@ int32 Machine::getInteger(const char* variable_name, const char* variable_pack_n
     return -99999;
   }
 
-  length = varpack->var.size();
-  for (i = 0; i < length; ++i) {
+  const int32 length = varpack->var.size();
+  for (int32 i = 0; i < length; ++i) {
     if (varpack->var[i].name_ == variable_name) {
       var = &varpack->var[i];
       break;
@@ -694,9 +693,8 @@ int32 Machine::getInteger(const char* variable_name, const char* variable_pack_n
 float32 Machine::getFloat(const char* variable_name, const char* variable_pack_name) {
   VariablePack* varpack = nullptr;
   Variable* var = nullptr;
-  int32 length = 0;
-  int32 i = 0;
-  for (i = 0; i < global_variable_pack_list_length_; ++i) {
+
+  for (int32 i = 0; i < global_variable_pack_list_length_; ++i) {
     if (global_variable_pack_list_[i].name == variable_pack_name) {
       varpack = &global_variable_pack_list_[i];
       break;
@@ -708,8 +706,8 @@ float32 Machine::getFloat(const char* variable_name, const char* variable_pack_n
     return -99999.0f;
   }
 
-  length = varpack->var.size();
-  for (i = 0; i < length; ++i) {
+  const int32 length = varpack->var.size();
+  for (int32 i = 0; i < length; ++i) {
     if (varpack->var[i].name_ == variable_name) {
       var = &varpack->var[i];
       break;
@@ -733,9 +731,8 @@ float32 Machine::getFloat(const char* variable_name, const char* variable_pack_n
 std::string Machine::getString(const char* variable_name, const char* variable_pack_name) {
   VariablePack* varpack = nullptr;
   Variable* var = nullptr;
-  int32 length = 0;
-  int32 i = 0;
-  for (i = 0; i < global_variable_pack_list_length_; ++i) {
+
+  for (int32 i = 0; i < global_variable_pack_list_length_; ++i) {
     if (global_variable_pack_list_[i].name == variable_pack_name) {
       varpack = &global_variable_pack_list_[i];
       break;
@@ -747,8 +744,8 @@ std::string Machine::getString(const char* variable_name, const char* variable_p
     return "ERROR";
   }
 
-  length = varpack->var.size();
-  for (i = 0; i < length; ++i) {
+  const int32 length = varpack->var.size();
+  for (int32 i = 0; i < length; ++i) {
     if (varpack->var[i].name_ == variable_name) {
       var = &varpack->var[i];
       break;

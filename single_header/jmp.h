@@ -13,14 +13,15 @@
 #ifndef __JMP_SINGLE_HEADER_H__
 #define __JMP_SINGLE_HEADER_H__ 1
 
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 #include <fstream>
+#include <utility>
 #include <vector>
-#include <math.h>
+#include <cmath>
 #include <Windows.h>
 
-namespace JMP {
+namespace JMP_SH { // JMP_SingleHeader
 
 // Forward declaration
 class Machine;
@@ -223,15 +224,15 @@ enum CommandType {
 
 #pragma region REPORTS
 
-void ReportMsg(std::string msg) {
+void ReportMsg(const std::string& msg) {
   OutputDebugString(msg.c_str());
 }
 
-void ReportError(std::string error) {
+void ReportError(const std::string& error) {
   ReportMsg(" ERROR: " + error + ".\n");
 }
 
-void ReportWarning(std::string warning) {
+void ReportWarning(const std::string& warning) {
   ReportMsg(" WARNING: " + warning + ".\n");
 }
 
@@ -386,7 +387,8 @@ class Value {
     return *this;
   }
 
-  void print() {
+  void print() const
+  {
     switch (type_) {
     case kValueType_Float: { printf("%f\n", float_); }  break;
     case kValueType_Integer: { printf("%d\n", integer_); } break;
@@ -394,56 +396,64 @@ class Value {
     }
   }
 
-  float32 Sin() {
+  float32 Sin() const
+  {
     if (type_ == kValueType_Float) { return sinf(float_); }
     if (type_ == kValueType_Integer) { return sinf((float32)integer_); }
     ReportWarning(" Trying to calculate a SIN of a non number value");
     return INITIALIZATION_VALUE;
   }
 
-  float32 Cos() {
+  float32 Cos() const
+  {
     if (type_ == kValueType_Float) { return cosf(float_); }
     if (type_ == kValueType_Integer) { return cosf((float32)integer_); }
     ReportWarning(" Trying to calculate a COS of a non number value");
     return INITIALIZATION_VALUE;
   }
 
-  float32 Tan() {
+  float32 Tan() const
+  {
     if (type_ == kValueType_Float) { return tanf(float_); }
     if (type_ == kValueType_Integer) { return tanf((float32)integer_); }
     ReportWarning(" Trying to calculate a TAN of a non number value");
     return INITIALIZATION_VALUE;
   }
 
-  float32 ASin() {
+  float32 ASin() const
+  {
     if (type_ == kValueType_Float) { return asinf(float_); }
     if (type_ == kValueType_Integer) { return asinf((float32)integer_); }
     ReportWarning(" Trying to calculate a ASIN of a non number value");
     return INITIALIZATION_VALUE;
   }
 
-  float32 ACos() {
+  float32 ACos() const
+  {
     if (type_ == kValueType_Float) { return acosf(float_); }
     if (type_ == kValueType_Integer) { return acosf((float32)integer_); }
     ReportWarning(" Trying to calculate a ACOS of a non number value");
     return INITIALIZATION_VALUE;
   }
 
-  float32 ATan() {
+  float32 ATan() const
+  {
     if (type_ == kValueType_Float) { return atanf(float_); }
     if (type_ == kValueType_Integer) { return atanf((float32)integer_); }
     ReportWarning(" Trying to calculate a ATAN of a non number value");
     return INITIALIZATION_VALUE;
   }
 
-  float32 getAsFloat() {
+  float32 getAsFloat() const
+  {
     if (type_ == kValueType_Float) { return float_; }
     if (type_ == kValueType_Integer) { return (float32)integer_; }
     ReportWarning(" Trying to get a float from a non-number value");
     return INITIALIZATION_VALUE;
   }
 
-  int32 getAsInteger() {
+  int32 getAsInteger() const
+  {
     if (type_ == kValueType_Integer) { return integer_; }
     if (type_ == kValueType_Float) { return (int32)float_; }
     ReportWarning(" Trying to get an integer from a non-number value");
@@ -985,7 +995,7 @@ class Variable {
     value_ = { text_value };
   }
 
-  Variable(const char* name, Value value) {
+  Variable(const char* name, const Value& value) {
     is_registered_ = false;
     name_ = name;
     pointer_to_the_original_ = nullptr;
@@ -1119,7 +1129,8 @@ class Variable {
     return kReport_InvalidValueType;
   }
 
-  const Value getValue() {
+  const Value getValue() const
+  {
     if (!is_registered_) {
       return value_;
     }
@@ -1279,7 +1290,7 @@ class TokenManager {
 /*******************************   METHODS   **********************************/
 
   /// Default copy constructor.
-  TokenManager(const TokenManager& copy);
+  TokenManager(const TokenManager& copy) = delete;
   /// Assignment operator.
   TokenManager& operator=(const TokenManager& copy);
 
@@ -1409,11 +1420,12 @@ class TokenManager {
     return -1; // No maatching close parenthesis found.
   }
 
-  const uint32 numTokens() {
+  uint32 numTokens() const
+  {
     return token_list_length_;
   }
 
-  const bool areAnyCommaTokenInList() {
+  bool areAnyCommaTokenInList() {
     for (int32 i = 0; i < token_list_length_; ++i) {
       if (token_list_[i].text_ == ",") {
         return true;
@@ -1514,19 +1526,19 @@ class Function {
     return *this;
   }
 
-  Report addVariable(const Variable variable) {
+  Report addVariable(const Variable& variable) {
     variable_list_.push_back(variable);
     variable_list_length_++;
     return kReport_NoErrors;
   }
 
-  Report addVariable(const char* name, const Value value) {
+  Report addVariable(const char* name, const Value& value) {
     variable_list_.push_back({ name, value });
     variable_list_length_++;
     return kReport_NoErrors;
   }
 
-  const int32 getVariableID(const std::string& variable_name) {
+  int32 getVariableID(const std::string& variable_name) {
     for (int32 i = 0; i < variable_list_length_; ++i) {
       if (variable_list_[i].name_ == variable_name) {
         return i;
@@ -1544,11 +1556,13 @@ class Function {
     return nullptr;
   }
 
-  const int32 numVariables() {
+  int32 numVariables() const
+  {
     return variable_list_length_;
   }
 
-  const int32 originID() {
+  int32 originID() const
+  {
     return origin_id_;
   }
 
@@ -1623,7 +1637,8 @@ class Command {
     return kValueType_None;
   }
 
-  const bool isDigit(const char8& character) {
+  bool isDigit(const char8& character) const
+  {
     switch (character) {
     case '0': case '1': case '2': case '3': case '4':
     case '5': case '6': case '7': case '8': case '9':
@@ -1634,32 +1649,32 @@ class Command {
 
 /****************************  METHODS PROTOTYPES  ****************************/
 
-  Report execute(Machine* machine, int32& next_command_to_execute);
-  Report executeAddition(Machine* machine, int32& next_command_to_execute);
-  Report executeSubstraction(Machine* machine, int32& next_command_to_execute);
-  Report executeMultiply(Machine* machine, int32& next_command_to_execute);
-  Report executeDivision(Machine* machine, int32& next_command_to_execute);
-  Report executePower(Machine* machine, int32& next_command_to_execute);
-  Report executeEqualAssignment(Machine* machine, int32& next_command_to_execute);
-  Report executeGreaterThanComparison(Machine* machine, int32& next_command_to_execute);
-  Report executeLowerThanComparison(Machine* machine, int32& next_command_to_execute);
-  Report executeGreaterOrEqualThanComparison(Machine* machine, int32& next_command_to_execute);
-  Report executeLowerOrEqualThanComparison(Machine* machine, int32& next_command_to_execute);
-  Report executeEqualThanComparison(Machine* machine, int32& next_command_to_execute);
-  Report executeNotEqualThanComparison(Machine* machine, int32& next_command_to_execute);
-  Report executePushToTheStack(Machine* machine, int32& next_command_to_execute);
-  Report executeFunctionDefinition(Machine* machine, int32& next_command_to_execute);
-  Report executeFunctionCall(Machine* machine, int32& next_command_to_execute);
-  Report executeFunctionReturn(Machine* machine, int32& next_command_to_execute);
-  Report executeFunctionEnd(Machine* machine, int32& next_command_to_execute);
-  Report executeFunctionNumParams(Machine* machine, int32& next_command_to_execute);
-  Report executeFunctionParam(Machine* machine, int32& next_command_to_execute);
-  Report executeFinishedConditionalOrLoop(Machine* machine, int32& next_command_to_execute);
-  Report executeConditionToEvaluate(Machine* machine, int32& next_command_to_execute);
-  Report executeVariableDefinition(Machine* machine, int32& next_command_to_execute);
-  Report executeVariablePackDefinition(Machine* machine, int32& next_command_to_execute);
-  Report executeVariablePackEnd(Machine* machine, int32& next_command_to_execute);
-  Report executeLoopStartPoint(Machine* machine, int32& next_command_to_execute);
+  Report execute(Machine* machine, int32& id);
+  Report executeAddition(Machine* machine, int32& next_cmd_id) const;
+  Report executeSubstraction(Machine* machine, int32& next_cmd_id) const;
+  Report executeMultiply(Machine* machine, int32& next_cmd_id) const;
+  Report executeDivision(Machine* machine, int32& next_cmd_id) const;
+  Report executePower(Machine* machine, int32& next_cmd_id) const;
+  Report executeEqualAssignment(Machine* machine, int32& next_cmd_id) const;
+  Report executeGreaterThanComparison(Machine* machine, int32& next_cmd_id) const;
+  Report executeLowerThanComparison(Machine* machine, int32& next_cmd_id) const;
+  Report executeGreaterOrEqualThanComparison(Machine* machine, int32& next_cmd_id) const;
+  Report executeLowerOrEqualThanComparison(Machine* machine, int32& next_cmd_id) const;
+  Report executeEqualThanComparison(Machine* machine, int32& next_cmd_id) const;
+  Report executeNotEqualThanComparison(Machine* machine, int32& next_cmd_id) const;
+  Report executePushToTheStack(Machine* machine, int32& next_cmd_id);
+  Report executeFunctionDefinition(Machine* machine, int32& next_cmd_id) const;
+  Report executeFunctionCall(Machine* machine, int32& next_cmd_id) const;
+  Report executeFunctionReturn(Machine* machine, int32& next_cmd_id) const;
+  Report executeFunctionEnd(Machine* machine, int32& next_cmd_id) const;
+  Report executeFunctionNumParams(Machine* machine, int32& next_cmd_id) const;
+  Report executeFunctionParam(Machine* machine, int32& next_cmd_id) const;
+  Report executeFinishedConditionalOrLoop(Machine* machine, int32& next_cmd_id) const;
+  Report executeConditionToEvaluate(Machine* machine, int32& next_cmd_id) const;
+  Report executeVariableDefinition(Machine* machine, int32& next_cmd_id) const;
+  Report executeVariablePackDefinition(Machine* machine, int32& next_cmd_id) const;
+  Report executeVariablePackEnd(Machine* machine, int32& next_cmd_id) const;
+  Report executeLoopStartPoint(Machine* machine, int32& next_cmd_id) const;
 
 }; /* Command */
 
@@ -1684,9 +1699,9 @@ private:
   /*******************************   METHODS   **********************************/
 
     /// Default copy constructor.
-  Compiler(const Compiler& copy);
+  Compiler(const Compiler& copy) = delete;
   /// Assignment operator.
-  Compiler& operator=(const Compiler& copy);
+  Compiler& operator=(const Compiler& copy) = delete;
 
 public:
 
@@ -1715,7 +1730,8 @@ public:
     tag_list_.clear();
   }
 
-  void replaceSpacesFromQuotes(std::string& sentence, char8 replacement = '_') {
+  void replaceSpacesFromQuotes(std::string& sentence, char8 replacement = '_') const
+  {
 
     uint32 length = sentence.length();
 
@@ -1732,7 +1748,8 @@ public:
 
   }
 
-  void recoverSpacesFromQuotes(std::string & sentence, char8 replacement = '_') {
+  void recoverSpacesFromQuotes(std::string & sentence, char8 replacement = '_') const
+  {
     uint32 length = sentence.length();
 
     if (sentence[0] == '"') {
@@ -1744,7 +1761,8 @@ public:
   }
 
 
-  const bool isSeparator(const char8& character) {
+  bool isSeparator(const char8& character) const
+  {
     switch (character) {
     case ' ': case ',': case ';': case '?': case '!': case '^':
     case '+': case '-': case '*': case '/': case '=': case '%':
@@ -1754,14 +1772,16 @@ public:
     return false;
   }
 
-  const bool isBlankSpace(const char8& character) {
+  bool isBlankSpace(const char8& character) const
+  {
     if (character == ' ') {
       return true;
     }
     return false;
   }
 
-  const bool isLetter(const char8& character) {
+  bool isLetter(const char8& character) const
+  {
     if ((character >= 'a' && character <= 'z') ||
       (character >= 'A' && character <= 'Z') ||
       (character == '"') || (character == '_')) { // needed for quotes.
@@ -1770,7 +1790,8 @@ public:
     return false;
   }
 
-  const bool isDigit(const char8& character) {
+  bool isDigit(const char8& character) const
+  {
     switch (character) {
     case '0': case '1': case '2': case '3': case '4':
     case '5': case '6': case '7': case '8': case '9':
@@ -1779,7 +1800,8 @@ public:
     return false;
   }
 
-  const bool isKeyword(const std::string& word) {
+  bool isKeyword(const std::string& word) const
+  {
 
     if (word == "IF" || word == "ELSE" ||                   // Conditionals
       word == "FUNC" || word == "RETURN" ||               // Functions
@@ -1794,7 +1816,7 @@ public:
     tag_list_.push_back(tag);
   }
 
-  const Tag getAndRemoveLastTag() {
+  Tag getAndRemoveLastTag() {
     int32 num_tags = tag_list_.size();
     if (num_tags <= 0) {
       Report report = kReport_NoTagsToDelete;
@@ -1945,13 +1967,13 @@ public:
   Report compileTokens(Machine* machine, TokenManager& token_manager);
   Report compileKeywordToken(Machine* machine, TokenManager& token_manager, int32& token_index);
   Report compileSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
-  const bool checkIfAndCompileCommasContent(Machine* machine, TokenManager& token_manager);
+  bool checkIfAndCompileCommasContent(Machine* machine, TokenManager& token_manager);
   Report compileOpenParenthesisSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
   Report compileCloseBracketsSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
-  Report compileAdditionOperationSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
-  Report compileMultiplyOperationSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
-  Report compilePowerOperationSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
-  Report compileComparisonOperationSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
+  Report compileAdditionOperationSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index) const;
+  Report compileMultiplyOperationSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index) const;
+  Report compilePowerOperationSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index) const;
+  Report compileComparisonOperationSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index) const;
   Report compileEqualSeparatorToken(Machine* machine, TokenManager& token_manager, int32& token_index);
   Report compileConditionalKeywordToken(Machine* machine, TokenManager& token_manager, int32& token_index);
   Report compileReturnKeywordToken(Machine* machine, TokenManager& token_manager, int32& token_index);
@@ -2081,7 +2103,7 @@ public:
     global_variable_pack_list_.clear();
   }
 
-  Report Machine::processFile(std::string script_filename) {
+  Report Machine::processFile(const std::string& script_filename) {
 
     // To force .jmp extensions.
     if (checkExtension(script_filename) != kReport_NoErrors) {
@@ -2134,7 +2156,8 @@ public:
 
 
 
-  Report Machine::checkExtension(std::string filename) {
+  Report Machine::checkExtension(const std::string& filename) const
+  {
 
     // We will take the last 4 characters to check the extension.
     uint32 index = filename.length() - 4;
@@ -2160,7 +2183,7 @@ public:
     Machine other_machine;
     Compiler other_compiler;
     Report report;
-    report = other_compiler.compile(&other_machine, function_call_sentence, -1); // -1 as theres no line number
+    report = other_compiler.compile(&other_machine, std::move(function_call_sentence), -1); // -1 as theres no line number
     if (report != kReport_NoErrors) { return report; }
 
     // Once compiled we will concatenate both machines command lists.
@@ -2265,7 +2288,7 @@ public:
     }
   }
 
-  void Machine::addCommand(const CommandType type, const std::string name) {
+  void Machine::addCommand(const CommandType type, const std::string& name) {
     Command cmd = { type, name.c_str() };
     if (cmd.name_ != "RESULT") {
       cmd_list_.push_back(cmd);
@@ -2304,7 +2327,8 @@ public:
     return cmd_list_[list_index];
   }
 
-  const int32 Machine::numCommands() {
+  int32 Machine::numCommands() const
+  {
     return cmd_list_length_;
   }
 
@@ -2387,7 +2411,7 @@ public:
     return kReport_NoErrors;
   }
 
-  Report Machine::addGlobalVariableToCurrentPack(const char* name, const Value value) {
+  Report Machine::addGlobalVariableToCurrentPack(const char* name, const Value& value) {
     int32 length = global_variable_pack_list_[current_global_variable_pack_].var.size();
     for (int32 i = 0; i < length; ++i) {
       if (global_variable_pack_list_[current_global_variable_pack_].var[i].name_ == name) {
@@ -2618,16 +2642,19 @@ public:
     removeFunction(function_list_length_ - 1);
   }
 
-  const int32 Machine::numActiveFunctions() {
+  int32 Machine::numActiveFunctions() const
+  {
     return function_list_length_;
   }
 
-  void Machine::addValueToTheStack(const Value value) {
+  void Machine::addValueToTheStack(const Value& value) const
+  {
     stack_.value.push_back(value);
     stack_.length++;
   }
 
-  Value Machine::getAndRemoveTheLastAddedStackValue() {
+  Value Machine::getAndRemoveTheLastAddedStackValue() const
+  {
     Value value;
     if (stack_.length <= 0) {
       ReportWarning(" Trying to extract a value from an empty stack.");
@@ -2639,7 +2666,8 @@ public:
     return value;
   }
 
-  int32 Machine::numStackValues() {
+  int32 Machine::numStackValues() const
+  {
     return stack_.length;
   }
 
@@ -2763,9 +2791,9 @@ private:
 /*******************************   METHODS   **********************************/
 
   /// Default copy constructor.
-  Machine(const Machine& copy);
+  Machine(const Machine& copy) = delete;
   /// Assignment operator.
-  Machine& operator=(const Machine& copy);
+  Machine& operator=(const Machine& copy) = delete;
 
 }; /* Machine */
 
@@ -2810,7 +2838,8 @@ Report Command::execute(Machine* machine, int32& id) {
   return kReport_InvalidCommandType;
 }
 
-Report Command::executeAddition(Machine* machine, int32& next_cmd_id) {
+Report Command::executeAddition(Machine* machine, int32& next_cmd_id) const
+{
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -2819,7 +2848,8 @@ Report Command::executeAddition(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 
-Report Command::executeSubstraction(Machine* machine, int32& next_cmd_id) {
+Report Command::executeSubstraction(Machine* machine, int32& next_cmd_id) const
+{
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -2828,7 +2858,8 @@ Report Command::executeSubstraction(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 
-Report Command::executeMultiply(Machine* machine, int32& next_cmd_id) {
+Report Command::executeMultiply(Machine* machine, int32& next_cmd_id) const
+{
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -2837,7 +2868,8 @@ Report Command::executeMultiply(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 
-Report Command::executeDivision(Machine* machine, int32& next_cmd_id) {
+Report Command::executeDivision(Machine* machine, int32& next_cmd_id) const
+{
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -2846,7 +2878,8 @@ Report Command::executeDivision(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 
-Report Command::executePower(Machine* machine, int32& next_cmd_id) {
+Report Command::executePower(Machine* machine, int32& next_cmd_id) const
+{
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -2855,7 +2888,8 @@ Report Command::executePower(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 
-Report Command::executeEqualAssignment(Machine* machine, int32& next_cmd_id) {
+Report Command::executeEqualAssignment(Machine* machine, int32& next_cmd_id) const
+{
   // Check if the variable is being assigned inside a pack definition.
   std::string pack_name = machine->getCurrentGlobalVariablePackName();
   std::string var_name = name_;
@@ -2875,7 +2909,8 @@ Report Command::executeEqualAssignment(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 
-Report Command::executeGreaterThanComparison(Machine* machine, int32& next_cmd_id) {
+Report Command::executeGreaterThanComparison(Machine* machine, int32& next_cmd_id) const
+{
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -2884,7 +2919,8 @@ Report Command::executeGreaterThanComparison(Machine* machine, int32& next_cmd_i
   return kReport_NoErrors;
 }
 
-Report Command::executeLowerThanComparison(Machine* machine, int32& next_cmd_id) {
+Report Command::executeLowerThanComparison(Machine* machine, int32& next_cmd_id) const
+{
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -2893,7 +2929,8 @@ Report Command::executeLowerThanComparison(Machine* machine, int32& next_cmd_id)
   return kReport_NoErrors;
 }
 
-Report Command::executeGreaterOrEqualThanComparison(Machine* machine, int32& next_cmd_id) {
+Report Command::executeGreaterOrEqualThanComparison(Machine* machine, int32& next_cmd_id) const
+{
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -2902,7 +2939,8 @@ Report Command::executeGreaterOrEqualThanComparison(Machine* machine, int32& nex
   return kReport_NoErrors;
 }
 
-Report Command::executeLowerOrEqualThanComparison(Machine* machine, int32& next_cmd_id) {
+Report Command::executeLowerOrEqualThanComparison(Machine* machine, int32& next_cmd_id) const
+{
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -2911,7 +2949,8 @@ Report Command::executeLowerOrEqualThanComparison(Machine* machine, int32& next_
   return kReport_NoErrors;
 }
 
-Report Command::executeEqualThanComparison(Machine* machine, int32& next_cmd_id) {
+Report Command::executeEqualThanComparison(Machine* machine, int32& next_cmd_id) const
+{
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -2920,7 +2959,8 @@ Report Command::executeEqualThanComparison(Machine* machine, int32& next_cmd_id)
   return kReport_NoErrors;
 }
 
-Report Command::executeNotEqualThanComparison(Machine* machine, int32& next_cmd_id) {
+Report Command::executeNotEqualThanComparison(Machine* machine, int32& next_cmd_id) const
+{
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -2962,13 +3002,15 @@ Report Command::executePushToTheStack(Machine* machine, int32& next_cmd_id) {
 }
 
 
-Report Command::executeFunctionDefinition(Machine* machine, int32& next_cmd_id) {
+Report Command::executeFunctionDefinition(Machine* machine, int32& next_cmd_id) const
+{
   next_cmd_id++; // Jump to the next command
   machine->addFunction(next_cmd_id);
   return kReport_NoErrors;
 }
 
-Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) {
+Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) const
+{
 
   // First step will be checking if the function is called PRINT.
   if (name_ == "PRINT") {
@@ -3050,7 +3092,8 @@ Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) {
   return kReport_CallingUndefinedFunction;
 }
 
-Report Command::executeFunctionReturn(Machine* machine, int32& next_cmd_id) {
+Report Command::executeFunctionReturn(Machine* machine, int32& next_cmd_id) const
+{
 
   Report report = kReport_NoErrors;
   // We will check if theres any fu
@@ -3071,7 +3114,8 @@ Report Command::executeFunctionReturn(Machine* machine, int32& next_cmd_id) {
   return report;
 }
 
-Report Command::executeFunctionEnd(Machine* machine, int32& next_cmd_id) {
+Report Command::executeFunctionEnd(Machine* machine, int32& next_cmd_id) const
+{
 
   Report report = kReport_NoErrors;
   // We will check if theres any fu
@@ -3092,7 +3136,8 @@ Report Command::executeFunctionEnd(Machine* machine, int32& next_cmd_id) {
   return report;
 }
 
-Report Command::executeFunctionNumParams(Machine* machine, int32& next_cmd_id) {
+Report Command::executeFunctionNumParams(Machine* machine, int32& next_cmd_id) const
+{
 
   if (machine->numStackValues() < atoi(name_.c_str())) {
     ReportError("Function couldn't take enough params from the stack");
@@ -3102,7 +3147,8 @@ Report Command::executeFunctionNumParams(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 
-Report Command::executeFunctionParam(Machine* machine, int32& next_cmd_id) {
+Report Command::executeFunctionParam(Machine* machine, int32& next_cmd_id) const
+{
 
   Function* function = machine->getCurrentFunction();
   if (function) {
@@ -3118,7 +3164,8 @@ Report Command::executeFunctionParam(Machine* machine, int32& next_cmd_id) {
 
 
 
-Report Command::executeFinishedConditionalOrLoop(Machine* machine, int32& next_cmd_id) {
+Report Command::executeFinishedConditionalOrLoop(Machine* machine, int32& next_cmd_id) const
+{
 
   if (name_ == "conditional") {
     next_cmd_id++; // jump to the next command on the list
@@ -3141,7 +3188,8 @@ Report Command::executeFinishedConditionalOrLoop(Machine* machine, int32& next_c
 }
 
 
-Report Command::executeConditionToEvaluate(Machine* machine, int32& next_cmd_id) {
+Report Command::executeConditionToEvaluate(Machine* machine, int32& next_cmd_id) const
+{
 
   if (!machine->getCurrentFunction()) {
     Report report = kReport_ConditionOutsideOfAFunction;
@@ -3194,7 +3242,8 @@ Report Command::executeConditionToEvaluate(Machine* machine, int32& next_cmd_id)
 }
 
 
-Report Command::executeVariableDefinition(Machine* machine, int32& next_cmd_id) {
+Report Command::executeVariableDefinition(Machine* machine, int32& next_cmd_id) const
+{
 
   Function* function = machine->getCurrentFunction();
   // Allocate the variable in the current function scope list.
@@ -3209,7 +3258,8 @@ Report Command::executeVariableDefinition(Machine* machine, int32& next_cmd_id) 
   return machine->addGlobalVariableToCurrentPack({ name_.c_str() });
 }
 
-Report Command::executeVariablePackDefinition(Machine* machine, int32& next_cmd_id) {
+Report Command::executeVariablePackDefinition(Machine* machine, int32& next_cmd_id) const
+{
   if (machine->getCurrentFunction()) {
     ReportError("Variable packs cannot be defined inside functions. Pack name: " + name_);
     return kReport_VariablePackCantBeDefinedInsideAFunction;
@@ -3220,13 +3270,15 @@ Report Command::executeVariablePackDefinition(Machine* machine, int32& next_cmd_
   return kReport_NoErrors;
 }
 
-Report Command::executeVariablePackEnd(Machine* machine, int32& next_cmd_id) {
+Report Command::executeVariablePackEnd(Machine* machine, int32& next_cmd_id) const
+{
   machine->restartCurrentGlobalVariablePackIndex();
   next_cmd_id++; // Just go to the next step that would be the condition check.
   return kReport_NoErrors;
 }
 
-Report Command::executeLoopStartPoint(Machine* machine, int32& next_cmd_id) {
+Report Command::executeLoopStartPoint(Machine* machine, int32& next_cmd_id) const
+{
   if (!machine->getCurrentFunction()) {
     Report report = kReport_LoopOutsideOfAFunction;
     PrintReport(report);
@@ -3378,7 +3430,7 @@ Report Compiler::compileSeparatorToken(Machine* machine,
   return kReport_NoErrors;
 }
 
-const bool Compiler::checkIfAndCompileCommasContent(Machine * machine,
+  bool Compiler::checkIfAndCompileCommasContent(Machine * machine,
   TokenManager & token_manager) {
 
   if (token_manager.areAnyCommaTokenInList()) {
@@ -3464,7 +3516,8 @@ Report Compiler::compileCloseBracketsSeparatorToken(Machine* machine,
 
 Report Compiler::compileAdditionOperationSeparatorToken(Machine* machine,
   TokenManager& token_manager,
-  int32& token_index) {
+  int32& token_index) const
+{
   Token operator_token = token_manager.getToken(token_index);
   Token right_operand = token_manager.getToken(token_index + 1);
   Token left_operand = token_manager.getToken(token_index - 1);
@@ -3491,7 +3544,8 @@ Report Compiler::compileAdditionOperationSeparatorToken(Machine* machine,
 
 Report Compiler::compileMultiplyOperationSeparatorToken(Machine* machine,
   TokenManager& token_manager,
-  int32& token_index) {
+  int32& token_index) const
+{
 
   Token operator_token = token_manager.getToken(token_index);
   Token right_operand = token_manager.getToken(token_index + 1);
@@ -3519,7 +3573,8 @@ Report Compiler::compileMultiplyOperationSeparatorToken(Machine* machine,
 
 Report Compiler::compilePowerOperationSeparatorToken(Machine* machine,
   TokenManager& token_manager,
-  int32& token_index) {
+  int32& token_index) const
+{
 
   Token operator_token = token_manager.getToken(token_index);
   Token right_operand = token_manager.getToken(token_index + 1);
@@ -3542,7 +3597,8 @@ Report Compiler::compilePowerOperationSeparatorToken(Machine* machine,
 
 Report Compiler::compileComparisonOperationSeparatorToken(Machine* machine,
   TokenManager& token_manager,
-  int32& token_index) {
+  int32& token_index) const
+{
 
   Token operator_token = token_manager.getToken(token_index);
   Token right_operand = token_manager.getToken(token_index + 1);
@@ -3820,6 +3876,6 @@ Report Compiler::compileVariablePackKeywordToken(Machine* machine,
 Machine::Stack Machine::stack_;
 
 
-}; /* JMP */
+}; /* JMP_SH */
 
 #endif /* __JMP_SINGLE_HEADER_H__ */

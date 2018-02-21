@@ -14,7 +14,7 @@
 #include "value.h"
 #include <string>
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 /// Command type.
 enum CommandType {
@@ -68,7 +68,7 @@ class Command {
   /// Default class constructor.
   Command();
   /// Default class constructor.
-  Command(const CommandType type, const char* name);
+  Command(CommandType type, const char* name);
   /// Default class destructor.
   ~Command();
   /// Default copy constructor.
@@ -84,235 +84,235 @@ class Command {
   * @brief Executes a command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report execute(class Machine* machine, int32& next_command_to_execute);
+  Report execute(class Machine* machine, int32& next_cmd_id);
 
   /**
   * @brief Executes the Addition command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeAddition(class Machine* machine, int32& next_command_to_execute);
+  Report executeAddition(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the Substraction command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeSubstraction(class Machine* machine, int32& next_command_to_execute);
+  Report executeSubstraction(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the Multiply command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeMultiply(class Machine* machine, int32& next_command_to_execute);
+  Report executeMultiply(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the Division command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeDivision(class Machine* machine, int32& next_command_to_execute);
+  Report executeDivision(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the Power command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executePower(class Machine* machine, int32& next_command_to_execute);
+  Report executePower(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the EqualAssigment command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeEqualAssignment(class Machine* machine, int32& next_command_to_execute);
+  Report executeEqualAssignment(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the GreaterThan command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeGreaterThanComparison(class Machine* machine, int32& next_command_to_execute);
+  Report executeGreaterThanComparison(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the LowerThan command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeLowerThanComparison(class Machine* machine, int32& next_command_to_execute);
+  Report executeLowerThanComparison(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the GreaterOrEqualThan command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeGreaterOrEqualThanComparison(class Machine* machine, int32& next_command_to_execute);
+  Report executeGreaterOrEqualThanComparison(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the LowerOrEqualThan command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeLowerOrEqualThanComparison(class Machine* machine, int32& next_command_to_execute);
+  Report executeLowerOrEqualThanComparison(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the EqualThan command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeEqualThanComparison(class Machine* machine, int32& next_command_to_execute);
+  Report executeEqualThanComparison(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the NotEqualThan command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeNotEqualThanComparison(class Machine* machine, int32& next_command_to_execute);
+  Report executeNotEqualThanComparison(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the PushToTheStack command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executePushToTheStack(class Machine* machine, int32& next_command_to_execute);
+  Report executePushToTheStack(class Machine* machine, int32& next_cmd_id);
 
   /**
   * @brief Executes the FunctionDefinition command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeFunctionDefinition(class Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionDefinition(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the FunctionCall command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeFunctionCall(class Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionCall(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the FunctionReturn command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeFunctionReturn(class Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionReturn(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the FunctionEnd command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeFunctionEnd(class Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionEnd(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the FunctionNumParams command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeFunctionNumParams(class Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionNumParams(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the FunctionParam command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeFunctionParam(class Machine* machine, int32& next_command_to_execute);
+  Report executeFunctionParam(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the FinishedConditionalOrLoop command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeFinishedConditionalOrLoop(class Machine* machine, int32& next_command_to_execute);
+  Report executeFinishedConditionalOrLoop(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the ConditionToEvaluate command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeConditionToEvaluate(class Machine* machine, int32& next_command_to_execute);
+  Report executeConditionToEvaluate(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the VariableDefinition command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeVariableDefinition(class Machine* machine, int32& next_command_to_execute);
+  Report executeVariableDefinition(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the VariablePackDefinition command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeVariablePackDefinition(class Machine* machine, int32& next_command_to_execute);
+  Report executeVariablePackDefinition(class Machine* machine, int32& next_cmd_id) const;
   
   /**
   * @brief Executes the VariablePackEnd command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeVariablePackEnd(class Machine* machine, int32& next_command_to_execute);
+  Report executeVariablePackEnd(class Machine* machine, int32& next_cmd_id) const;
 
   /**
   * @brief Executes the LoopStartPoint command from the list.
   *
   * @param machine Machine where the command is allocated.
-  * @param next_command_to_execute Index of the next step of the execution list.
+  * @param next_cmd_id Index of the next step of the execution list.
   * @return Report with possible errors, or NoErrors if succesful.
   */
-  Report executeLoopStartPoint(class Machine* machine, int32& next_command_to_execute);
+  Report executeLoopStartPoint(class Machine* machine, int32& next_cmd_id) const;
 
 
 /*****************************  TYPE CHECKING  ********************************/
@@ -330,7 +330,7 @@ class Command {
   * @param character Character to analyze.
   * @return true if it is a digit.
   */
-  const bool isDigit(const char8& character);
+  bool isDigit(const char8& character) const;
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***
 *******************************************************************************/
@@ -339,20 +339,6 @@ class Command {
   CommandType type_;
   /// Name of the command.
   std::string name_;
-
- private:
-
-/*******************************************************************************
-***                            PRIVATE METHODS                               ***
-*******************************************************************************/
-
-
-
-
-/*******************************************************************************
-***                          PRIVATE ATTRIBUTES                              ***
-*******************************************************************************/
-
 
 
 }; /* Command */

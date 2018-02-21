@@ -10,7 +10,7 @@
 #include "token.h"
 #include "compiler.h"
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 /*******************************************************************************
 ***                       CONSTRUCTOR & DESTRUCTOR                           ***

@@ -13,7 +13,7 @@
 #include <Windows.h>
 #include <string>
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 /*******************************************************************************
 ***                       CONSTRUCTOR & DESTRUCTOR                           ***
@@ -47,40 +47,41 @@ Command & Command::operator=(const Command& copy) {
 ***                              EXECUTION                                   ***
 *******************************************************************************/
 
-Report Command::execute(Machine* machine, int32& id) {
+Report Command::execute(Machine* machine, int32& next_cmd_id) {
 
   switch (type_) {
-    case JMP_PROJECT::kCommandType_PushToTheStack: { return executePushToTheStack(machine, id); }
-    case JMP_PROJECT::kCommandType_Addition: { return executeAddition(machine, id); }
-    case JMP_PROJECT::kCommandType_Substraction: { return executeSubstraction(machine, id); }
-    case JMP_PROJECT::kCommandType_Multiply: { return executeMultiply(machine, id); }
-    case JMP_PROJECT::kCommandType_Division: { return executeDivision(machine, id); }
-    case JMP_PROJECT::kCommandType_Power: { return executePower(machine, id); }
-    case JMP_PROJECT::kCommandType_EqualAssigment: { return executeEqualAssignment(machine, id); }
-    case JMP_PROJECT::kCommandType_GreaterThanComparison: { return executeGreaterThanComparison(machine, id); }
-    case JMP_PROJECT::kCommandType_LowerThanComparison: { return executeLowerThanComparison(machine, id); }
-    case JMP_PROJECT::kCommandType_GreaterOrEqualThanComparison: { return executeGreaterOrEqualThanComparison(machine, id); }
-    case JMP_PROJECT::kCommandType_LowerOrEqualThanComparison: { return executeLowerOrEqualThanComparison(machine, id); }
-    case JMP_PROJECT::kCommandType_EqualThanComparison: { return executeEqualThanComparison(machine, id); }
-    case JMP_PROJECT::kCommandType_NotEqualThanComparison: { return executeNotEqualThanComparison(machine, id); }
-    case JMP_PROJECT::kCommandType_FunctionDefinition: { return executeFunctionDefinition(machine, id); }
-    case JMP_PROJECT::kCommandType_FunctionCall: { return executeFunctionCall(machine, id); }
-    case JMP_PROJECT::kCommandType_FunctionReturn: { return executeFunctionReturn(machine, id); }
-    case JMP_PROJECT::kCommandType_FunctionEnd: { return executeFunctionEnd(machine, id); }
-    case JMP_PROJECT::kCommandType_FunctionNumParameters: { return executeFunctionNumParams(machine, id); }
-    case JMP_PROJECT::kCommandType_FunctionParameter: { return executeFunctionParam(machine, id); }
-    case JMP_PROJECT::kCommandType_FinishedConditionalOrLoop: { return executeFinishedConditionalOrLoop(machine, id); }
-    case JMP_PROJECT::kCommandType_ConditionToEvaluate: { return executeConditionToEvaluate(machine, id); }
-    case JMP_PROJECT::kCommandType_VariableDefinition: { return executeVariableDefinition(machine, id); }
-    case JMP_PROJECT::kCommandType_VariablePackDefinition: { return executeVariablePackDefinition(machine, id); }
-    case JMP_PROJECT::kCommandType_VariablePackEnd: { return executeVariablePackEnd(machine, id); }
-    case JMP_PROJECT::kCommandType_LoopStartPoint: { return executeLoopStartPoint(machine, id); }
+    case JMP::kCommandType_PushToTheStack: { return executePushToTheStack(machine, next_cmd_id); }
+    case JMP::kCommandType_Addition: { return executeAddition(machine, next_cmd_id); }
+    case JMP::kCommandType_Substraction: { return executeSubstraction(machine, next_cmd_id); }
+    case JMP::kCommandType_Multiply: { return executeMultiply(machine, next_cmd_id); }
+    case JMP::kCommandType_Division: { return executeDivision(machine, next_cmd_id); }
+    case JMP::kCommandType_Power: { return executePower(machine, next_cmd_id); }
+    case JMP::kCommandType_EqualAssigment: { return executeEqualAssignment(machine, next_cmd_id); }
+    case JMP::kCommandType_GreaterThanComparison: { return executeGreaterThanComparison(machine, next_cmd_id); }
+    case JMP::kCommandType_LowerThanComparison: { return executeLowerThanComparison(machine, next_cmd_id); }
+    case JMP::kCommandType_GreaterOrEqualThanComparison: { return executeGreaterOrEqualThanComparison(machine, next_cmd_id); }
+    case JMP::kCommandType_LowerOrEqualThanComparison: { return executeLowerOrEqualThanComparison(machine, next_cmd_id); }
+    case JMP::kCommandType_EqualThanComparison: { return executeEqualThanComparison(machine, next_cmd_id); }
+    case JMP::kCommandType_NotEqualThanComparison: { return executeNotEqualThanComparison(machine, next_cmd_id); }
+    case JMP::kCommandType_FunctionDefinition: { return executeFunctionDefinition(machine, next_cmd_id); }
+    case JMP::kCommandType_FunctionCall: { return executeFunctionCall(machine, next_cmd_id); }
+    case JMP::kCommandType_FunctionReturn: { return executeFunctionReturn(machine, next_cmd_id); }
+    case JMP::kCommandType_FunctionEnd: { return executeFunctionEnd(machine, next_cmd_id); }
+    case JMP::kCommandType_FunctionNumParameters: { return executeFunctionNumParams(machine, next_cmd_id); }
+    case JMP::kCommandType_FunctionParameter: { return executeFunctionParam(machine, next_cmd_id); }
+    case JMP::kCommandType_FinishedConditionalOrLoop: { return executeFinishedConditionalOrLoop(machine, next_cmd_id); }
+    case JMP::kCommandType_ConditionToEvaluate: { return executeConditionToEvaluate(machine, next_cmd_id); }
+    case JMP::kCommandType_VariableDefinition: { return executeVariableDefinition(machine, next_cmd_id); }
+    case JMP::kCommandType_VariablePackDefinition: { return executeVariablePackDefinition(machine, next_cmd_id); }
+    case JMP::kCommandType_VariablePackEnd: { return executeVariablePackEnd(machine, next_cmd_id); }
+    case JMP::kCommandType_LoopStartPoint: { return executeLoopStartPoint(machine, next_cmd_id); }
+    default: {}
   }
 
   return kReport_InvalidCommandType;
 }
 
-Report Command::executeAddition(Machine* machine, int32& next_cmd_id) {
+Report Command::executeAddition(Machine* machine, int32& next_cmd_id) const {
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -89,7 +90,7 @@ Report Command::executeAddition(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 
-Report Command::executeSubstraction(Machine* machine, int32& next_cmd_id) {
+Report Command::executeSubstraction(Machine* machine, int32& next_cmd_id) const {
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -98,7 +99,7 @@ Report Command::executeSubstraction(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 
-Report Command::executeMultiply(Machine* machine, int32& next_cmd_id) {
+Report Command::executeMultiply(Machine* machine, int32& next_cmd_id) const {
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -107,7 +108,7 @@ Report Command::executeMultiply(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 
-Report Command::executeDivision(Machine* machine, int32& next_cmd_id) {
+Report Command::executeDivision(Machine* machine, int32& next_cmd_id) const {
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -116,7 +117,7 @@ Report Command::executeDivision(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 
-Report Command::executePower(Machine* machine, int32& next_cmd_id) {
+Report Command::executePower(Machine* machine, int32& next_cmd_id) const {
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -125,7 +126,7 @@ Report Command::executePower(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 
-Report Command::executeEqualAssignment(Machine* machine, int32& next_cmd_id) {
+Report Command::executeEqualAssignment(Machine* machine, int32& next_cmd_id) const {
   // Check if the variable is being assigned inside a pack definition.
   std::string pack_name = machine->getCurrentGlobalVariablePackName();
   std::string var_name = name_;
@@ -145,7 +146,7 @@ Report Command::executeEqualAssignment(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 
-Report Command::executeGreaterThanComparison(Machine* machine, int32& next_cmd_id) {
+Report Command::executeGreaterThanComparison(Machine* machine, int32& next_cmd_id) const {
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -154,7 +155,7 @@ Report Command::executeGreaterThanComparison(Machine* machine, int32& next_cmd_i
   return kReport_NoErrors;
 }
 
-Report Command::executeLowerThanComparison(Machine* machine, int32& next_cmd_id) {
+Report Command::executeLowerThanComparison(Machine* machine, int32& next_cmd_id) const {
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -163,7 +164,7 @@ Report Command::executeLowerThanComparison(Machine* machine, int32& next_cmd_id)
   return kReport_NoErrors;
 }
 
-Report Command::executeGreaterOrEqualThanComparison(Machine* machine, int32& next_cmd_id) {
+Report Command::executeGreaterOrEqualThanComparison(Machine* machine, int32& next_cmd_id) const {
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -172,7 +173,7 @@ Report Command::executeGreaterOrEqualThanComparison(Machine* machine, int32& nex
   return kReport_NoErrors;
 }
 
-Report Command::executeLowerOrEqualThanComparison(Machine* machine, int32& next_cmd_id) {
+Report Command::executeLowerOrEqualThanComparison(Machine* machine, int32& next_cmd_id) const {
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -181,7 +182,7 @@ Report Command::executeLowerOrEqualThanComparison(Machine* machine, int32& next_
   return kReport_NoErrors;
 }
 
-Report Command::executeEqualThanComparison(Machine* machine, int32& next_cmd_id) {
+Report Command::executeEqualThanComparison(Machine* machine, int32& next_cmd_id) const {
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -190,7 +191,7 @@ Report Command::executeEqualThanComparison(Machine* machine, int32& next_cmd_id)
   return kReport_NoErrors;
 }
 
-Report Command::executeNotEqualThanComparison(Machine* machine, int32& next_cmd_id) {
+Report Command::executeNotEqualThanComparison(Machine* machine, int32& next_cmd_id) const {
   // Take the last members pushed in the stack
   Value second = machine->getAndRemoveTheLastAddedStackValue();
   Value first = machine->getAndRemoveTheLastAddedStackValue();
@@ -203,7 +204,7 @@ Report Command::executePushToTheStack(Machine* machine, int32& next_cmd_id) {
   
   // We will check if its a quote.
   switch (getNameDataType()) {
-    case JMP_PROJECT::kValueType_None: { 
+    case JMP::kValueType_None: { 
       // this means that its a name of possible variable, so we will check it.
       Variable* variable = machine->getVariable(name_);
       if (!variable) {
@@ -212,13 +213,13 @@ Report Command::executePushToTheStack(Machine* machine, int32& next_cmd_id) {
       }
       machine->addValueToTheStack(variable->getValue());
     } break;
-    case JMP_PROJECT::kValueType_Float: { 
+    case JMP::kValueType_Float: { 
       machine->addValueToTheStack((float32)atof(name_.c_str()));
     } break;
-    case JMP_PROJECT::kValueType_Integer: { 
+    case JMP::kValueType_Integer: { 
       machine->addValueToTheStack((int32)atoi(name_.c_str()));
     } break;
-    case JMP_PROJECT::kValueType_Text: { 
+    case JMP::kValueType_Text: { 
       std::string temp = name_;
       // remove quotes.
       temp.erase(0, 1);
@@ -232,13 +233,13 @@ Report Command::executePushToTheStack(Machine* machine, int32& next_cmd_id) {
 }
 
 
-Report Command::executeFunctionDefinition(Machine* machine, int32& next_cmd_id) {
+Report Command::executeFunctionDefinition(Machine* machine, int32& next_cmd_id) const {
   next_cmd_id++; // Jump to the next command
   machine->addFunction(next_cmd_id);
   return kReport_NoErrors;
 }
 
-Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) {
+Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) const {
 
   // First step will be checking if the function is called PRINT.
   if (name_ == "PRINT") {
@@ -320,7 +321,7 @@ Report Command::executeFunctionCall(Machine* machine, int32& next_cmd_id) {
   return kReport_CallingUndefinedFunction;
 }
 
-Report Command::executeFunctionReturn(Machine* machine, int32& next_cmd_id) {
+Report Command::executeFunctionReturn(Machine* machine, int32& next_cmd_id) const {
 
   Report report = kReport_NoErrors;
   // We will check if theres any fu
@@ -341,7 +342,7 @@ Report Command::executeFunctionReturn(Machine* machine, int32& next_cmd_id) {
   return report;
 }
 
-Report Command::executeFunctionEnd(Machine* machine, int32& next_cmd_id) {
+Report Command::executeFunctionEnd(Machine* machine, int32& next_cmd_id) const {
 
   Report report = kReport_NoErrors;
   // We will check if theres any fu
@@ -362,7 +363,7 @@ Report Command::executeFunctionEnd(Machine* machine, int32& next_cmd_id) {
   return report;
 }
 
-Report Command::executeFunctionNumParams(Machine* machine, int32& next_cmd_id) {
+Report Command::executeFunctionNumParams(Machine* machine, int32& next_cmd_id) const {
 
   if (machine->numStackValues() < atoi(name_.c_str())) {
     ReportError("Function couldn't take enough params from the stack");
@@ -372,7 +373,7 @@ Report Command::executeFunctionNumParams(Machine* machine, int32& next_cmd_id) {
   return kReport_NoErrors;
 }
 
-Report Command::executeFunctionParam(Machine* machine, int32& next_cmd_id) {
+Report Command::executeFunctionParam(Machine* machine, int32& next_cmd_id) const {
 
   Function* function = machine->getCurrentFunction();
   if (function) {
@@ -388,7 +389,7 @@ Report Command::executeFunctionParam(Machine* machine, int32& next_cmd_id) {
 
 
 
-Report Command::executeFinishedConditionalOrLoop(Machine* machine, int32& next_cmd_id) {
+Report Command::executeFinishedConditionalOrLoop(Machine* machine, int32& next_cmd_id) const {
   
   if (name_ == "conditional") {
     next_cmd_id++; // jump to the next command on the list
@@ -411,7 +412,7 @@ Report Command::executeFinishedConditionalOrLoop(Machine* machine, int32& next_c
 }
 
 
-Report Command::executeConditionToEvaluate(Machine* machine, int32& next_cmd_id) {
+Report Command::executeConditionToEvaluate(Machine* machine, int32& next_cmd_id) const {
   
   if (!machine->getCurrentFunction()) {
     Report report = kReport_ConditionOutsideOfAFunction;
@@ -464,7 +465,7 @@ Report Command::executeConditionToEvaluate(Machine* machine, int32& next_cmd_id)
 }
 
 
-Report Command::executeVariableDefinition(Machine* machine, int32& next_cmd_id) {
+Report Command::executeVariableDefinition(Machine* machine, int32& next_cmd_id) const {
 
   Function* function = machine->getCurrentFunction();
   // Allocate the variable in the current function scope list.
@@ -479,7 +480,7 @@ Report Command::executeVariableDefinition(Machine* machine, int32& next_cmd_id) 
   return machine->addGlobalVariableToCurrentPack({ name_.c_str() });
 }
 
-Report Command::executeVariablePackDefinition(Machine* machine, int32& next_cmd_id) {
+Report Command::executeVariablePackDefinition(Machine* machine, int32& next_cmd_id) const {
   if (machine->getCurrentFunction()) {
     ReportError("Variable packs cannot be defined inside functions. Pack name: " + name_);
     return kReport_VariablePackCantBeDefinedInsideAFunction;
@@ -490,13 +491,13 @@ Report Command::executeVariablePackDefinition(Machine* machine, int32& next_cmd_
   return kReport_NoErrors;
 }
 
-Report Command::executeVariablePackEnd(Machine* machine, int32& next_cmd_id) {
+Report Command::executeVariablePackEnd(Machine* machine, int32& next_cmd_id) const {
   machine->restartCurrentGlobalVariablePackIndex();
   next_cmd_id++; // Just go to the next step that would be the condition check.
   return kReport_NoErrors;
 }
 
-Report Command::executeLoopStartPoint(Machine* machine, int32& next_cmd_id) {
+Report Command::executeLoopStartPoint(Machine* machine, int32& next_cmd_id) const {
   if (!machine->getCurrentFunction()) {
     Report report = kReport_LoopOutsideOfAFunction;
     PrintReport(report);
@@ -512,7 +513,7 @@ Report Command::executeLoopStartPoint(Machine* machine, int32& next_cmd_id) {
 
 
 ValueType Command::getNameDataType() {
-  int32 name_length = name_.size();
+  const int32 name_length = name_.size();
   if (name_length == 0) { return kValueType_None; }
   if (name_[0] == '"' && name_[name_length - 1] == '"') { return kValueType_Text; }
   if (name_[0] == '-' || isDigit(name_[0])) { // Check type of number
@@ -534,11 +535,13 @@ ValueType Command::getNameDataType() {
   return kValueType_None;
 }
 
-const bool Command::isDigit(const char8& character) {
+  bool Command::isDigit(const char8& character) const
+  {
   switch (character) {
-  case '0': case '1': case '2': case '3': case '4':
-  case '5': case '6': case '7': case '8': case '9':
-    return true;
+    case '0': case '1': case '2': case '3': case '4':
+    case '5': case '6': case '7': case '8': case '9':
+      return true;
+    default: {}
   }
   return false;
 }

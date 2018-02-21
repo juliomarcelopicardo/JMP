@@ -13,9 +13,9 @@
 #include "types.h"
 #include <string>
 
-namespace JMP_PROJECT {
+namespace JMP {
 
-#define INITIALIZATION_VALUE -99999
+#define INITIALIZATION_VALUE (-99999)
 #define CONDITION_RESULT_TRUE 30 // Random number
 
 /// Value type.
@@ -40,11 +40,11 @@ class Value {
   /// Default class constructor.
   Value();
   /// Overloaded class constructor.
-  Value(const bool condition_result);
+  Value(bool condition_result);
   /// Overloaded class constructor.
-  Value(const int32 integer_value);
+  Value(int32 integer_value);
   /// Overloaded class constructor.
-  Value(const float32 float_value);
+  Value(float32 float_value);
   /// Overloaded class constructor.
   Value(const char* text_value);
   /// Default class destructor.
@@ -56,7 +56,7 @@ class Value {
 
 
   /// @brief Prints the value.
-  void print();
+  void print() const;
 
 /*****************************  MATH METHODS  *********************************/
 
@@ -65,42 +65,42 @@ class Value {
   *
   * @return Sin of the number or INITIALIZATION_VALUE if its not a number.
   */
-  float32 Sin();
+  float32 Sin() const;
 
   /**
   * @brief Calculates the Cos if the value is a number.
   *
   * @return Cos of the number or INITIALIZATION_VALUE if its not a number.
   */
-  float32 Cos();
+  float32 Cos() const;
 
   /**
   * @brief Calculates the Tan if the value is a number.
   *
   * @return Tan of the number or INITIALIZATION_VALUE if its not a number.
   */
-  float32 Tan();
+  float32 Tan() const;
 
   /**
   * @brief Calculates the ASin if the value is a number.
   *
   * @return ASin of the number or INITIALIZATION_VALUE if its not a number.
   */
-  float32 ASin();
+  float32 ASin() const;
 
   /**
   * @brief Calculates the ACos if the value is a number.
   *
   * @return ACos of the number or INITIALIZATION_VALUE if its not a number.
   */
-  float32 ACos();
+  float32 ACos() const;
 
   /**
   * @brief Calculates the ATan if the value is a number.
   *
   * @return ATan of the number or INITIALIZATION_VALUE if its not a number.
   */
-  float32 ATan();
+  float32 ATan() const;
 
 
 
@@ -120,18 +120,7 @@ class Value {
   /// Integer variable value.
   int32 integer_;
 
- private:
 
-/*******************************************************************************
-***                            PRIVATE METHODS                               ***
-*******************************************************************************/
-
-
-
-
-/*******************************************************************************
-***                          PRIVATE ATTRIBUTES                              ***
-*******************************************************************************/
 
 
 

@@ -16,9 +16,9 @@
 #include <vector>
 #include "report.h"
 
-#define INVALID_FUNCTION_ID -9999
+#define INVALID_FUNCTION_ID (-9999)
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 /// Now we create a list of functions, that will be used to jump between different
 /// function calls, getting it's variabes and being able to go back to the step
@@ -34,7 +34,7 @@ class Function {
   /// Default class constructor.
   Function();
   /// Overloaded class constructor.
-  Function(const int32 origin_id);
+  Function(int32 origin_id);
   /// Default class destructor.
   ~Function();
   /// Default copy constructor.
@@ -51,15 +51,16 @@ class Function {
   * @param variable Variable to push back in the list
   * @return Report with the result of the function.
   */
-  Report addVariable(const Variable variable);
+  Report addVariable(const Variable& variable);
 
   /**
   * @brief Push back an unregistered type variable in the list.
   *
+  * @param name Name of the variable
   * @param value Value of the variable.
   * @return Report with the result of the function.
   */
-  Report addVariable(const char* name, const Value value);
+  Report addVariable(const char* name, const Value& value);
 
 /********************************  GETTERS  ***********************************/
 
@@ -69,7 +70,7 @@ class Function {
   * @param variable_name Name of the variable that we are looking for.
   * @return ID of the variable (position in the list), or INVALID... if error.
   */
-  const int32 getVariableID(const std::string& variable_name);
+  int32 getVariableID(const std::string& variable_name);
 
   /**
   * @brief Looks for a variable in the list.
@@ -84,14 +85,14 @@ class Function {
   *
   * @return List length.
   */
-  const int32 numVariables();
+  int32 numVariables() const;
 
   /**
   * @brief Origin of the function id getter.
   *
   * @return Origin id of the function call, to continue executing.
   */
-  const int32 originID();
+  int32 originID() const;
 
 /*******************************************************************************
 ***                           PUBLIC ATTRIBUTES                              ***

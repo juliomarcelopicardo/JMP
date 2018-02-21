@@ -10,11 +10,10 @@
 #ifndef __JMP_REPORT_H__
 #define __JMP_REPORT_H__ 1
 
-#include <stdint.h>
 #include <string>
 #include "types.h"
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 /*******************************************************************************
 ***                           RESULTS OR REPORTS                             ***
@@ -63,9 +62,9 @@ namespace JMP_PROJECT {
     kReport_UnexpectedComparisonToken,
   };
 
-  void ReportMsg(std::string msg);
-  void ReportError(std::string error);
-  void ReportWarning(std::string warning);
+  void ReportMsg(const std::string& msg);
+  void ReportError(const std::string& error);
+  void ReportWarning(const std::string& warning);
   void PrintReport(Report& report, uint32 line_number = 0);
 
 }; /* JMP_PROJECT */

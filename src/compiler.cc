@@ -9,7 +9,7 @@
 
 #include "compiler.h"
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 /*******************************************************************************
 ***                       CONSTRUCTOR & DESTRUCTOR                           ***
@@ -46,7 +46,7 @@ Report Compiler::compile(Machine* machine,
   // Allocates all the tokens in the manager.
   TokenManager token_manager;
   generateTokens(sentence, token_manager); 
-  token_manager.printTokenList();
+  //token_manager.printTokenList();
 
   // Compile all these tokens.
   Report report = compileTokens(machine, token_manager);
@@ -72,7 +72,7 @@ Report Compiler::compileTokens(Machine* machine, TokenManager& token_manager) {
 
   // Once we checked the basic errors, lets start with the highest priority token.
   int32 id = token_manager.getHighestPriorityTokenIndex();
-  Token token = token_manager.getToken(id);
+  const Token token = token_manager.getToken(id);
   
   if (token.type_ == kTokenType_Keyword) {
     return compileKeywordToken(machine, token_manager, id);
@@ -143,35 +143,35 @@ Report Compiler::compileKeywordToken(Machine* machine,
 Report Compiler::compileSeparatorToken(Machine* machine,
                                        TokenManager& token_manager,
                                        int32& token_index) {
-
-  Token token = token_manager.getToken(token_index);
+  const Token token = token_manager.getToken(token_index);
       
   switch (token.priority_) {
     case ADDITION_OPERATION_PRIORITY: {
       return compileAdditionOperationSeparatorToken(machine, token_manager, token_index);
-    } break;
-    case MULTIPLY_OPERATION_PRIORITY: {
+    }
+  case MULTIPLY_OPERATION_PRIORITY: {
       return compileMultiplyOperationSeparatorToken(machine, token_manager, token_index);
-    } break;
+    } 
     case POWER_OPERATION_PRIORITY: {
       return compilePowerOperationSeparatorToken(machine, token_manager, token_index);
-    } break;
+    } 
     case COMPARISON_PRIORITY: {
       return compileComparisonOperationSeparatorToken(machine, token_manager, token_index);
-    } break;
+    } 
     case EQUAL_PRIORITY: {
       return compileEqualSeparatorToken(machine, token_manager, token_index);
-    } break;
+    } 
+    default: {}
   }
 
   return kReport_NoErrors;
 }
 
-const bool Compiler::checkIfAndCompileCommasContent(Machine * machine, 
+  bool Compiler::checkIfAndCompileCommasContent(Machine * machine, 
                                                     TokenManager & token_manager) {
 
   if (token_manager.areAnyCommaTokenInList()) {
-    int32 num_tokens = token_manager.numTokens();
+    const int32 num_tokens = token_manager.numTokens();
     // Compile tokens with comas recursively.
     for (int32 i = 0; i < num_tokens; ++i) {
       if (token_manager.getToken(i).text_ == ",") {
@@ -202,10 +202,8 @@ Report Compiler::compileOpenParenthesisSeparatorToken(Machine* machine,
                                                       TokenManager& token_manager,
                                                       int32& token_index) {
 
-  Report report = kReport_NoErrors;
-
   // First step will be to find its correspondant closing parenthesis.
-  int32 close_parenthesis_id = token_manager.getNextCloseParenthesisIndex(token_index);
+  const int32 close_parenthesis_id = token_manager.getNextCloseParenthesisIndex(token_index);
   if (close_parenthesis_id == -1) { 
     return kReport_NoMatchingCloseParenthesis; 
   }
@@ -216,12 +214,12 @@ Report Compiler::compileOpenParenthesisSeparatorToken(Machine* machine,
   token_manager.transferParenthesisContent(token_index, close_parenthesis_id, &parenthesis_content);
 
   // Compile the content of the parenthesis.
-  report = compileTokens(machine, parenthesis_content);
+  const Report report = compileTokens(machine, parenthesis_content);
 
   // In case that its a function, then call it.
   token_index--;
   if (token_index >= 0) { // means that theres something behind the parenthesis.
-    Token token = token_manager.getToken(token_index);
+    const Token token = token_manager.getToken(token_index);
     if (token.type_ != kTokenType_Keyword &&
         token.type_ != kTokenType_Separator &&
         token.priority_ != 0) {      
@@ -239,13 +237,13 @@ Report Compiler::compileCloseBracketsSeparatorToken(Machine* machine,
                                                     int32& token_index) {
   
   // Will untag the end of a loop, conditional or function.
-  Tag tag = getAndRemoveLastTag();
+  const Tag tag = getAndRemoveLastTag();
   switch (tag) {
-    case JMP_PROJECT::kTag_None:{ } break;
-    case JMP_PROJECT::kTag_Loop: { machine->addCommand(kCommandType_FinishedConditionalOrLoop, "loop"); } break;
-    case JMP_PROJECT::kTag_Conditional: { machine->addCommand(kCommandType_FinishedConditionalOrLoop, "conditional"); } break;
-    case JMP_PROJECT::kTag_Function: { machine->addCommand(kCommandType_FunctionEnd, "endfunc"); } break;
-    case JMP_PROJECT::kTag_VariablePack: { machine->addCommand(kCommandType_VariablePackEnd, "endvarpack"); } break;
+    case JMP::kTag_None:{ } break;
+    case JMP::kTag_Loop: { machine->addCommand(kCommandType_FinishedConditionalOrLoop, "loop"); } break;
+    case JMP::kTag_Conditional: { machine->addCommand(kCommandType_FinishedConditionalOrLoop, "conditional"); } break;
+    case JMP::kTag_Function: { machine->addCommand(kCommandType_FunctionEnd, "endfunc"); } break;
+    case JMP::kTag_VariablePack: { machine->addCommand(kCommandType_VariablePackEnd, "endvarpack"); } break;
   
   } 
   return kReport_NoErrors;
@@ -253,10 +251,10 @@ Report Compiler::compileCloseBracketsSeparatorToken(Machine* machine,
 
 Report Compiler::compileAdditionOperationSeparatorToken(Machine* machine,
                                                         TokenManager& token_manager, 
-                                                        int32& token_index) {
-  Token operator_token = token_manager.getToken(token_index);
-  Token right_operand = token_manager.getToken(token_index + 1);
-  Token left_operand = token_manager.getToken(token_index - 1);
+                                                        int32& token_index) const {
+  const Token operator_token = token_manager.getToken(token_index);
+  const Token right_operand = token_manager.getToken(token_index + 1);
+  const Token left_operand = token_manager.getToken(token_index - 1);
 
   // Push the operands to the stack
   machine->addCommand(kCommandType_PushToTheStack, left_operand.text_);
@@ -280,11 +278,10 @@ Report Compiler::compileAdditionOperationSeparatorToken(Machine* machine,
 
 Report Compiler::compileMultiplyOperationSeparatorToken(Machine* machine,
                                                         TokenManager& token_manager,
-                                                        int32& token_index) {
-
-  Token operator_token = token_manager.getToken(token_index);
-  Token right_operand = token_manager.getToken(token_index + 1);
-  Token left_operand = token_manager.getToken(token_index - 1);
+                                                        int32& token_index) const {
+  const Token operator_token = token_manager.getToken(token_index);
+  const Token right_operand = token_manager.getToken(token_index + 1);
+  const Token left_operand = token_manager.getToken(token_index - 1);
 
   // Push the operands to the stack
   machine->addCommand(kCommandType_PushToTheStack, left_operand.text_);
@@ -308,11 +305,11 @@ Report Compiler::compileMultiplyOperationSeparatorToken(Machine* machine,
 
 Report Compiler::compilePowerOperationSeparatorToken(Machine* machine,
                                                      TokenManager& token_manager,
-                                                     int32& token_index) {
+                                                     int32& token_index) const {
 
-  Token operator_token = token_manager.getToken(token_index);
-  Token right_operand = token_manager.getToken(token_index + 1);
-  Token left_operand = token_manager.getToken(token_index - 1);
+  const Token operator_token = token_manager.getToken(token_index);
+  const Token right_operand = token_manager.getToken(token_index + 1);
+  const Token left_operand = token_manager.getToken(token_index - 1);
 
   // Push the operands to the stack
   machine->addCommand(kCommandType_PushToTheStack, left_operand.text_);
@@ -331,11 +328,11 @@ Report Compiler::compilePowerOperationSeparatorToken(Machine* machine,
 
 Report Compiler::compileComparisonOperationSeparatorToken(Machine* machine,
                                                           TokenManager& token_manager,
-                                                          int32& token_index) {
+                                                          int32& token_index) const {
 
-  Token operator_token = token_manager.getToken(token_index);
-  Token right_operand = token_manager.getToken(token_index + 1);
-  Token left_operand = token_manager.getToken(token_index - 1);
+  const Token operator_token = token_manager.getToken(token_index);
+  const Token right_operand = token_manager.getToken(token_index + 1);
+  const Token left_operand = token_manager.getToken(token_index - 1);
 
   // Push the operands to the stack
   machine->addCommand(kCommandType_PushToTheStack, left_operand.text_);
@@ -377,7 +374,7 @@ Report Compiler::compileEqualSeparatorToken(Machine* machine,
                                             TokenManager& token_manager,
                                             int32& token_index) {
 
-  int32 num_tokens = token_manager.numTokens();
+  const int32 num_tokens = token_manager.numTokens();
   if (num_tokens < 3 || token_index <= 0) {
     return kReport_EqualNeedTokensBeforeAndAfter;
   }
@@ -385,10 +382,10 @@ Report Compiler::compileEqualSeparatorToken(Machine* machine,
   TokenManager temp;
   token_manager.transferContentBetweenIDsInclusive(token_index + 1, num_tokens - 1, &temp);
   // Compile the content of this manager recursively.
-  Report report = compileTokens(machine, temp);
+  compileTokens(machine, temp);
   // Gets the token before the equal symbol.
   token_index--;
-  Token token = token_manager.getToken(token_index);
+  const Token token = token_manager.getToken(token_index);
   machine->addCommand(kCommandType_EqualAssigment, token.text_);
   // Then delete the content of from the one behind the "=", to the end of the sentence.
   token_manager.transferContentBetweenIDsInclusive(token_index, num_tokens - 1);
@@ -634,7 +631,7 @@ void Compiler::generateTokens(std::string& sentence, TokenManager& token_manager
 
 void Compiler::generateNextToken() {
 
-  uint32 sentence_length = sentence_.length();
+  const uint32 sentence_length = sentence_.length();
 
   // Restarts the current token.
   current_token_.text_ = "\0";
@@ -720,9 +717,9 @@ void Compiler::generateNextToken() {
 
 void Compiler::generateCurrentTokenInitialPriority() {
   switch (current_token_.type_) {
-    case JMP_PROJECT::kTokenType_Keyword: { current_token_.priority_ = KEYWORD_PRIORITY; } break;
-    case JMP_PROJECT::kTokenType_Separator: {
-      std::string separator = current_token_.text_;
+    case JMP::kTokenType_Keyword: { current_token_.priority_ = KEYWORD_PRIORITY; } break;
+    case JMP::kTokenType_Separator: {
+      const std::string separator = current_token_.text_;
       if (separator == "}") { current_token_.priority_ = CLOSE_BRACKETS_PRIORITY; }
       else if (separator == "(") { current_token_.priority_ = OPEN_PARENTHESIS_PRIORITY; }
       else if (separator == "^") { current_token_.priority_ = POWER_OPERATION_PRIORITY; }
@@ -743,7 +740,7 @@ void Compiler::generateCurrentTokenInitialPriority() {
 ***                            TEXT MODIFIERS                                ***
 *******************************************************************************/
 
-void Compiler::replaceSpacesFromQuotes(std::string& sentence, char8 replacement) {
+void Compiler::replaceSpacesFromQuotes(std::string& sentence, char8 replacement) const {
 
   uint32 length = sentence.length();
   
@@ -760,7 +757,7 @@ void Compiler::replaceSpacesFromQuotes(std::string& sentence, char8 replacement)
   
 }
 
-void Compiler::recoverSpacesFromQuotes(std::string & sentence, char8 replacement) {
+void Compiler::recoverSpacesFromQuotes(std::string & sentence, char8 replacement) const {
   uint32 length = sentence.length();
 
   if (sentence[0] == '"') {	
@@ -776,24 +773,25 @@ void Compiler::recoverSpacesFromQuotes(std::string & sentence, char8 replacement
 ***                        TEXT ANALYZING GETTERS                            ***
 *******************************************************************************/
 
-const bool Compiler::isSeparator(const char8& character) {
+bool Compiler::isSeparator(const char8& character) const {
   switch (character) {
     case ' ': case ',': case ';': case '?': case '!': case '^':
     case '+': case '-': case '*': case '/': case '=': case '%':
     case '(': case ')': case '{': case '}': case '<': case '>':
     return true;
+    default: {};
   }
   return false;
 }
 
-const bool Compiler::isBlankSpace(const char8& character) {
+bool Compiler::isBlankSpace(const char8& character) const {
   if (character == ' ') { 
     return true; 
   }
   return false;
 }
 
-const bool Compiler::isLetter(const char8& character) { 
+bool Compiler::isLetter(const char8& character) const { 
   if ((character >= 'a' && character <= 'z') || 
       (character >= 'A' && character <= 'Z') || 
       (character == '"') || (character == '_')) { // needed for quotes.
@@ -802,16 +800,17 @@ const bool Compiler::isLetter(const char8& character) {
   return false;
 }
 
-const bool Compiler::isDigit(const char8& character) {
+bool Compiler::isDigit(const char8& character) const {
   switch (character) {
     case '0': case '1': case '2': case '3': case '4':  
     case '5': case '6': case '7': case '8': case '9':
-    return true;
+      return true;
+    default: {};
   }
   return false;
 }
 
-const bool Compiler::isKeyword(const std::string& word) {
+bool Compiler::isKeyword(const std::string& word) const {
 
   if (word == "IF" || word == "ELSE" ||                   // Conditionals
       word == "FUNC" || word == "RETURN" ||               // Functions
@@ -832,7 +831,7 @@ void Compiler::addTag(const Tag tag) {
   tag_list_.push_back(tag);
 }
 
-const Tag Compiler::getAndRemoveLastTag() {
+  Tag Compiler::getAndRemoveLastTag() {
   int32 num_tags = tag_list_.size();
   if (num_tags <= 0) {
     Report report = kReport_NoTagsToDelete;

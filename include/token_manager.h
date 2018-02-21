@@ -14,7 +14,7 @@
 #include "token.h"
 #include <vector>
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 
 /// Class used to save and manage the tokens.
@@ -30,6 +30,10 @@ class TokenManager {
   TokenManager();
   /// Default class destructor.
   ~TokenManager();
+  /// Default copy constructor.
+  TokenManager(const TokenManager& copy) = delete;
+  /// Assignment operator.
+  TokenManager& operator=(const TokenManager& copy) = delete;
 
 /*****************************  LIST METHODS  *********************************/
 
@@ -40,7 +44,7 @@ class TokenManager {
   * @param type Type of the token.
   * @param priority Priority of the token, necessary for compiling in order.
   */
-  void addToken(const char* text, const TokenType type = kTokenType_None, int32 priority = 0);
+  void addToken(const char* text, TokenType type = kTokenType_None, int32 priority = 0);
 
   /**
   * @brief Adds a new token to the list.
@@ -109,7 +113,7 @@ class TokenManager {
   * @param list_index Index of the token in the list.
   * @return Token from the list.
   */
-  Token getToken(const int32 list_index);
+  Token getToken(int32 list_index);
 
   /**
   * @brief Gets the index with the highest priority token.
@@ -131,14 +135,14 @@ class TokenManager {
   *
   * @return Token list length.
   */
-  const uint32 numTokens();
+  uint32 numTokens() const;
 
   /**
   * @brief Gets if theres any comma as token in the list.
   *
   * @return True if any comma exists.
   */
-  const bool areAnyCommaTokenInList();
+  bool areAnyCommaTokenInList();
 
 
 /*******************************  DEBUGGING  **********************************/
@@ -162,16 +166,6 @@ class TokenManager {
 
 
  private:
-
-/*******************************************************************************
-***                            PRIVATE METHODS                               ***
-*******************************************************************************/
-
-
-  /// Default copy constructor.
-  TokenManager(const TokenManager& copy);
-  /// Assignment operator.
-  TokenManager& operator=(const TokenManager& copy);
 
 /*******************************************************************************
 ***                          PRIVATE ATTRIBUTES                              ***

@@ -11,27 +11,27 @@
 #include "jmp.h"
 #include <Windows.h>
 
-void RegFunc(std::vector<JMP_PROJECT::Value>& params) {
+void RegFunc(std::vector<JMP::Value>& params) {
 
-  for (JMP_PROJECT::uint32 i = 0; i < params.size(); ++i) {
-    params[i].print();
+  for (auto& param : params) {
+    param.print();
   }
 }
 
-JMP_PROJECT::int32 main() {
+JMP::int32 main() {
 
   OutputDebugString("\n Starting application... \n\n");
 
-  JMP_PROJECT::Machine machine;
+  JMP::Machine machine;
 
-  JMP_PROJECT::float32 variable = 3.02f;
   machine.processFile("../scripts/script.jmp");
-  //float pedro = machine.getFloat("paco");
-  //machine.registerVariable("variable", JMP_PROJECT::kValueType_Float, &variable);
-  //machine.registerFunction("ExternalFunction", &RegFunc);
-  //machine.runFunction("PrintExample(40, \"texto\", 40.34)");
-  //machine.runFunction("Example(11111,22222)");
-  //machine.runFunction("Example2()");
+  float pedro = machine.getFloat("paco");
+  JMP::float32 variable = 3.02f;
+  machine.registerVariable("variable", JMP::kValueType_Float, &variable);
+  machine.registerFunction("ExternalFunction", &RegFunc);
+  machine.runFunction("PrintExample(40, \"texto\", 40.34)");
+  machine.runFunction("Example(11111,22222)");
+  machine.runFunction("Example2()");
   machine.runFunction();
 
   /*
@@ -53,25 +53,25 @@ JMP_PROJECT::int32 main() {
 #include "../single_header/jmp.h"
 #include <Windows.h>
 
-void RegFunc(std::vector<JMP::Value>& params) {
+void RegFunc(std::vector<JMP_SH::Value>& params) {
 
-  for (JMP::uint32 i = 0; i < params.size(); ++i) {
+  for (JMP_SH::uint32 i = 0; i < params.size(); ++i) {
     params[i].print();
   }
 }
 
-JMP::int32 main() {
+JMP_SH::int32 main() {
 
   OutputDebugString("\n Starting application... \n\n");
 
-  JMP::Machine machine;
+  JMP_SH::Machine machine;
 
-  JMP::float32 variable = 3.02f;
+  JMP_SH::float32 variable = 3.02f;
   machine.processFile("../scripts/script.jmp");
   std::string textico = machine.getString("w", "camera");
-  JMP::int32 integer = machine.getInteger("x", "camera");
-  JMP::float32 floaat = machine.getFloat("z", "camera");
-  machine.registerVariable("variable", JMP::kValueType_Float, &variable);
+  JMP_SH::int32 integer = machine.getInteger("x", "camera");
+  JMP_SH::float32 floaat = machine.getFloat("z", "camera");
+  machine.registerVariable("variable", JMP_SH::kValueType_Float, &variable);
   machine.registerFunction("ExternalFunction", &RegFunc);
   //machine.runFunction("PrintExample(40, \"texto\", 40.34)");
   //machine.runFunction("Example(11111,22222)");

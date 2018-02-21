@@ -9,7 +9,7 @@
 
 #include "function.h"
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 /*******************************************************************************
 ***                       CONSTRUCTOR & DESTRUCTOR                           ***
@@ -51,13 +51,13 @@ Function& Function::operator=(const Function& copy) {
 ***                             MAIN METHODS                                 ***
 *******************************************************************************/
 
-Report Function::addVariable(const Variable variable) {
+Report Function::addVariable(const Variable& variable) {
   variable_list_.push_back(variable);
   variable_list_length_++;
   return kReport_NoErrors;
 }
 
-Report Function::addVariable(const char* name, const Value value) {
+Report Function::addVariable(const char* name, const Value& value) {
   variable_list_.push_back({ name, value });
   variable_list_length_++;
   return kReport_NoErrors;
@@ -67,7 +67,7 @@ Report Function::addVariable(const char* name, const Value value) {
 ***                               GETTERS                                    ***
 *******************************************************************************/
 
-const int32 Function::getVariableID(const std::string& variable_name) {
+  int32 Function::getVariableID(const std::string& variable_name) {
   for (int32 i = 0; i < variable_list_length_; ++i) {
     if (variable_list_[i].name_ == variable_name) {
       return i;
@@ -85,11 +85,13 @@ Variable* Function::getVariable(const std::string& variable_name) {
   return nullptr;
 }
 
-const int32 Function::numVariables() {
+  int32 Function::numVariables() const
+  {
   return variable_list_length_;
 }
 
-const int32 Function::originID() {
+  int32 Function::originID() const
+  {
   return origin_id_;
 }
 

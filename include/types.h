@@ -10,9 +10,9 @@
 #ifndef __JMP_TYPES_H__
 #define __JMP_TYPES_H__ 1
 
-#include <stdint.h>
+#include <cstdint>
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 /*******************************************************************************
 ***                                 TYPES                                    ***

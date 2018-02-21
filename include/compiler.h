@@ -21,7 +21,7 @@
 #define EQUAL_PRIORITY 95
 #define FUNCTION_NAME_PRIORITY 10
 #define DEFAULT_PRIORITY 0
-#define COMMA_PRIORITY -10
+#define COMMA_PRIORITY (-10)
 #define MAX_PARAMETERS_PER_FUNCTION 30
 
 
@@ -29,7 +29,7 @@
 #include "token_manager.h"
 #include "machine.h"
 
-namespace JMP_PROJECT {
+namespace JMP {
 
 enum Tag {
   kTag_None = 0,
@@ -52,6 +52,10 @@ class Compiler {
   Compiler();
   /// Default class destructor.
   ~Compiler();
+  /// Default copy constructor.
+  Compiler(const Compiler& copy) = delete;
+  /// Assignment operator.
+  Compiler& operator=(const Compiler& copy) = delete;
 
 /***************************  PARSER CORE METHODS  ****************************/
 
@@ -103,7 +107,7 @@ class Compiler {
   * @param token_manager Manager where all the tokens are allocated.
   * @return True if any comma is found, false otherwise.
   */
-  const bool checkIfAndCompileCommasContent(Machine* machine, TokenManager& token_manager);
+  bool checkIfAndCompileCommasContent(Machine* machine, TokenManager& token_manager);
 
 /*******************  SEPARATORS TOKEN COMPILER METHODS  **********************/
 
@@ -141,7 +145,7 @@ class Compiler {
   */
   Report compileAdditionOperationSeparatorToken(Machine* machine,
                                                 TokenManager& token_manager,
-                                                int32& token_index);
+                                                int32& token_index) const;
 
   /**
   * @brief Compile the mathematical multiply operation separator type token.
@@ -153,7 +157,7 @@ class Compiler {
   */
   Report compileMultiplyOperationSeparatorToken(Machine* machine,
                                                 TokenManager& token_manager,
-                                                int32& token_index);
+                                                int32& token_index) const;
 
   /**
   * @brief Compile the mathematical power operation separator type token.
@@ -165,7 +169,7 @@ class Compiler {
   */
   Report compilePowerOperationSeparatorToken(Machine* machine,
                                              TokenManager& token_manager,
-                                             int32& token_index);
+                                             int32& token_index) const;
 
   /**
   * @brief Compile the mathematical comparison operation separator type token.
@@ -177,7 +181,7 @@ class Compiler {
   */
   Report compileComparisonOperationSeparatorToken(Machine* machine,
                                                   TokenManager& token_manager,
-                                                  int32& token_index);
+                                                  int32& token_index) const;
 
   /**
   * @brief Compile the equal separator type token.
@@ -297,7 +301,7 @@ class Compiler {
   * @param sentence Text to analyze.
   * @param replacement Char used to replace blank spaces.
   */
-  void replaceSpacesFromQuotes(std::string& sentence, char8 replacement = '_');
+  void replaceSpacesFromQuotes(std::string& sentence, char8 replacement = '_') const;
 
   /**
   * @brief Inverse of replaceSpacesFromQuotes function. 
@@ -306,7 +310,7 @@ class Compiler {
   * @param sentence Text to analyze.
   * @param replacement Char that will be replaced for blank spaces.
   */
-  void recoverSpacesFromQuotes(std::string& sentence, char8 replacement = '_');
+  void recoverSpacesFromQuotes(std::string& sentence, char8 replacement = '_') const;
 
 
 /************************  TEXT ANALYZING GETTERS *****************************/
@@ -317,14 +321,14 @@ class Compiler {
   * @param character Character to analyze.
   * @return true if it is a separator.
   */
-  const bool isSeparator(const char8& character);
+  bool isSeparator(const char8& character) const;
   /**
   * @brief Character analyzer getter, tells you if the character is a blank space.
   *
   * @param character Character to analyze.
   * @return true if it is a blank space.
   */
-  const bool isBlankSpace(const char8& character);
+  bool isBlankSpace(const char8& character) const;
   /**
   * @brief Character analyzer getter, tells you if the character is a letter.
   *
@@ -332,21 +336,21 @@ class Compiler {
   * @param character Character to analyze.
   * @return true if it is a letter.
   */
-  const bool isLetter(const char8& character);
+  bool isLetter(const char8& character) const;
   /**
   * @brief Character analyzer getter, tells you if the character is a digit.
   *
   * @param character Character to analyze.
   * @return true if it is a digit.
   */
-  const bool isDigit(const char8& character);
+  bool isDigit(const char8& character) const;
   /**
   * @brief String analyzer getter, tells you if the string is a keyword.
   *
   * @param word String to analyze.
   * @return true if it is a keyword.
   */
-  const bool isKeyword(const std::string& word);
+  bool isKeyword(const std::string& word) const;
 
 
 
@@ -355,16 +359,16 @@ class Compiler {
   /**
   * @brief Create a new tag as marking a new function, conditional or loop beginning.
   *
-  * @param Tag Sets if the new tag will be a conditional, loop or function.
+  * @param tag Sets if the new tag will be a conditional, loop or function.
   */
-  void addTag(const Tag tag);
+  void addTag(Tag tag);
 
   /**
   * @brief Will return the last tag added, and will delete it from the tag list.
   *
   * @return Last tag added to the list.
   */
-  const Tag getAndRemoveLastTag();
+  Tag getAndRemoveLastTag();
 
 
 /*******************************************************************************
@@ -380,16 +384,6 @@ class Compiler {
 
 
  private:
-
-/*******************************************************************************
-***                            PRIVATE METHODS                               ***
-*******************************************************************************/
-
-
-  /// Default copy constructor.
-  Compiler(const Compiler& copy);
-  /// Assignment operator.
-  Compiler& operator=(const Compiler& copy);
 
 /*******************************************************************************
 ***                          PRIVATE ATTRIBUTES                              ***
