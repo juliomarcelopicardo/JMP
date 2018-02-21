@@ -23,7 +23,7 @@ void ReportWarning(const std::string& warning) {
 void PrintReport(Report& report, uint32 line_number) {
   switch (report) {
     case JMP::kReport_EmptyLine: {
-      ReportWarning("Line " + std::to_string(line_number) + ": Nothing to compile..");
+      //ReportWarning("Line " + std::to_string(line_number) + ": Nothing to compile..");
       report = kReport_NoErrors;
     } break;
     case JMP::kReport_NoTokensToCompile: {
