@@ -58,6 +58,20 @@ class Value {
   /// @brief Prints the value.
   void print() const;
 
+  /**
+  * @brief Float value getter. Will cast in case that its type is integer.
+  *
+  * @return Float value or casted integer one.
+  */
+  float32 getAsFloat() const;
+
+  /**
+  * @brief Integer value getter. Will cast in case that its type is float.
+  *
+  * @return Integer value or casted float one.
+  */
+  int32 getAsInteger() const;
+
 /*****************************  MATH METHODS  *********************************/
 
   /**
@@ -101,9 +115,6 @@ class Value {
   * @return ATan of the number or INITIALIZATION_VALUE if its not a number.
   */
   float32 ATan() const;
-
-
-
 
  
 

@@ -76,8 +76,7 @@ Value& Value::operator=(const Value& copy) {
   return *this;
 }
 
-void Value::print() const
-{
+void Value::print() const {
   switch (type_) {
     case JMP::kValueType_Float: { printf("%f\n", float_); }  break;
     case JMP::kValueType_Integer: { printf("%d\n", integer_); } break;
@@ -86,52 +85,60 @@ void Value::print() const
   }
 }
 
+float32 Value::getAsFloat() const {
+  if (type_ == kValueType_Float) { return float_; }
+  if (type_ == kValueType_Integer) { return (float32)integer_; }
+  ReportWarning(" Trying to get a float from a non-number value");
+  return INITIALIZATION_VALUE;
+}
+
+int32 Value::getAsInteger() const {
+  if (type_ == kValueType_Integer) { return integer_; }
+  if (type_ == kValueType_Float) { return (int32)float_; }
+  ReportWarning(" Trying to get an integer from a non-number value");
+  return INITIALIZATION_VALUE;
+}
+
 /*******************************************************************************
 ***                              MATH METHODS                                ***
 *******************************************************************************/
 
-float32 Value::Sin() const
-{
+float32 Value::Sin() const {
   if (type_ == kValueType_Float) { return sinf(float_); }
   if (type_ == kValueType_Integer) { return sinf((float32)integer_); }
   ReportWarning(" Trying to calculate a SIN of a non number value");
   return INITIALIZATION_VALUE;
 }
 
-float32 Value::Cos() const
-{
+float32 Value::Cos() const {
   if (type_ == kValueType_Float) { return cosf(float_); }
   if (type_ == kValueType_Integer) { return cosf((float32)integer_); }
   ReportWarning(" Trying to calculate a COS of a non number value");
   return INITIALIZATION_VALUE;
 }
 
-float32 Value::Tan() const
-{
+float32 Value::Tan() const {
   if (type_ == kValueType_Float) { return tanf(float_); }
   if (type_ == kValueType_Integer) { return tanf((float32)integer_); }
   ReportWarning(" Trying to calculate a TAN of a non number value");
   return INITIALIZATION_VALUE;
 }
 
-float32 Value::ASin() const
-{
+float32 Value::ASin() const {
   if (type_ == kValueType_Float) { return asinf(float_); }
   if (type_ == kValueType_Integer) { return asinf((float32)integer_); }
   ReportWarning(" Trying to calculate a ASIN of a non number value");
   return INITIALIZATION_VALUE;
 }
 
-float32 Value::ACos() const
-{
+float32 Value::ACos() const {
   if (type_ == kValueType_Float) { return acosf(float_); }
   if (type_ == kValueType_Integer) { return acosf((float32)integer_); }
   ReportWarning(" Trying to calculate a ACOS of a non number value");
   return INITIALIZATION_VALUE;
 }
 
-float32 Value::ATan() const
-{
+float32 Value::ATan() const {
   if (type_ == kValueType_Float) { return atanf(float_); }
   if (type_ == kValueType_Integer) { return atanf((float32)integer_); }
   ReportWarning(" Trying to calculate a ATAN of a non number value");
