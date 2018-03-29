@@ -7,7 +7,7 @@
 *                                <b7026027@my.shu.ac.uk>
 */
 
-#if 1 // ORIGINAL
+#if 0 // ORIGINAL
 #include "jmp.h"
 #include <Windows.h>
 
