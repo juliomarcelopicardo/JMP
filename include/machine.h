@@ -77,6 +77,9 @@ class Machine {
   ///@brief Deletes the last compilation and process and compile the last file.
   void reload();
 
+  ///@brief Restart the machine and compiles a string instead of a filename.
+  void reloadFromString(const std::string& script);
+
   /**
   * @brief Current script code getter.
   *

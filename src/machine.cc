@@ -13,6 +13,7 @@
 #include <string>
 #include <fstream>
 #include <utility>
+#include <sstream>
 
 
 namespace JMP {
@@ -223,6 +224,45 @@ void Machine::reload() {
 
   // Then we proccess the file again.
   processFile(last_script_compiled_path_);
+}
+
+void Machine::reloadFromString(const std::string& script) {
+  // We will clean all the buffers used. We will reserve the same size it needed before.
+  cmd_list_.clear();
+  cmd_list_.reserve(cmd_list_length_);
+  cmd_list_length_ = 0;
+  function_list_.clear();
+  function_list_.reserve(function_list_length_);
+  function_list_length_ = 0;
+  defined_function_list_.clear();
+  defined_function_list_.reserve(defined_function_list_length_);
+  defined_function_list_length_ = 0;
+  global_variable_pack_list_.reserve(global_variable_pack_list_length_);
+  addGlobalVariablePack("");
+
+  Compiler compiler;
+  uint32 line_num = 1;
+  Report report = kReport_NoErrors;
+
+  // Reading the whole file, allocating it using lines of code.
+  std::istringstream sc(script);
+  std::string code_line;
+  while (std::getline(sc, code_line) && report == kReport_NoErrors) {
+
+    // To prevent errors I will remove all the tabs. Changing them to blank spaces
+    const uint32 string_length = code_line.length();
+    for (uint32 i = 0; i < string_length; ++i) {
+      if (code_line[i] == '\t') { code_line[i] = ' '; }
+    }
+
+    /*
+    PROCESS THE LINES - COMPILING THEM.
+    */
+    report = compiler.compile(this, code_line, line_num);
+    line_num++;
+  }
+
+  runScriptToSaveGlobalVariables();
 }
 
 std::string Machine::getCurrentScript() const{
