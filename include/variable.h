@@ -17,9 +17,9 @@
 
 namespace JMP {
 
-/// Class used to manage the variables that will be added to the registger.
-/// Depending on if the variable is a external registered one (created in C++) or
-/// if its one defined in the script, the attributes used will be different.
+/// Class used to manage the variables that will be added to the register.
+/// Depending on if the variable is an external registered one (created in C++) or
+/// if it's one defined in the script, the attributes used will be different.
 class Variable {
 
  public: 

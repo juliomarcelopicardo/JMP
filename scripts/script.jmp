@@ -2,76 +2,35 @@
 # Author: Julio Marcelo Picardo
 # Contact: juliomarcelopicardo@gmail.com
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VARPACK camera {
+  VAR x = "CamX"
+  VAR y = 30
+}
+
 VAR paco = ACOS(0.0)  
 
-VARPACK camera { 
-  VAR x = 1
-  VAR y = camera.x
-  VAR z = 3.00
-  VAR w = "hola caracola"
-}
-
-FUNC PrintExample(a,b,c) {
-	PRINT(a)
-	PRINT(b)
-	PRINT(c)
-  PRINT(a + b)
-  PRINT(a - a)
-  PRINT(a * c)
-	PRINT(variable)
-
-
-}
-
-FUNC Example(first,second){
-	VAR text = "This is going to be a simple message"
-  VAR result = "End of the loop. iterator value : "
-	
-	VAR iterator = 0
-	WHILE(4 < 5){		
-		PRINT(text + first)
-		PRINT(second)
-		PRINT("Hello World")
-		PrintExample(first, second, first)
-    PRINT(" ")
-    PRINT(result + iterator)
-    PRINT(" ")
-		iterator = iterator + 1
-    RETURN
-	}
-  
-
-}
-
 FUNC Example2() {
-  ExternalFunction(camera.x, camera.y, camera.z)
+  ExternalFunction(camera.x, camera.y, variable)
 }
 
-VAR pedro = camera.x
 
-FUNC main() {
-  VAR perico = pedro
-  VAR pepe = 0
-  WHILE(4 < 5){
-    PRINT("PAUL PARRY")
-    IF (pepe > 15) {
-      Example2()
-      RETURN
-    }
-    IF (pepe == 0) {
-      PRINT("EQUAL than 0")
-    }
-    IF (pepe != 0) {
-      PRINT("NOT EQUAL than 0")
-    }
-    IF (pepe >= 0) {
-      PRINT("GREATER or EQUAL than 0")
-    }
-    IF (pepe <= 0) {
-      PRINT("LESSER or EQUAL than 0")
-    }
-    pepe = pepe + perico
 
-  }
-
-}

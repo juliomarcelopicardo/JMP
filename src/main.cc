@@ -7,7 +7,7 @@
 *                                <b7026027@my.shu.ac.uk>
 */
 
-#if 0 // ORIGINAL
+#if 1 // ORIGINAL
 #include "jmp.h"
 #include <Windows.h>
 
@@ -26,13 +26,12 @@ JMP::int32 main() {
 
   machine.processFile("../scripts/script.jmp");
   float pedro = machine.getFloat("paco");
+  printf("%f\n", pedro);
   JMP::float32 variable = 3.02f;
   machine.registerVariable("variable", JMP::kValueType_Float, &variable);
   machine.registerFunction("ExternalFunction", &RegFunc);
-  machine.runFunction("PrintExample(40, \"texto\", 40.34)");
-  machine.runFunction("Example(11111,22222)");
   machine.runFunction("Example2()");
-  machine.runFunction();
+
 
   /*
   system("pause");

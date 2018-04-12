@@ -1,0 +1,18 @@
+- JMP Scripting Language
+- Author: Julio Marcelo Picardo
+- Contact: juliomarcelopicardo@gmail.com 
+           b7026027@my.shu.ac.uk
+
+
+- There are two versions and ways to use it.
+
+1st. SINGLE HEADER.
+
+Ideal for using with simple applications that have only one file, so just by including the jmp.h file, that can be found in the single_header folder, is enough to start using it.
+
+2nd. COMPLETE VERSION.
+
+This is the most complete version, the one recommended to use as part of another existing software.
+To use it it's as simple as copying the folders "include" and "src", and then compile them inside as part of the application project.
+
+To start using it in a C++ application it is just needed to include the file "jmp.h" that can be found in the include folder.
