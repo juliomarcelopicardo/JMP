@@ -7,7 +7,11 @@
 *                                <b7026027@my.shu.ac.uk>
 */
 
-#if 1 // ORIGINAL
+
+
+#if 1 // 1 - Complete version. 0 - Single header version.
+
+
 #include "jmp.h"
 #include <Windows.h>
 
@@ -25,28 +29,22 @@ JMP::int32 main() {
   JMP::Machine machine;
 
   machine.processFile("../scripts/script.jmp");
-  float pedro = machine.getFloat("paco");
-  printf("%f\n", pedro);
+  const float test = machine.getFloat("cos");
+  printf("%f\n", test);
   JMP::float32 variable = 3.02f;
   machine.registerVariable("variable", JMP::kValueType_Float, &variable);
   machine.registerFunction("ExternalFunction", &RegFunc);
   machine.runFunction("Example2()");
 
 
-  /*
-  system("pause");
-
-  machine.reload();
-  machine.runFunction();
-  machine.unregisterFunction("ExternalFunction");
-  machine.unregisterVariable("variable");
-  */
-
-
   OutputDebugString("\n Ending application... \n\n");
   system("pause");
   return 0;
 }
+
+
+
+
 #else // SINGLE HEADER VERSION
 
 #include "../single_header/jmp.h"
@@ -54,8 +52,8 @@ JMP::int32 main() {
 
 void RegFunc(std::vector<JMP_SH::Value>& params) {
 
-  for (JMP_SH::uint32 i = 0; i < params.size(); ++i) {
-    params[i].print();
+  for (auto& param : params) {
+    param.print();
   }
 }
 
@@ -65,31 +63,19 @@ JMP_SH::int32 main() {
 
   JMP_SH::Machine machine;
 
-  JMP_SH::float32 variable = 3.02f;
   machine.processFile("../scripts/script.jmp");
-  std::string textico = machine.getString("w", "camera");
-  JMP_SH::int32 integer = machine.getInteger("x", "camera");
-  JMP_SH::float32 floaat = machine.getFloat("z", "camera");
+  const float test = machine.getFloat("cos");
+  printf("%f\n", test);
+  JMP_SH::float32 variable = 3.02f;
   machine.registerVariable("variable", JMP_SH::kValueType_Float, &variable);
   machine.registerFunction("ExternalFunction", &RegFunc);
-  //machine.runFunction("PrintExample(40, \"texto\", 40.34)");
-  //machine.runFunction("Example(11111,22222)");
-  //machine.runFunction("Example2()");
-  machine.runFunction();
-
-  /*
-  system("pause");
-
-  machine.reload();
-  machine.runFunction();
-  machine.unregisterFunction("ExternalFunction");
-  machine.unregisterVariable("variable");
-  */
+  machine.runFunction("Example2()");
 
 
   OutputDebugString("\n Ending application... \n\n");
   system("pause");
   return 0;
 }
+
 #endif
 

@@ -3,33 +3,24 @@
 # Contact: juliomarcelopicardo@gmail.com
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 VARPACK camera {
   VAR x = "CamX"
   VAR y = 30
 }
 
-VAR paco = ACOS(0.0)  
+VAR cos = COS(0.0)  
 
 FUNC Example2() {
-  ExternalFunction(camera.x, camera.y, variable)
+  VAR iterator = 0
+
+  WHILE (iterator < 5) {
+    ExternalFunction(camera.x, camera.y, variable)
+    iterator = iterator + 1
+  }
+
+  IF (cos <= 100) {
+    PRINT("Cos")
+  }
 }
 
 

@@ -16,3 +16,12 @@ This is the most complete version, the one recommended to use as part of another
 To use it it's as simple as copying the folders "include" and "src", and then compile them inside as part of the application project.
 
 To start using it in a C++ application it is just needed to include the file "jmp.h" that can be found in the include folder.
+
+
+
+
+
+The visual studio solution is allocated inside the "build" folder.
+The executables are inside the folder "bin". 
+"JMP.exe" Release mode.
+"JMP-d.exe" - Debug mode. 
